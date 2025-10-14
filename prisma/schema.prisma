@@ -1,0 +1,299 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  phone         String?   // Telefone português (9 dígitos)
+  userType      String    @default("CLIENT") // CLIENT ou PROFESSIONAL
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relacionamentos
+  accounts      Account[]
+  sessions      Session[]
+  clientProfile ClientProfile?
+  professionalProfile ProfessionalProfile?
+  serviceRequests ServiceRequest[]
+  serviceProposals ServiceProposal[]
+  clientReviews Review[] @relation("ClientReviews")
+  professionalReviews Review[] @relation("ProfessionalReviews")
+  chatRooms     ChatRoom[] @relation("ChatRoomParticipants")
+  messages      Message[]
+  coins         Coin[]
+  transactions  Transaction[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model ClientProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Dados específicos do cliente
+  district  String   // Distrito
+  council   String   // Conselho/Concelho
+  parish    String   // Freguesia
+  address   String?  // Endereço completo
+  postalCode String? // Código postal português
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("client_profiles")
+}
+
+model ProfessionalProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Dados específicos do profissional
+  district    String   // Distrito
+  council     String   // Conselho/Concelho
+  parish      String   // Freguesia
+  address     String?  // Endereço completo
+  postalCode  String?  // Código postal português
+  
+  // Informações profissionais
+  specialties String // Especialidades separadas por vírgula
+  experience  String   // Descrição da experiência
+  bio         String?  // Biografia
+  rating      Float    @default(0) // Rating médio
+  totalReviews Int     @default(0) // Total de avaliações
+  
+  // Status
+  isVerified  Boolean  @default(false) // Profissional verificado
+  isActive    Boolean  @default(true)  // Profissional ativo
+  isPremium   Boolean  @default(false) // Profissional premium
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("professional_profiles")
+}
+
+model ServiceCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?  // Ícone ou emoji
+  isActive    Boolean  @default(true)
+  
+  // Relacionamentos
+  services    Service[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("service_categories")
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  categoryId  String
+  category    ServiceCategory @relation(fields: [categoryId], references: [id])
+  isActive    Boolean  @default(true)
+  
+  // Relacionamentos
+  requests    ServiceRequest[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("services")
+}
+
+model ServiceRequest {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  clientId    String
+  client      User     @relation(fields: [clientId], references: [id])
+  
+  // Localização
+  district    String
+  council     String
+  parish      String
+  address     String?
+  
+  // Serviço
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id])
+  
+  // Orçamento e prazo
+  budgetMin   Float?   // Orçamento mínimo em EUR
+  budgetMax   Float?   // Orçamento máximo em EUR
+  deadline    DateTime? // Prazo desejado
+  
+  // Status
+  status      String @default("OPEN")
+  
+  // Relacionamentos
+  proposals   ServiceProposal[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("service_requests")
+}
+
+model ServiceProposal {
+  id          String   @id @default(cuid())
+  requestId   String
+  request     ServiceRequest @relation(fields: [requestId], references: [id])
+  professionalId String
+  professional User    @relation(fields: [professionalId], references: [id])
+  
+  // Proposta
+  price       Float    // Preço em EUR
+  description String   // Descrição da proposta
+  estimatedTime String // Tempo estimado
+  
+  // Status
+  status      String @default("PENDING")
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("service_proposals")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  clientId    String
+  client      User     @relation("ClientReviews", fields: [clientId], references: [id])
+  professionalId String
+  professional User    @relation("ProfessionalReviews", fields: [professionalId], references: [id])
+  requestId   String?  // Opcional: relacionado a uma solicitação
+  
+  rating      Int      // 1-5 estrelas
+  comment     String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([clientId, professionalId, requestId])
+  @@map("reviews")
+}
+
+model ChatRoom {
+  id          String   @id @default(cuid())
+  name        String?
+  type        String @default("DIRECT")
+  lastMessage DateTime?
+  
+  // Participantes
+  participants User[]   @relation("ChatRoomParticipants")
+  messages     Message[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("chat_rooms")
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  roomId      String
+  room        ChatRoom @relation(fields: [roomId], references: [id])
+  senderId    String
+  sender      User     @relation(fields: [senderId], references: [id])
+  
+  content     String
+  type        String @default("TEXT")
+  isRead      Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("messages")
+}
+
+model Coin {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  amount      Int      // Quantidade de moedas
+  type        String // CREDIT ou DEBIT
+  description String   // Descrição da transação
+  source      String?  // Origem das moedas (compra, bônus, etc.)
+  
+  createdAt   DateTime @default(now())
+
+  @@map("coins")
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  // Stripe
+  stripePaymentIntentId String? @unique
+  stripeChargeId        String? @unique
+  
+  // Detalhes da transação
+  amount      Float    // Valor em EUR
+  currency    String   @default("EUR")
+  description String
+  
+  // Status
+  status      String @default("PENDING")
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("transactions")
+}
