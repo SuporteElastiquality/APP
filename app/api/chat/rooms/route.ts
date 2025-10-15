@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { chatRoomSchema, validateData } from '@/lib/validations'
 
 export async function GET(request: NextRequest) {
   try {
@@ -72,14 +73,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { participantId, type = 'DIRECT' } = await request.json()
+    const body = await request.json()
 
-    if (!participantId) {
+    // Validar dados com Zod
+    const validation = validateData(chatRoomSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'Participant ID is required' },
+        { error: 'Dados inválidos', details: validation.errors },
         { status: 400 }
       )
     }
+
+    const { participantId, type } = validation.data!
 
     // Verificar se já existe um chat entre os usuários
     const existingRoom = await prisma.chatRoom.findFirst({

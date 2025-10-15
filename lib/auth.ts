@@ -39,10 +39,18 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // Para usuários criados via Google, não temos senha
-        // Para usuários criados via credenciais, precisamos verificar a senha
-        // Por enquanto, vamos assumir que a senha está correta se o usuário existe
-        // Em produção, você deve hash e verificar a senha
+        // Verificar se o usuário tem senha (usuários criados via credenciais)
+        if (!user.password) {
+          // Usuário criado via Google, não pode fazer login com credenciais
+          return null
+        }
+
+        // Verificar a senha
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+        
+        if (!isPasswordValid) {
+          return null
+        }
 
         return {
           id: user.id,
@@ -70,6 +78,42 @@ export const authOptions: NextAuthOptions = {
         session.user.userType = token.userType as UserType
       }
       return session
+    },
+    async signIn({ user, account, profile }) {
+      // Para login com Google, verificar se o usuário tem perfil completo
+      if (account?.provider === 'google') {
+        try {
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+            include: {
+              clientProfile: true,
+              professionalProfile: true
+            }
+          })
+
+          // Se usuário existe mas não tem perfil completo, redirecionar para completar
+          if (existingUser && !existingUser.userType) {
+            return '/auth/google-signup'
+          }
+
+          // Se usuário não existe, criar usuário básico e redirecionar para completar perfil
+          if (!existingUser) {
+            await prisma.user.create({
+              data: {
+                name: user.name,
+                email: user.email!,
+                image: user.image,
+                userType: 'CLIENT', // Tipo padrão, será atualizado na página de completar perfil
+              }
+            })
+            return '/auth/google-signup'
+          }
+        } catch (error) {
+          console.error('Error in signIn callback:', error)
+          return false
+        }
+      }
+      return true
     },
   },
   pages: {

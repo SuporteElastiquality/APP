@@ -1,0 +1,29 @@
+# VARIÁVEIS DE AMBIENTE PARA O PROJETO ELASTIQUALITY 2.0
+# Copie estas variáveis para o arquivo .env na raiz do projeto
+
+# Database Configuration
+DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza19KcHZ4QmotSE14Ykk5NnQ4OVhVc2siLCJhcGlfa2V5IjoiMDFLN0pCMjg2MFo2UDE3OFdGNjVBNTRHUFciLCJ0ZW5hbnRfaWQiOiIxZTM4NjJhOGM0YTI5NzI1N2FlZTI5MzQzMTNkYTQ2ZDZhODJkNDYzZDYwODgyYWQ4MDU4YzU3MGIwZGM2M2JkIiwiaW50ZXJuYWxfc2VjcmV0IjoiZGFhZmNhMTAtMDUwMy00ODUxLTk3NzktNWQyZWIxNTNkYTI1In0._YOX4p5z2h9Yc8Sj1AfqJLl3Cnit9dwhdEAtTFSjl1Q"
+
+# NextAuth.js Configuration
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="8e8850d595766b8b8cd7b7b7fb999dc0ff1e3ce7364137deb8d1a0e166ba1e82"
+
+# Google OAuth (Opcional - configure se quiser login com Google)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# Stripe Configuration (Configure suas próprias chaves)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_live_your_publishable_key_here"
+STRIPE_SECRET_KEY="sk_live_your_secret_key_here"
+STRIPE_WEBHOOK_SECRET="your-webhook-secret"
+
+# App Configuration
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+# INSTRUÇÕES:
+# 1. Copie todo o conteúdo acima
+# 2. Crie um arquivo .env na raiz do projeto
+# 3. Cole o conteúdo no arquivo .env
+# 4. Para produção no Vercel, configure estas variáveis no painel do Vercel
+# 5. Para produção, mude NEXTAUTH_URL para: https://seu-dominio.vercel.app
+

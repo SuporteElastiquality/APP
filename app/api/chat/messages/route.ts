@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { messageSchema, messageQuerySchema, validateData } from '@/lib/validations'
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,13 +13,22 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const roomId = searchParams.get('roomId')
-    const limit = parseInt(searchParams.get('limit') || '50')
-    const offset = parseInt(searchParams.get('offset') || '0')
-
-    if (!roomId) {
-      return NextResponse.json({ error: 'Room ID is required' }, { status: 400 })
+    const queryData = {
+      roomId: searchParams.get('roomId'),
+      limit: searchParams.get('limit') || '50',
+      offset: searchParams.get('offset') || '0'
     }
+
+    // Validar parâmetros de query com Zod
+    const validation = validateData(messageQuerySchema, queryData)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: 'Parâmetros inválidos', details: validation.errors },
+        { status: 400 }
+      )
+    }
+
+    const { roomId, limit, offset } = validation.data!
 
     // Verificar se o usuário tem acesso ao chat
     const room = await prisma.chatRoom.findFirst({
@@ -75,14 +85,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { roomId, content, type = 'TEXT' } = await request.json()
+    const body = await request.json()
 
-    if (!roomId || !content) {
+    // Validar dados com Zod
+    const validation = validateData(messageSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'Room ID and content are required' },
+        { error: 'Dados inválidos', details: validation.errors },
         { status: 400 }
       )
     }
+
+    const { roomId, content, type } = validation.data!
 
     // Verificar se o usuário tem acesso ao chat
     const room = await prisma.chatRoom.findFirst({

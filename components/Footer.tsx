@@ -15,8 +15,8 @@ export default function Footer() {
                   src="/logo.png"
                   alt="Elastiquality"
                   width={200}
-                  height={200}
-                  className="w-[200px] h-[200px] object-contain"
+                  height={100}
+                  className="w-[200px] h-[100px] object-contain"
                 />
               </div>
             </div>

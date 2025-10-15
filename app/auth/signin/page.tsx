@@ -49,7 +49,7 @@ export default function SignIn() {
   }
 
   const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/dashboard' })
+    signIn('google', { callbackUrl: '/auth/google-signup' })
   }
 
   return (
@@ -59,9 +59,9 @@ export default function SignIn() {
           <Image
             src="/logo.png"
             alt="Elastiquality"
-            width={48}
-            height={48}
-            className="w-12 h-12 object-contain"
+            width={200}
+            height={100}
+            className="w-50 h-25 object-contain"
           />
         </div>
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">

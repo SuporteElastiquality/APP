@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
+import { paymentIntentSchema, validateData } from '@/lib/validations'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { amount, description, currency = 'EUR' } = await request.json()
+    const body = await request.json()
+
+    // Validar dados com Zod
+    const validation = validateData(paymentIntentSchema, body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: 'Dados inválidos', details: validation.errors },
+        { status: 400 }
+      )
+    }
+
+    const { amount, currency, serviceRequestId } = validation.data!
 
     // Criar Payment Intent no Stripe
     const paymentIntent = await stripe.paymentIntents.create({
@@ -20,7 +32,7 @@ export async function POST(request: NextRequest) {
       currency: currency.toLowerCase(),
       metadata: {
         userId: session.user.id,
-        description,
+        serviceRequestId,
       },
     })
 
@@ -31,7 +43,7 @@ export async function POST(request: NextRequest) {
         stripePaymentIntentId: paymentIntent.id,
         amount: amount,
         currency: currency.toUpperCase(),
-        description: description,
+        description: `Pagamento para solicitação ${serviceRequestId}`,
         status: 'PENDING',
       },
     })

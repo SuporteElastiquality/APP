@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
-import { UserType } from '@prisma/client'
+// UserType será inferido do schema
+import { registerSchema, validateData } from '@/lib/validations'
 
 export async function POST(request: NextRequest) {
   try {
+    const body = await request.json()
+
+    // Validar dados com Zod
+    const validation = validateData(registerSchema, body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: 'Dados inválidos', details: validation.errors },
+        { status: 400 }
+      )
+    }
+
     const {
       name,
       email,
@@ -16,31 +28,7 @@ export async function POST(request: NextRequest) {
       parish,
       specialties,
       experience
-    } = await request.json()
-
-    // Validar dados obrigatórios
-    if (!name || !email || !password || !phone || !district || !council || !parish) {
-      return NextResponse.json(
-        { error: 'Todos os campos obrigatórios devem ser preenchidos' },
-        { status: 400 }
-      )
-    }
-
-    // Validar tipo de usuário
-    if (!['CLIENT', 'PROFESSIONAL'].includes(userType)) {
-      return NextResponse.json(
-        { error: 'Tipo de usuário inválido' },
-        { status: 400 }
-      )
-    }
-
-    // Validar especialidades para profissionais
-    if (userType === 'PROFESSIONAL' && (!specialties || !experience)) {
-      return NextResponse.json(
-        { error: 'Profissionais devem informar especialidades e experiência' },
-        { status: 400 }
-      )
-    }
+    } = validation.data!
 
     // Verificar se o email já existe
     const existingUser = await prisma.user.findUnique({
@@ -63,10 +51,9 @@ export async function POST(request: NextRequest) {
         name,
         email,
         phone,
-        userType: userType as UserType,
-        // Para NextAuth.js, vamos usar um campo customizado para senha
-        // Em produção, você deve criar uma tabela separada para credenciais
-      }
+        password: hashedPassword,
+        userType: userType,
+      } as any
     })
 
     // Criar perfil específico baseado no tipo
@@ -86,8 +73,8 @@ export async function POST(request: NextRequest) {
           district,
           council,
           parish,
-          specialties: specialties.split(',').map(s => s.trim()),
-          experience
+          specialties: specialties?.split(',').map(s => s.trim()).join(',') || '',
+          experience: experience || ''
         }
       })
     }
