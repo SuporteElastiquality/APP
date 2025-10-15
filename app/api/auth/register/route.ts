@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 // UserType será inferido do schema
 import { registerSchema, validateData } from '@/lib/validations'
+import { sendWelcomeEmail } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   try {
@@ -78,6 +79,11 @@ export async function POST(request: NextRequest) {
         }
       })
     }
+
+    // Enviar email de boas-vindas (não bloqueia a resposta)
+    sendWelcomeEmail(data.email, data.name).catch(error => {
+      console.error('Failed to send welcome email:', error)
+    })
 
     return NextResponse.json({
       message: 'Conta criada com sucesso',

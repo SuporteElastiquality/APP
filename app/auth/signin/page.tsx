@@ -94,7 +94,6 @@ export default function SignIn() {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="seu@email.com"
               required
-              icon={<Mail className="w-5 h-5 text-gray-400" />}
             />
 
             <div className="relative">
@@ -105,7 +104,6 @@ export default function SignIn() {
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 placeholder="Sua senha"
                 required
-                icon={<Lock className="w-5 h-5 text-gray-400" />}
               />
               <button
                 type="button"

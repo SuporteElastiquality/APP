@@ -9,7 +9,6 @@ import { Eye, EyeOff, Mail, Lock, User, Phone, MapPin } from 'lucide-react'
 import Button from '@/components/Button'
 import Input from '@/components/Input'
 import Select from '@/components/Select'
-import { UserType } from '@prisma/client'
 
 const portugueseDistricts = [
   { value: 'lisboa', label: 'Lisboa' },
@@ -41,7 +40,7 @@ export default function SignUp() {
     password: '',
     confirmPassword: '',
     phone: '',
-    userType: 'CLIENT' as UserType,
+    userType: 'CLIENT' as 'CLIENT' | 'PROFESSIONAL',
     district: '',
     council: '',
     parish: '',
@@ -171,7 +170,6 @@ export default function SignUp() {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Seu nome completo"
                   required
-                  icon={<User className="w-5 h-5 text-gray-400" />}
                 />
 
                 <Input
@@ -181,7 +179,6 @@ export default function SignUp() {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="seu@email.com"
                   required
-                  icon={<Mail className="w-5 h-5 text-gray-400" />}
                 />
 
                 <div className="relative">
@@ -192,7 +189,6 @@ export default function SignUp() {
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="Mínimo 8 caracteres"
                     required
-                    icon={<Lock className="w-5 h-5 text-gray-400" />}
                   />
                   <button
                     type="button"
@@ -211,7 +207,6 @@ export default function SignUp() {
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     placeholder="Digite a senha novamente"
                     required
-                    icon={<Lock className="w-5 h-5 text-gray-400" />}
                   />
                   <button
                     type="button"
@@ -274,7 +269,6 @@ export default function SignUp() {
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="912 345 678"
                   required
-                  icon={<Phone className="w-5 h-5 text-gray-400" />}
                   helperText="Formato português: 9 dígitos"
                 />
 
@@ -284,7 +278,6 @@ export default function SignUp() {
                   onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                   options={portugueseDistricts}
                   required
-                  icon={<MapPin className="w-5 h-5 text-gray-400" />}
                 />
 
                 <Input

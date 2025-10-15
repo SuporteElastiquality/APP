@@ -216,6 +216,18 @@ export default function GoogleSignUp() {
                   value={formData.district}
                   onChange={(e) => setFormData({ ...formData, district: e.target.value, council: '', parish: '' })}
                   required
+                  options={[
+                    { value: 'Porto', label: 'Porto' },
+                    { value: 'Lisboa', label: 'Lisboa' },
+                    { value: 'Braga', label: 'Braga' },
+                    { value: 'Coimbra', label: 'Coimbra' },
+                    { value: 'Aveiro', label: 'Aveiro' },
+                    { value: 'Setúbal', label: 'Setúbal' },
+                    { value: 'Faro', label: 'Faro' },
+                    { value: 'Leiria', label: 'Leiria' },
+                    { value: 'Viseu', label: 'Viseu' },
+                    { value: 'Vila Real', label: 'Vila Real' }
+                  ]}
                 >
                   <option value="">Selecione o distrito</option>
                   {districts.map((district) => (
@@ -231,6 +243,7 @@ export default function GoogleSignUp() {
                     value={formData.council}
                     onChange={(e) => setFormData({ ...formData, council: e.target.value, parish: '' })}
                     required
+                    options={councils[formData.district as keyof typeof councils].map(council => ({ value: council, label: council }))}
                   >
                     <option value="">Selecione o concelho</option>
                     {councils[formData.district as keyof typeof councils].map((council) => (
@@ -247,6 +260,7 @@ export default function GoogleSignUp() {
                     value={formData.parish}
                     onChange={(e) => setFormData({ ...formData, parish: e.target.value })}
                     required
+                    options={parishes[formData.council as keyof typeof parishes].map(parish => ({ value: parish, label: parish }))}
                   >
                     <option value="">Selecione a freguesia</option>
                     {parishes[formData.council as keyof typeof parishes].map((parish) => (

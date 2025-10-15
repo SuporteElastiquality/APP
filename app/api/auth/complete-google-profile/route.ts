@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { UserType } from '@prisma/client'
 import { z } from 'zod'
 
 // Schema de validação para completar perfil Google
@@ -83,7 +82,7 @@ export async function POST(request: NextRequest) {
     const updatedUser = await prisma.user.update({
       where: { id: existingUser.id },
       data: {
-        userType: data.userType as UserType,
+        userType: data.userType as 'CLIENT' | 'PROFESSIONAL',
         phone: data.phone,
       }
     })

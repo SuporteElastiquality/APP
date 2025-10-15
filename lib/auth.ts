@@ -4,7 +4,6 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import { prisma } from './prisma'
 import bcrypt from 'bcryptjs'
-import { UserType } from '@prisma/client'
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -75,7 +74,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.sub!
-        session.user.userType = token.userType as UserType
+        session.user.userType = token.userType as 'CLIENT' | 'PROFESSIONAL'
       }
       return session
     },
@@ -115,9 +114,16 @@ export const authOptions: NextAuthOptions = {
       }
       return true
     },
+    async redirect({ url, baseUrl }) {
+      // Se a URL é relativa, adicionar baseUrl
+      if (url.startsWith('/')) return `${baseUrl}${url}`
+      // Se a URL é do mesmo domínio, permitir
+      if (new URL(url).origin === baseUrl) return url
+      // Caso contrário, redirecionar para dashboard
+      return `${baseUrl}/dashboard`
+    },
   },
   pages: {
-    signIn: '/auth/signin',
-    signUp: '/auth/signup',
+    signIn: '/auth/signin', 
   },
 }

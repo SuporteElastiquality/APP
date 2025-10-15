@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     // Criar Payment Intent no Stripe
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100), // Stripe usa centavos
-      currency: currency.toLowerCase(),
+      currency: currency?.toLowerCase() || 'eur',
       metadata: {
         userId: session.user.id,
         serviceRequestId,
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
         stripePaymentIntentId: paymentIntent.id,
         amount: amount,
-        currency: currency.toUpperCase(),
+        currency: currency?.toUpperCase() || 'EUR',
         description: `Pagamento para solicitação ${serviceRequestId}`,
         status: 'PENDING',
       },

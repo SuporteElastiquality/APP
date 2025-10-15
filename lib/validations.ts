@@ -88,8 +88,8 @@ export const messageSchema = z.object({
 // Schema de validação para parâmetros de query de mensagens
 export const messageQuerySchema = z.object({
   roomId: z.string().min(1, 'ID da sala é obrigatório'),
-  limit: z.string().regex(/^\d+$/, 'Limit deve ser um número').transform(Number).default(50),
-  offset: z.string().regex(/^\d+$/, 'Offset deve ser um número').transform(Number).default(0),
+  limit: z.string().regex(/^\d+$/, 'Limit deve ser um número').transform(Number).default('50'),
+  offset: z.string().regex(/^\d+$/, 'Offset deve ser um número').transform(Number).default('0'),
 })
 
 // Schema de validação para criação de sala de chat

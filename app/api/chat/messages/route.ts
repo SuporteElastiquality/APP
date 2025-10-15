@@ -20,10 +20,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Validar parâmetros de query com Zod
-    const validation = validateData(messageQuerySchema, queryData)
+    const validation = messageQuerySchema.safeParse(queryData)
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Parâmetros inválidos', details: validation.errors },
+        { error: 'Parâmetros inválidos', details: validation.error.errors },
         { status: 400 }
       )
     }
