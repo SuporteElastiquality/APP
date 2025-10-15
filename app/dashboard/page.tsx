@@ -52,7 +52,10 @@ export default function Dashboard() {
 
           {/* Cards de Informações */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => router.push('/profile')}>
+            <div 
+              className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-white rounded-lg shadow-md border"
+              onClick={() => router.push('/profile')}
+            >
               <div className="flex items-center space-x-4">
                 <div className="p-3 bg-blue-100 rounded-full">
                   <User className="w-6 h-6 text-blue-600" />
@@ -62,7 +65,7 @@ export default function Dashboard() {
                   <p className="text-sm text-gray-600">Gerencie suas informações</p>
                 </div>
               </div>
-            </Card>
+            </div>
 
             <Card className="p-6">
               <div className="flex items-center space-x-4">
