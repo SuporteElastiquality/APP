@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Enviar email de boas-vindas (não bloqueia a resposta)
-    sendWelcomeEmail(data.email, data.name).catch(error => {
+    sendWelcomeEmail(email, name).catch(error => {
       console.error('Failed to send welcome email:', error)
     })
 

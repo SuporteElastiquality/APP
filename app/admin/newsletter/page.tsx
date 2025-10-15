@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/Button'
-import { Input } from '@/components/Input'
+import Button from '@/components/Button'
+import Input from '@/components/Input'
 
 export default function NewsletterAdmin() {
   const [formData, setFormData] = useState({
