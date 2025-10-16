@@ -92,21 +92,7 @@ export async function getCoordinatesFromLocation(
  * @param maxDistanceKm Distância máxima em quilômetros (padrão: 15km)
  * @returns Lista de profissionais dentro do raio especificado
  */
-export function filterProfessionalsByDistance(
-  professionals: Array<{
-    id: string
-    professionalProfile?: {
-      latitude?: number | null
-      longitude?: number | null
-      district?: string
-      council?: string
-      parish?: string
-    } | null
-  }>,
-  clientLatitude: number,
-  clientLongitude: number,
-  maxDistanceKm: number = 15
-): Array<{
+export function filterProfessionalsByDistance<T extends {
   id: string
   professionalProfile?: {
     latitude?: number | null
@@ -115,7 +101,12 @@ export function filterProfessionalsByDistance(
     council?: string
     parish?: string
   } | null
-}> {
+}>(
+  professionals: T[],
+  clientLatitude: number,
+  clientLongitude: number,
+  maxDistanceKm: number = 15
+): T[] {
   return professionals.filter(professional => {
     const profile = professional.professionalProfile
     
