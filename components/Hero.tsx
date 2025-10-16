@@ -15,7 +15,12 @@ export default function Hero() {
 
   // Função para lidar com seleção de localização
   const handleLocationSelect = (locationData: LocationData) => {
-    const locationString = `${locationData.parish}, ${locationData.council}, ${locationData.district}`
+    // Extrair informações de localização do endereço
+    const address = locationData.address || {}
+    const district = address.state || address.county || ''
+    const council = address.city || address.town || address.village || ''
+    const parish = address.village || address.town || ''
+    const locationString = `${parish}, ${council}, ${district}`
     setLocation(locationString)
   }
 
