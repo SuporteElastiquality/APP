@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Elastiquality - Encontre profissionais para tudo',
     description: 'Mais de 500 tipos de serviços em um só lugar. Conectamos clientes com os melhores profissionais de Portugal.',
-    url: 'https://elastiquality.vercel.app',
+    url: 'https://elastiquality.pt',
     siteName: 'Elastiquality',
     images: [
       {

@@ -35,7 +35,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://appelastiquality-qqvcwuek3-suporte-elastiquality.vercel.app" 
+              <a href="https://elastiquality.pt" 
                  style="background: #3B82F6; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
                 Aceder Minha Conta
               </a>
@@ -104,7 +104,7 @@ export async function sendNewsletterEmail(email: string, name: string, content: 
 
 export async function sendPasswordResetEmail(email: string, name: string, resetToken: string) {
   try {
-    const resetUrl = `${process.env.NEXTAUTH_URL || 'https://appelastiquality.vercel.app'}/auth/reset-password?token=${resetToken}`
+    const resetUrl = `${process.env.NEXTAUTH_URL || 'https://elastiquality.pt'}/auth/reset-password?token=${resetToken}`
     
     await resend.emails.send({
       from: 'Elastiquality <noreply@elastiquality.pt>',
