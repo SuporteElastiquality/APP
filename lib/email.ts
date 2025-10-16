@@ -35,9 +35,9 @@ export async function sendWelcomeEmail(email: string, name: string) {
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://appelastiquality.vercel.app/dashboard" 
+              <a href="https://appelastiquality-qqvcwuek3-suporte-elastiquality.vercel.app" 
                  style="background: #3B82F6; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-                Acessar Minha Conta
+                Aceder Minha Conta
               </a>
             </div>
           </div>
