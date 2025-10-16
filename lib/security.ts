@@ -9,6 +9,9 @@ const RATE_LIMITS = {
   login: { requests: 5, window: 15 * 60 * 1000 }, // 5 tentativas em 15 min
   register: { requests: 3, window: 60 * 60 * 1000 }, // 3 tentativas em 1 hora
   newsletter: { requests: 2, window: 60 * 60 * 1000 }, // 2 tentativas em 1 hora
+  forgot_password: { requests: 3, window: 60 * 60 * 1000 }, // 3 tentativas em 1 hora
+  reset_password: { requests: 5, window: 15 * 60 * 1000 }, // 5 tentativas em 15 min
+  professional_search: { requests: 50, window: 15 * 60 * 1000 }, // 50 buscas em 15 min
   api: { requests: 100, window: 15 * 60 * 1000 }, // 100 requests em 15 min
 }
 
