@@ -82,6 +82,7 @@ export async function GET(request: NextRequest) {
               council: true,
               parish: true,
               rating: true,
+              completedJobs: true,
               isVerified: true,
               isPremium: true
             }
@@ -127,6 +128,7 @@ export async function GET(request: NextRequest) {
             council: true,
             parish: true,
             rating: true,
+            completedJobs: true,
             isVerified: true,
             isPremium: true
           }
@@ -136,8 +138,8 @@ export async function GET(request: NextRequest) {
 
     // Log de busca (sem dados sensíveis)
     logSecurityEvent('professional_search', { 
-      service: service.substring(0, 50),
-      location: location.substring(0, 50),
+      service: service?.substring(0, 50) || '',
+      location: location?.substring(0, 50) || '',
       resultsCount: professionals.length,
       totalCount,
       ip: clientIP 
@@ -157,7 +159,7 @@ export async function GET(request: NextRequest) {
         parish: prof.professionalProfile?.parish || ''
       },
       rating: prof.professionalProfile?.rating || 0,
-      completedJobs: 0, // Campo temporário até o banco ser atualizado
+      completedJobs: prof.professionalProfile?.completedJobs || 0,
       isVerified: prof.professionalProfile?.isVerified || false,
       isPremium: prof.professionalProfile?.isPremium || false,
       isElastiquality: prof.email === 'elastiquality@elastiquality.pt'
@@ -181,7 +183,7 @@ export async function GET(request: NextRequest) {
             parish: elastiqualityUser.professionalProfile.parish || ''
           },
           rating: elastiqualityUser.professionalProfile.rating || 5.0,
-          completedJobs: 5000,
+          completedJobs: elastiqualityUser.professionalProfile.completedJobs || 5000,
           isVerified: elastiqualityUser.professionalProfile.isVerified || true,
           isPremium: elastiqualityUser.professionalProfile.isPremium || true,
           isElastiquality: true
