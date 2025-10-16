@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
           district: data.district,
           council: data.council,
           parish: data.parish,
-          morada: data.address || '',
+          morada: data.morada || '',
           postalCode: data.postalCode || '',
         }
       })
