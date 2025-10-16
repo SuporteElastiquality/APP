@@ -4,11 +4,15 @@ import { getClientIP, checkRateLimit, logSecurityEvent } from '@/lib/security'
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('🔍 Iniciando busca de profissionais...')
+    
     const clientIP = getClientIP(request)
+    console.log('📍 IP do cliente:', clientIP)
     
     // Rate limiting para busca
-    const rateLimit = checkRateLimit(clientIP, 'api')
+    const rateLimit = checkRateLimit(clientIP, 'professional_search')
     if (!rateLimit.allowed) {
+      console.log('⏰ Rate limit excedido')
       logSecurityEvent('rate_limit_exceeded', { 
         ip: clientIP, 
         endpoint: 'search_professionals',
@@ -30,95 +34,26 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '12')
 
+    console.log('🔍 Parâmetros de busca:', { service, location, page, limit })
+
     // Validar parâmetros
     if (!service.trim() && !location.trim()) {
+      console.log('❌ Parâmetros inválidos')
       return NextResponse.json(
         { error: 'Serviço ou localização é obrigatório' },
         { status: 400 }
       )
     }
 
-    // Construir query de busca
-    const whereClause: any = {
-      userType: 'PROFESSIONAL',
-      professionalProfile: {
-        isNot: null
-      }
-    }
-
-    // Buscar por especialidade
-    if (service.trim()) {
-      whereClause.professionalProfile = {
-        ...whereClause.professionalProfile,
-        specialties: {
-          contains: service,
-          mode: 'insensitive'
+    // Query simplificada para teste
+    console.log('🔍 Executando query no banco de dados...')
+    const professionals = await prisma.user.findMany({
+      where: {
+        userType: 'PROFESSIONAL',
+        professionalProfile: {
+          isNot: null
         }
-      }
-    }
-
-    // Buscar por localização
-    if (location.trim()) {
-      whereClause.professionalProfile = {
-        ...whereClause.professionalProfile,
-        OR: [
-          { district: { contains: location, mode: 'insensitive' } },
-          { council: { contains: location, mode: 'insensitive' } },
-          { parish: { contains: location, mode: 'insensitive' } }
-        ]
-      }
-    }
-
-    // Buscar profissionais
-    const [professionals, totalCount] = await Promise.all([
-      prisma.user.findMany({
-        where: whereClause,
-        include: {
-          professionalProfile: {
-            select: {
-              specialties: true,
-              experience: true,
-              district: true,
-              council: true,
-              parish: true,
-              rating: true,
-              completedJobs: true,
-              isVerified: true,
-              isPremium: true
-            }
-          }
-        },
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: [
-          {
-            professionalProfile: {
-              isPremium: 'desc'
-            }
-          },
-          {
-            professionalProfile: {
-              isVerified: 'desc'
-            }
-          },
-          {
-            professionalProfile: {
-              rating: 'desc'
-            }
-          },
-          {
-            createdAt: 'desc'
-          }
-        ]
-      }),
-      prisma.user.count({
-        where: whereClause
-      })
-    ])
-
-    // Buscar usuário Elastiquality separadamente para garantir que apareça sempre
-    const elastiqualityUser = await prisma.user.findUnique({
-      where: { email: 'elastiquality@elastiquality.pt' },
+      },
       include: {
         professionalProfile: {
           select: {
@@ -133,23 +68,17 @@ export async function GET(request: NextRequest) {
             isPremium: true
           }
         }
-      }
+      },
+      take: 10 // Limitar para teste
     })
 
-    // Log de busca (sem dados sensíveis)
-    logSecurityEvent('professional_search', { 
-      service: service?.substring(0, 50) || '',
-      location: location?.substring(0, 50) || '',
-      resultsCount: professionals.length,
-      totalCount,
-      ip: clientIP 
-    }, 'low')
+    console.log('✅ Profissionais encontrados:', professionals.length)
 
-    // Preparar lista de profissionais
-    let professionalsList = professionals.map(prof => ({
+    // Preparar lista de profissionais simplificada
+    const professionalsList = professionals.map(prof => ({
       id: prof.id,
       name: prof.name,
-      email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'), // Mascarar email
+      email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'),
       image: prof.image,
       specialties: prof.professionalProfile?.specialties?.split(',').map(s => s.trim()) || [],
       experience: prof.professionalProfile?.experience || '',
@@ -165,44 +94,17 @@ export async function GET(request: NextRequest) {
       isElastiquality: prof.email === 'elastiquality@elastiquality.pt'
     }))
 
-    // Adicionar usuário Elastiquality no topo se existir e não estiver já na lista
-    if (elastiqualityUser && elastiqualityUser.professionalProfile) {
-      const elastiqualityInList = professionalsList.find(p => p.id === elastiqualityUser.id)
-      
-      if (!elastiqualityInList) {
-        const elastiqualityProfile = {
-          id: elastiqualityUser.id,
-          name: elastiqualityUser.name,
-          email: 'Elastiquality***@elastiquality.pt',
-          image: elastiqualityUser.image,
-          specialties: elastiqualityUser.professionalProfile.specialties?.split(',').map(s => s.trim()) || [],
-          experience: elastiqualityUser.professionalProfile.experience || '',
-          location: {
-            district: elastiqualityUser.professionalProfile.district || '',
-            council: elastiqualityUser.professionalProfile.council || '',
-            parish: elastiqualityUser.professionalProfile.parish || ''
-          },
-          rating: elastiqualityUser.professionalProfile.rating || 5.0,
-          completedJobs: elastiqualityUser.professionalProfile.completedJobs || 5000,
-          isVerified: elastiqualityUser.professionalProfile.isVerified || true,
-          isPremium: elastiqualityUser.professionalProfile.isPremium || true,
-          isElastiquality: true
-        }
-        
-        // Adicionar no topo da lista
-        professionalsList = [elastiqualityProfile, ...professionalsList]
-      }
-    }
+    console.log('✅ Lista de profissionais preparada:', professionalsList.length)
 
     return NextResponse.json({
       professionals: professionalsList,
       pagination: {
-        page,
-        limit,
-        total: totalCount + (elastiqualityUser ? 1 : 0),
-        totalPages: Math.ceil((totalCount + (elastiqualityUser ? 1 : 0)) / limit),
-        hasNext: page < Math.ceil((totalCount + (elastiqualityUser ? 1 : 0)) / limit),
-        hasPrev: page > 1
+        page: 1,
+        limit: 10,
+        total: professionalsList.length,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false
       },
       searchParams: {
         service,
@@ -212,13 +114,24 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Search professionals error:', error)
+    console.error('Error details:', {
+      message: (error as Error).message,
+      stack: (error as Error).stack,
+      name: (error as Error).name
+    })
+    
     logSecurityEvent('search_error', { 
       error: (error as Error).message,
-      ip: getClientIP(request) 
+      ip: getClientIP(request),
+      service: searchParams.get('service') || '',
+      location: searchParams.get('location') || ''
     }, 'high')
     
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      { 
+        error: 'Erro interno do servidor',
+        details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+      },
       { status: 500 }
     )
   }
