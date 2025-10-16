@@ -1,7 +1,7 @@
 const fetch = require('node-fetch').default;
 
-async function testGeographicSearch() {
-  console.log('🌍 Testando busca geográfica de profissionais...\n');
+async function testAdministrativeSearch() {
+  console.log('🏛️ Testando busca com ordenação administrativa de profissionais...\n');
 
   const testCases = [
     {
@@ -13,15 +13,15 @@ async function testGeographicSearch() {
       url: 'https://elastiquality.pt/api/search/professionals?service=Eletricidade&location=Lisboa&page=1&limit=12'
     },
     {
-      name: 'Busca geográfica - Lisboa (38.7223, -9.1393)',
-      url: 'https://elastiquality.pt/api/search/professionals?service=Reparações&lat=38.7223&lng=-9.1393&page=1&limit=12'
+      name: 'Busca por serviço "Reparações" em Lisboa',
+      url: 'https://elastiquality.pt/api/search/professionals?service=Reparações&location=Lisboa&page=1&limit=12'
     },
     {
-      name: 'Busca geográfica - Porto (41.1579, -8.6291)',
-      url: 'https://elastiquality.pt/api/search/professionals?service=Reparações&lat=41.1579&lng=-8.6291&page=1&limit=12'
+      name: 'Busca por serviço "Reparações" em Porto',
+      url: 'https://elastiquality.pt/api/search/professionals?service=Reparações&location=Porto&page=1&limit=12'
     },
     {
-      name: 'Busca sem filtros geográficos',
+      name: 'Busca por serviço "Reparações" sem localização específica',
       url: 'https://elastiquality.pt/api/search/professionals?service=Reparações&page=1&limit=12'
     }
   ];
@@ -40,17 +40,13 @@ async function testGeographicSearch() {
         console.log(`   ✅ Sucesso! Profissionais encontrados: ${data.professionals?.length || 0}`);
         console.log(`   📊 Total: ${data.pagination?.total || 0}`);
         console.log(`   📄 Página: ${data.pagination?.page || 1}/${data.pagination?.totalPages || 1}`);
-        console.log(`   🌍 Filtro geográfico: ${data.filters?.hasGeographicFilter ? 'Sim' : 'Não'}`);
-        console.log(`   📏 Raio: ${data.filters?.radiusKm || 'N/A'}km`);
+        console.log(`   🏛️ Ordenação administrativa: ${data.filters?.hasAdministrativeSorting ? 'Sim' : 'Não'}`);
         
         if (data.professionals && data.professionals.length > 0) {
           const prof = data.professionals[0];
           console.log(`   👤 Primeiro profissional: ${prof.name}`);
           console.log(`   🏷️ Categoria: ${prof.category || 'N/A'}`);
-          console.log(`   📍 Localização: ${prof.location.district}, ${prof.location.council}`);
-          if (prof.coordinates?.latitude && prof.coordinates?.longitude) {
-            console.log(`   🗺️ Coordenadas: ${prof.coordinates.latitude}, ${prof.coordinates.longitude}`);
-          }
+          console.log(`   📍 Localização: ${prof.location.parish}, ${prof.location.council}, ${prof.location.district}`);
         }
       } else {
         console.log(`   ❌ Erro: ${data.error || 'Erro desconhecido'}`);
@@ -69,10 +65,10 @@ async function testGeographicSearch() {
     const data = await response.json();
     
     if (response.ok) {
-      console.log(`   ✅ Categorias encontradas: ${data.total}`);
+      console.log(`   ✅ Categorias encontradas: ${data.length}`);
       console.log(`   📋 Primeiras 3 categorias:`);
-      data.categories.slice(0, 3).forEach(cat => {
-        console.log(`      - ${cat.icon} ${cat.name}: ${cat.description}`);
+      data.slice(0, 3).forEach(cat => {
+        console.log(`      - ${cat.name} (${cat.id})`);
       });
     } else {
       console.log(`   ❌ Erro: ${data.error}`);
@@ -84,4 +80,4 @@ async function testGeographicSearch() {
   console.log('\n🏁 Teste concluído!');
 }
 
-testGeographicSearch();
+testAdministrativeSearch();

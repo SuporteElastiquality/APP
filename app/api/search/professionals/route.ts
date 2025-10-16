@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getClientIP, checkRateLimit, logSecurityEvent } from '@/lib/security'
-import { filterProfessionalsByDistance, getCoordinatesFromLocation } from '@/lib/geolocation'
 import { getAllCategories, getCategoryById } from '@/lib/categories'
 
 export async function GET(request: NextRequest) {
@@ -34,8 +33,6 @@ export async function GET(request: NextRequest) {
     const service = searchParams.get('service') || ''
     const location = searchParams.get('location') || ''
     const category = searchParams.get('category') || ''
-    const clientLatitude = searchParams.get('lat') ? parseFloat(searchParams.get('lat')!) : null
-    const clientLongitude = searchParams.get('lng') ? parseFloat(searchParams.get('lng')!) : null
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '12')
 
@@ -43,8 +40,6 @@ export async function GET(request: NextRequest) {
       service, 
       location, 
       category, 
-      clientLatitude, 
-      clientLongitude, 
       page, 
       limit 
     })
@@ -103,8 +98,6 @@ export async function GET(request: NextRequest) {
             district: true,
             council: true,
             parish: true,
-            latitude: true,
-            longitude: true,
             category: true,
             rating: true,
             completedJobs: true,
@@ -119,27 +112,60 @@ export async function GET(request: NextRequest) {
         { professionalProfile: { rating: 'desc' } },
         { createdAt: 'desc' }
       ],
-      take: 50 // Aumentar limite para filtrar por distância depois
+      take: 100 // Aumentar limite para ordenação administrativa
     })
 
     console.log('✅ Profissionais encontrados:', professionals.length)
 
-    // Filtrar por proximidade geográfica se coordenadas do cliente estiverem disponíveis
-    let filteredProfessionals = professionals
-    
-    if (clientLatitude && clientLongitude) {
-      console.log('🌍 Filtrando por proximidade geográfica...')
-      filteredProfessionals = filterProfessionalsByDistance(
-        professionals,
-        clientLatitude,
-        clientLongitude,
-        15 // 15km de raio
-      )
-      console.log(`📍 Profissionais dentro de 15km: ${filteredProfessionals.length}`)
+    // Função para ordenar por proximidade administrativa
+    const sortByAdministrativeProximity = (profs: typeof professionals, searchLocation: string) => {
+      if (!searchLocation.trim()) return profs
+      
+      const locationLower = searchLocation.toLowerCase()
+      
+      return profs.sort((a, b) => {
+        const aProfile = a.professionalProfile
+        const bProfile = b.professionalProfile
+        
+        if (!aProfile || !bProfile) return 0
+        
+        // Prioridade 1: Mesma freguesia
+        const aParish = aProfile.parish?.toLowerCase() || ''
+        const bParish = bProfile.parish?.toLowerCase() || ''
+        const aParishMatch = aParish.includes(locationLower) || locationLower.includes(aParish)
+        const bParishMatch = bParish.includes(locationLower) || locationLower.includes(bParish)
+        
+        if (aParishMatch && !bParishMatch) return -1
+        if (!aParishMatch && bParishMatch) return 1
+        
+        // Prioridade 2: Mesmo conselho
+        const aCouncil = aProfile.council?.toLowerCase() || ''
+        const bCouncil = bProfile.council?.toLowerCase() || ''
+        const aCouncilMatch = aCouncil.includes(locationLower) || locationLower.includes(aCouncil)
+        const bCouncilMatch = bCouncil.includes(locationLower) || locationLower.includes(bCouncil)
+        
+        if (aCouncilMatch && !bCouncilMatch) return -1
+        if (!aCouncilMatch && bCouncilMatch) return 1
+        
+        // Prioridade 3: Mesmo distrito
+        const aDistrict = aProfile.district?.toLowerCase() || ''
+        const bDistrict = bProfile.district?.toLowerCase() || ''
+        const aDistrictMatch = aDistrict.includes(locationLower) || locationLower.includes(aDistrict)
+        const bDistrictMatch = bDistrict.includes(locationLower) || locationLower.includes(bDistrict)
+        
+        if (aDistrictMatch && !bDistrictMatch) return -1
+        if (!aDistrictMatch && bDistrictMatch) return 1
+        
+        return 0
+      })
     }
 
+    // Ordenar por proximidade administrativa
+    const sortedProfessionals = sortByAdministrativeProximity(professionals, location)
+    console.log('📍 Profissionais ordenados por proximidade administrativa')
+
     // Preparar lista de profissionais
-    const professionalsList = filteredProfessionals.map(prof => ({
+    const professionalsList = sortedProfessionals.map(prof => ({
       id: prof.id,
       name: prof.name,
       email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'),
@@ -151,10 +177,6 @@ export async function GET(request: NextRequest) {
         district: prof.professionalProfile?.district || '',
         council: prof.professionalProfile?.council || '',
         parish: prof.professionalProfile?.parish || ''
-      },
-      coordinates: {
-        latitude: prof.professionalProfile?.latitude,
-        longitude: prof.professionalProfile?.longitude
       },
       rating: prof.professionalProfile?.rating || 0,
       completedJobs: prof.professionalProfile?.completedJobs || 0,
@@ -186,8 +208,7 @@ export async function GET(request: NextRequest) {
         category
       },
       filters: {
-        hasGeographicFilter: !!(clientLatitude && clientLongitude),
-        radiusKm: 15,
+        hasAdministrativeSorting: true,
         categories: getAllCategories()
       }
     })
@@ -205,7 +226,8 @@ export async function GET(request: NextRequest) {
       error: (error as Error).message,
       ip: getClientIP(request),
       service: searchParams.get('service') || '',
-      location: searchParams.get('location') || ''
+      location: searchParams.get('location') || '',
+      category: searchParams.get('category') || ''
     }, 'high')
     
     return NextResponse.json(
