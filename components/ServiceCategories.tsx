@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { 
   Wrench, 
   Home, 
@@ -23,88 +23,94 @@ const categories = [
     icon: Wrench,
     services: ['Eletricista', 'Canalizador', 'Carpinteiro', 'Serralheiro'],
     color: 'bg-blue-100 text-blue-600',
-    href: '/services/reparacoes'
+    searchQuery: 'Reparações'
   },
   {
     name: 'Casa e Jardim',
     icon: Home,
     services: ['Limpeza', 'Jardinagem', 'Pintor', 'Decorador'],
     color: 'bg-green-100 text-green-600',
-    href: '/services/casa-jardim'
+    searchQuery: 'Casa e Jardim'
   },
   {
     name: 'Automóvel',
     icon: Car,
     services: ['Mecânico', 'Pintura Auto', 'Vidros', 'Pneus'],
     color: 'bg-gray-100 text-gray-600',
-    href: '/services/automovel'
+    searchQuery: 'Automóvel'
   },
   {
     name: 'Beleza e Bem-estar',
     icon: Scissors,
     services: ['Cabeleireiro', 'Estética', 'Massagem', 'Manicure'],
     color: 'bg-pink-100 text-pink-600',
-    href: '/services/beleza-bem-estar'
+    searchQuery: 'Beleza e Bem-estar'
   },
   {
     name: 'Arte e Design',
     icon: Paintbrush,
     services: ['Design Gráfico', 'Fotógrafo', 'Arte', 'Tatuagem'],
     color: 'bg-purple-100 text-purple-600',
-    href: '/services/arte-design'
+    searchQuery: 'Arte e Design'
   },
   {
     name: 'Jardinagem',
     icon: TreePine,
     services: ['Paisagismo', 'Manutenção', 'Plantas', 'Irrigação'],
     color: 'bg-emerald-100 text-emerald-600',
-    href: '/services/jardinagem'
+    searchQuery: 'Jardinagem'
   },
   {
     name: 'Fotografia',
     icon: Camera,
     services: ['Eventos', 'Retratos', 'Produto', 'Drone'],
     color: 'bg-amber-100 text-amber-600',
-    href: '/services/fotografia'
+    searchQuery: 'Fotografia'
   },
   {
     name: 'Educação',
     icon: GraduationCap,
     services: ['Explicações', 'Formação', 'Idiomas', 'Música'],
     color: 'bg-indigo-100 text-indigo-600',
-    href: '/services/educacao'
+    searchQuery: 'Educação'
   },
   {
     name: 'Saúde',
     icon: Heart,
     services: ['Fisioterapia', 'Nutrição', 'Psicologia', 'Terapias'],
     color: 'bg-red-100 text-red-600',
-    href: '/services/saude'
+    searchQuery: 'Saúde'
   },
   {
     name: 'Desporto',
     icon: Dumbbell,
     services: ['Personal Trainer', 'Yoga', 'Pilates', 'Natação'],
     color: 'bg-orange-100 text-orange-600',
-    href: '/services/desporto'
+    searchQuery: 'Desporto'
   },
   {
     name: 'Entretenimento',
     icon: Music,
     services: ['DJ', 'Animação', 'Música', 'Eventos'],
     color: 'bg-yellow-100 text-yellow-600',
-    href: '/services/entretenimento'
+    searchQuery: 'Entretenimento'
   },
   {
     name: 'Gastronomia',
     icon: Utensils,
     services: ['Catering', 'Chef', 'Pastelaria', 'Sommelier'],
     color: 'bg-rose-100 text-rose-600',
-    href: '/services/gastronomia'
+    searchQuery: 'Gastronomia'
   }
 ]
 
 export default function ServiceCategories() {
+  const router = useRouter()
+
+  const handleCategoryClick = (searchQuery: string) => {
+    router.push(`/search?service=${encodeURIComponent(searchQuery)}`)
+  }
+
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -122,10 +128,10 @@ export default function ServiceCategories() {
           {categories.map((category) => {
             const IconComponent = category.icon
             return (
-              <Link
+              <button
                 key={category.name}
-                href={category.href}
-                className="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-primary-300 transition-all duration-200"
+                onClick={() => handleCategoryClick(category.searchQuery)}
+                className="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-primary-300 transition-all duration-200 w-full text-left"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className={`p-3 rounded-lg ${category.color}`}>
@@ -150,19 +156,19 @@ export default function ServiceCategories() {
                     </p>
                   )}
                 </div>
-              </Link>
+              </button>
             )
           })}
         </div>
 
         <div className="text-center mt-12">
-          <Link
-            href="/services"
+          <button
+            onClick={() => router.push('/search')}
             className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
           >
             Ver Todos os Serviços
             <ChevronRight className="w-5 h-5 ml-2" />
-          </Link>
+          </button>
         </div>
       </div>
     </section>
