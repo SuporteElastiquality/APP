@@ -264,9 +264,13 @@ export default function ProfessionalProfilePage() {
                   <div className="flex items-center">
                     <span className="text-yellow-400">★</span>
                     <span className="ml-1">{profile?.rating || 0}/5</span>
-                    <span className="ml-2 text-green-100">({profile?.totalReviews || 0} avaliações)</span>
+                    {profile?.totalReviews > 0 && (
+                      <span className="ml-2 text-green-100">({profile.totalReviews} avaliações)</span>
+                    )}
                   </div>
-                  <p className="text-green-100">Profissional desde {new Date(profile?.createdAt || '').getFullYear()}</p>
+                  <p className="text-green-100">
+                    {profile?.createdAt ? `Profissional desde ${new Date(profile.createdAt).getFullYear()}` : 'Novo profissional'}
+                  </p>
                 </div>
               </div>
               <div className="text-right">
@@ -422,19 +426,19 @@ export default function ProfessionalProfilePage() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Nome Completo
                       </label>
-                      <p className="text-gray-900">{profile?.name}</p>
+                      <p className="text-gray-900">{profile?.name || 'Não informado'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Email
                       </label>
-                      <p className="text-gray-900">{profile?.email}</p>
+                      <p className="text-gray-900">{profile?.email || 'Não informado'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Telefone
                       </label>
-                      <p className="text-gray-900">{profile?.phone}</p>
+                      <p className="text-gray-900">{profile?.phone || 'Não informado'}</p>
                     </div>
                   </div>
                   <div className="space-y-4">
@@ -442,19 +446,19 @@ export default function ProfessionalProfilePage() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Distrito
                       </label>
-                      <p className="text-gray-900">{profile?.district}</p>
+                      <p className="text-gray-900">{profile?.district || 'Não informado'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Conselho
                       </label>
-                      <p className="text-gray-900">{profile?.council}</p>
+                      <p className="text-gray-900">{profile?.council || 'Não informado'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Freguesia
                       </label>
-                      <p className="text-gray-900">{profile?.parish}</p>
+                      <p className="text-gray-900">{profile?.parish || 'Não informado'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -476,14 +480,18 @@ export default function ProfessionalProfilePage() {
                     Especialidades
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {profile?.specialties.map((specialty) => (
-                      <span
-                        key={specialty}
-                        className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
-                      >
-                        {specialty}
-                      </span>
-                    ))}
+                    {profile?.specialties && profile.specialties.length > 0 ? (
+                      profile.specialties.map((specialty) => (
+                        <span
+                          key={specialty}
+                          className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
+                        >
+                          {specialty}
+                        </span>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 italic">Nenhuma especialidade informada</p>
+                    )}
                   </div>
                 </div>
 
@@ -491,7 +499,7 @@ export default function ProfessionalProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Experiência
                   </label>
-                  <p className="text-gray-900">{profile?.experience}</p>
+                  <p className="text-gray-900">{profile?.experience || 'Não informado'}</p>
                 </div>
               </div>
             )}
