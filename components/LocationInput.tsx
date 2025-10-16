@@ -171,11 +171,6 @@ export default function LocationInput({
                     <p className="text-xs text-gray-500 truncate">
                       {location.address?.city || location.address?.town || ''}
                     </p>
-                    {location.address && (
-                      <p className="text-xs text-gray-400 truncate">
-                        {location.address}
-                      </p>
-                    )}
                   </div>
                 </div>
               </button>
