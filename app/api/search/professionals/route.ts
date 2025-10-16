@@ -120,6 +120,7 @@ export async function GET(request: NextRequest) {
       name: (error as Error).name
     })
     
+    const { searchParams } = new URL(request.url)
     logSecurityEvent('search_error', { 
       error: (error as Error).message,
       ip: getClientIP(request),
