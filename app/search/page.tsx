@@ -42,7 +42,15 @@ interface SearchResults {
   searchParams: {
     service: string
     location: string
+    category: string
   }
+}
+
+interface Category {
+  id: string
+  name: string
+  description: string
+  icon: string
 }
 
 export default function SearchPage() {
@@ -51,24 +59,42 @@ export default function SearchPage() {
   
   const [searchQuery, setSearchQuery] = useState('')
   const [location, setLocation] = useState('')
+  const [category, setCategory] = useState('')
   const [locationData, setLocationData] = useState<LocationData | null>(null)
   const [results, setResults] = useState<SearchResults | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [categories, setCategories] = useState<Category[]>([])
+
+  // Carregar categorias
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        const data = await response.json()
+        setCategories(data)
+      } catch (error) {
+        console.error('Error loading categories:', error)
+      }
+    }
+    loadCategories()
+  }, [])
 
   // Carregar parâmetros da URL
   useEffect(() => {
     const service = searchParams.get('service') || ''
     const loc = searchParams.get('location') || ''
+    const cat = searchParams.get('category') || ''
     const page = searchParams.get('page') || '1'
     
     setSearchQuery(service)
     setLocation(loc)
+    setCategory(cat)
     setCurrentPage(parseInt(page))
     
-    if (service || loc) {
-      performSearch(service, loc, parseInt(page))
+    if (service || loc || cat) {
+      performSearch(service, loc, parseInt(page), cat)
     }
   }, [searchParams])
 
@@ -84,8 +110,8 @@ export default function SearchPage() {
     setLocation(locationString)
   }
 
-  const performSearch = async (service: string, loc: string, page: number = 1) => {
-    if (!service.trim() && !loc.trim()) return
+  const performSearch = async (service: string, loc: string, page: number = 1, cat: string = '') => {
+    if (!service.trim() && !loc.trim() && !cat.trim()) return
 
     setLoading(true)
     setError('')
@@ -94,6 +120,7 @@ export default function SearchPage() {
       const params = new URLSearchParams({
         service,
         location: loc,
+        category: cat,
         page: page.toString(),
         limit: '12'
       })
@@ -120,6 +147,7 @@ export default function SearchPage() {
     const newUrl = new URL(window.location.href)
     newUrl.searchParams.set('service', searchQuery)
     newUrl.searchParams.set('location', location)
+    newUrl.searchParams.set('category', category)
     newUrl.searchParams.set('page', '1')
     router.push(newUrl.pathname + newUrl.search)
   }
@@ -143,7 +171,7 @@ export default function SearchPage() {
         {/* Search Header */}
         <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
           <form onSubmit={handleSearch} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -153,6 +181,21 @@ export default function SearchPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-gray-900"
                 />
+              </div>
+              
+              <div className="relative">
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-gray-900 bg-white"
+                >
+                  <option value="">Todas as categorias</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.icon} {cat.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               
               <LocationInput
@@ -174,11 +217,19 @@ export default function SearchPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                {results.searchParams.service && results.searchParams.location
+                {results.searchParams.service && results.searchParams.location && results.searchParams.category
+                  ? `Profissionais de ${results.searchParams.service} em ${results.searchParams.location} - ${categories.find(c => c.id === results.searchParams.category)?.name || results.searchParams.category}`
+                  : results.searchParams.service && results.searchParams.location
                   ? `Profissionais de ${results.searchParams.service} em ${results.searchParams.location}`
+                  : results.searchParams.service && results.searchParams.category
+                  ? `Profissionais de ${results.searchParams.service} - ${categories.find(c => c.id === results.searchParams.category)?.name || results.searchParams.category}`
                   : results.searchParams.service
                   ? `Profissionais de ${results.searchParams.service}`
-                  : `Profissionais em ${results.searchParams.location}`
+                  : results.searchParams.location
+                  ? `Profissionais em ${results.searchParams.location}`
+                  : results.searchParams.category
+                  ? `Profissionais - ${categories.find(c => c.id === results.searchParams.category)?.name || results.searchParams.category}`
+                  : 'Todos os profissionais'
                 }
               </h1>
               <p className="text-gray-600 mt-1">
@@ -227,7 +278,20 @@ export default function SearchPage() {
                 Nenhum profissional encontrado
               </h3>
               <p className="text-gray-600 mb-6">
-                Não encontramos profissionais para "{results.searchParams.service}" em "{results.searchParams.location}".
+                {results.searchParams.service && results.searchParams.location && results.searchParams.category
+                  ? `Não encontramos profissionais para "${results.searchParams.service}" em "${results.searchParams.location}" na categoria "${categories.find(c => c.id === results.searchParams.category)?.name || results.searchParams.category}".`
+                  : results.searchParams.service && results.searchParams.location
+                  ? `Não encontramos profissionais para "${results.searchParams.service}" em "${results.searchParams.location}".`
+                  : results.searchParams.service && results.searchParams.category
+                  ? `Não encontramos profissionais para "${results.searchParams.service}" na categoria "${categories.find(c => c.id === results.searchParams.category)?.name || results.searchParams.category}".`
+                  : results.searchParams.service
+                  ? `Não encontramos profissionais para "${results.searchParams.service}".`
+                  : results.searchParams.location
+                  ? `Não encontramos profissionais em "${results.searchParams.location}".`
+                  : results.searchParams.category
+                  ? `Não encontramos profissionais na categoria "${categories.find(c => c.id === results.searchParams.category)?.name || results.searchParams.category}".`
+                  : 'Não encontramos profissionais.'
+                }
                 <br />
                 Tente ajustar sua busca ou expandir a área de pesquisa.
               </p>
@@ -242,11 +306,28 @@ export default function SearchPage() {
                     onClick={() => {
                       setSearchQuery(service)
                       setLocation('')
-                      performSearch(service, '', 1)
+                      setCategory('')
+                      performSearch(service, '', 1, '')
                     }}
                     className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-4 py-2 rounded-lg text-sm transition-colors"
                   >
                     {service}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap justify-center gap-2">
+                {categories.slice(0, 6).map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setSearchQuery('')
+                      setLocation('')
+                      setCategory(cat.id)
+                      performSearch('', '', 1, cat.id)
+                    }}
+                    className="bg-gray-50 hover:bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm transition-colors"
+                  >
+                    {cat.icon} {cat.name}
                   </button>
                 ))}
               </div>
