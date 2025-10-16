@@ -264,8 +264,8 @@ export default function ProfessionalProfilePage() {
                   <div className="flex items-center">
                     <span className="text-yellow-400">★</span>
                     <span className="ml-1">{profile?.rating || 0}/5</span>
-                    {profile?.totalReviews > 0 && (
-                      <span className="ml-2 text-green-100">({profile.totalReviews} avaliações)</span>
+                    {(profile?.totalReviews || 0) > 0 && (
+                      <span className="ml-2 text-green-100">({profile?.totalReviews} avaliações)</span>
                     )}
                   </div>
                   <p className="text-green-100">
