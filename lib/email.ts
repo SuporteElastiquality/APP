@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export async function sendWelcomeEmail(email: string, name: string) {
   try {
     await resend.emails.send({
-      from: 'Elastiquality <noreply@elastiquality.vercel.app>',
+      from: 'Elastiquality <onboarding@resend.dev>',
       to: [email],
       subject: 'Bem-vindo ao Elastiquality! 🎉',
       html: `
@@ -104,7 +104,7 @@ export async function sendPasswordResetEmail(email: string, name: string, resetT
     const resetUrl = `${process.env.NEXTAUTH_URL || 'https://appelastiquality.vercel.app'}/auth/reset-password?token=${resetToken}`
     
     await resend.emails.send({
-      from: 'Elastiquality <noreply@elastiquality.vercel.app>',
+      from: 'Elastiquality <onboarding@resend.dev>',
       to: [email],
       subject: 'Recuperação de senha - Elastiquality 🔐',
       html: `
