@@ -1,5 +1,4 @@
-import { Star, Quote } from 'lucide-react'
-import Image from 'next/image'
+import { Star, Quote, User } from 'lucide-react'
 
 const testimonials = [
   {
@@ -8,7 +7,7 @@ const testimonials = [
     service: 'Eletricista',
     rating: 5,
     comment: 'Excelente serviço! O profissional foi pontual, competente e resolveu o problema rapidamente. Recomendo!',
-    avatar: '/api/placeholder/64/64'
+    avatar: null
   },
   {
     name: 'João Santos',
@@ -16,7 +15,7 @@ const testimonials = [
     service: 'Canalizador',
     rating: 5,
     comment: 'Muito satisfeito com o trabalho realizado. Preço justo e qualidade excelente. Voltarei a usar o serviço.',
-    avatar: '/api/placeholder/64/64'
+    avatar: null
   },
   {
     name: 'Ana Costa',
@@ -24,7 +23,7 @@ const testimonials = [
     service: 'Limpeza',
     rating: 5,
     comment: 'Profissional muito dedicada e atenciosa. Deixou a casa impecável. Super recomendo!',
-    avatar: '/api/placeholder/64/64'
+    avatar: null
   },
   {
     name: 'Pedro Almeida',
@@ -32,7 +31,7 @@ const testimonials = [
     service: 'Jardinagem',
     rating: 5,
     comment: 'Trabalho fantástico! O jardim ficou lindo e o profissional foi muito cuidadoso com as plantas.',
-    avatar: '/api/placeholder/64/64'
+    avatar: null
   },
   {
     name: 'Carla Mendes',
@@ -40,7 +39,7 @@ const testimonials = [
     service: 'Pintor',
     rating: 5,
     comment: 'Resultado final excedeu as minhas expectativas. Muito profissional e detalhista.',
-    avatar: '/api/placeholder/64/64'
+    avatar: null
   },
   {
     name: 'Ricardo Pereira',
@@ -48,7 +47,7 @@ const testimonials = [
     service: 'Carpinteiro',
     rating: 5,
     comment: 'Serviço de qualidade superior. O móvel ficou exatamente como pedi. Muito obrigado!',
-    avatar: '/api/placeholder/64/64'
+    avatar: null
   }
 ]
 
@@ -86,13 +85,15 @@ export default function Testimonials() {
               
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mr-4">
-                  <Image
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
+                  {testimonial.avatar ? (
+                    <img
+                      src={testimonial.avatar}
+                      alt={testimonial.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-6 h-6 text-primary-600" />
+                  )}
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>

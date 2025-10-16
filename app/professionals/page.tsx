@@ -15,7 +15,7 @@ const professionals = [
     price: '€35/hora',
     verified: true,
     specialties: ['Instalações elétricas', 'Reparações', 'Automação'],
-    image: '/api/placeholder/100/100',
+    image: null,
     description: 'Eletricista certificado com vasta experiência em instalações residenciais e comerciais.'
   },
   {
@@ -29,7 +29,7 @@ const professionals = [
     price: '€40/hora',
     verified: true,
     specialties: ['Reparações urgentes', 'Instalações', 'Aquecimento'],
-    image: '/api/placeholder/100/100',
+    image: null,
     description: 'Canalizadora experiente, especializada em reparações urgentes e instalações modernas.'
   },
   {
@@ -43,7 +43,7 @@ const professionals = [
     price: '€25/hora',
     verified: true,
     specialties: ['Interiores', 'Exteriores', 'Decoração'],
-    image: '/api/placeholder/100/100',
+    image: null,
     description: 'Pintor profissional com especialização em técnicas modernas de pintura decorativa.'
   },
   {
@@ -57,7 +57,7 @@ const professionals = [
     price: '€18/hora',
     verified: true,
     specialties: ['Limpeza doméstica', 'Escritórios', 'Pós-obra'],
-    image: '/api/placeholder/100/100',
+    image: null,
     description: 'Especialista em limpeza com foco na qualidade e atenção aos detalhes.'
   },
   {
@@ -71,7 +71,7 @@ const professionals = [
     price: '€22/hora',
     verified: true,
     specialties: ['Paisagismo', 'Manutenção', 'Plantas'],
-    image: '/api/placeholder/100/100',
+    image: null,
     description: 'Jardineiro apaixonado pela natureza, especializado em paisagismo e manutenção de jardins.'
   },
   {
@@ -85,7 +85,7 @@ const professionals = [
     price: '€45/hora',
     verified: true,
     specialties: ['Manutenção', 'Diagnóstico', 'Elétrica automóvel'],
-    image: '/api/placeholder/100/100',
+    image: null,
     description: 'Mecânica especializada em manutenção preventiva e reparações de veículos modernos.'
   }
 ]

@@ -56,25 +56,25 @@ const team = [
     name: 'João Silva',
     role: 'CEO & Fundador',
     description: 'Mais de 15 anos de experiência em tecnologia e mercado de serviços.',
-    image: '/api/placeholder/150/150'
+    image: null
   },
   {
     name: 'Maria Santos',
     role: 'CTO',
     description: 'Especialista em desenvolvimento de plataformas digitais e experiência do usuário.',
-    image: '/api/placeholder/150/150'
+    image: null
   },
   {
     name: 'Pedro Costa',
     role: 'Diretor de Operações',
     description: 'Responsável pela qualidade dos serviços e satisfação dos clientes.',
-    image: '/api/placeholder/150/150'
+    image: null
   },
   {
     name: 'Ana Rodrigues',
     role: 'Diretora de Marketing',
     description: 'Especialista em comunicação e crescimento de comunidades online.',
-    image: '/api/placeholder/150/150'
+    image: null
   }
 ]
 

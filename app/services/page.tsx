@@ -12,7 +12,7 @@ const services = [
     price: '€25-50/hora',
     rating: 4.8,
     reviews: 156,
-    image: '/api/placeholder/300/200'
+    image: null
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ const services = [
     price: '€30-60/hora',
     rating: 4.9,
     reviews: 203,
-    image: '/api/placeholder/300/200'
+    image: null
   },
   {
     id: 3,
@@ -32,7 +32,7 @@ const services = [
     price: '€15-25/hora',
     rating: 4.7,
     reviews: 89,
-    image: '/api/placeholder/300/200'
+    image: null
   },
   {
     id: 4,
@@ -42,7 +42,7 @@ const services = [
     price: '€20-35/hora',
     rating: 4.8,
     reviews: 124,
-    image: '/api/placeholder/300/200'
+    image: null
   },
   {
     id: 5,
@@ -52,7 +52,7 @@ const services = [
     price: '€18-30/hora',
     rating: 4.6,
     reviews: 97,
-    image: '/api/placeholder/300/200'
+    image: null
   },
   {
     id: 6,
@@ -62,7 +62,7 @@ const services = [
     price: '€35-70/hora',
     rating: 4.9,
     reviews: 178,
-    image: '/api/placeholder/300/200'
+    image: null
   }
 ]
 
