@@ -48,6 +48,8 @@ export async function POST(request: NextRequest) {
       district,
       council,
       parish,
+      address,
+      postalCode,
       specialties,
       experience
     } = validation.data!
