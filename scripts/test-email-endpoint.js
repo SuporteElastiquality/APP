@@ -5,7 +5,7 @@ function makeRequest(email) {
     const data = JSON.stringify({ email })
     
     const options = {
-      hostname: 'appelastiquality-ei5dlusei-suporte-elastiquality.vercel.app',
+      hostname: 'appelastiquality-29umlct4v-suporte-elastiquality.vercel.app',
       port: 443,
       path: '/api/test-email',
       method: 'POST',
