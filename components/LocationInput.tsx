@@ -82,7 +82,12 @@ export default function LocationInput({
 
   // Selecionar sugestão
   const handleSuggestionSelect = (location: LocationData) => {
-    const locationString = `${location.parish}, ${location.council}, ${location.district}`
+    // Extrair informações de localização do endereço
+    const address = location.address || {}
+    const district = address.state || address.county || ''
+    const council = address.city || address.town || address.village || ''
+    const parish = address.village || address.town || ''
+    const locationString = `${parish}, ${council}, ${district}`
     onChange(locationString)
     onLocationSelect(location)
     setShowSuggestions(false)
