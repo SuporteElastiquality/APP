@@ -81,17 +81,14 @@ export async function GET(request: NextRequest) {
               district: true,
               council: true,
               parish: true,
-              rating: true,
-              completedJobs: true
+              rating: true
             }
           }
         },
         skip: (page - 1) * limit,
         take: limit,
         orderBy: {
-          professionalProfile: {
-            rating: 'desc'
-          }
+          createdAt: 'desc'
         }
       }),
       prisma.user.count({
@@ -122,7 +119,7 @@ export async function GET(request: NextRequest) {
           parish: prof.professionalProfile?.parish || ''
         },
         rating: prof.professionalProfile?.rating || 0,
-        completedJobs: prof.professionalProfile?.completedJobs || 0
+        completedJobs: 0 // Campo temporário até o banco ser atualizado
       })),
       pagination: {
         page,
