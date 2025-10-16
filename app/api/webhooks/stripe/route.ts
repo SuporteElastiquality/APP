@@ -43,19 +43,21 @@ export async function POST(request: NextRequest) {
           },
         })
 
-        if (transaction) {
-          // Calcular moedas baseado no valor (exemplo: 1 EUR = 10 moedas)
-          const coinsAmount = Math.round(transaction.amount * 10)
+        if (transaction && paymentIntent.metadata?.coins) {
+          // Usar quantidade de moedas do metadata
+          const coinsAmount = parseInt(paymentIntent.metadata.coins)
           
           await prisma.coin.create({
             data: {
               userId: transaction.userId,
               amount: coinsAmount,
               type: 'CREDIT',
-              description: `Compra de ${coinsAmount} moedas Elastiquality`,
+              description: `Compra de ${coinsAmount} moedas - Pacote ${paymentIntent.metadata.packageId}`,
               source: 'stripe_payment',
             },
           })
+
+          console.log(`✅ Moedas creditadas: ${coinsAmount} para usuário ${transaction.userId}`)
         }
 
         break

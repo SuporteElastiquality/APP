@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, User, LogOut, Settings, MessageCircle } from 'lucide-react'
+import { Menu, X, User, LogOut, Settings, MessageCircle, Coins } from 'lucide-react'
 import Image from 'next/image'
 
 export default function Header() {
@@ -90,6 +90,15 @@ export default function Header() {
                       <MessageCircle className="w-4 h-4 mr-3" />
                       Mensagens
                     </Link>
+                    {session.user.userType === 'PROFESSIONAL' && (
+                      <Link
+                        href="/moedas"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <Coins className="w-4 h-4 mr-3" />
+                        Moedas
+                      </Link>
+                    )}
                     <Link
                       href={session.user.userType === 'CLIENT' ? '/profile/client/settings' : '/profile/professional/settings'}
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
