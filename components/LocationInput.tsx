@@ -166,10 +166,10 @@ export default function LocationInput({
                   <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
-                      {location.parish}, {location.council}
+                      {location.display_name}
                     </p>
                     <p className="text-xs text-gray-500 truncate">
-                      {location.district}
+                      {location.address?.city || location.address?.town || ''}
                     </p>
                     {location.address && (
                       <p className="text-xs text-gray-400 truncate">
