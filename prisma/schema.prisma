@@ -108,6 +108,7 @@ model ProfessionalProfile {
   bio         String?  // Biografia
   rating      Float    @default(0) // Rating médio
   totalReviews Int     @default(0) // Total de avaliações
+  completedJobs Int    @default(0) // Trabalhos concluídos
   
   // Status
   isVerified  Boolean  @default(false) // Profissional verificado
