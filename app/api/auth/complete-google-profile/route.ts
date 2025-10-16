@@ -11,7 +11,7 @@ const completeProfileSchema = z.object({
   district: z.string().min(1, 'Distrito é obrigatório'),
   council: z.string().min(1, 'Conselho é obrigatório'),
   parish: z.string().min(1, 'Freguesia é obrigatória'),
-  address: z.string().optional(),
+  morada: z.string().optional(),
   postalCode: z.string().optional(),
   specialties: z.string().optional(),
   experience: z.string().optional(),
@@ -95,8 +95,8 @@ export async function POST(request: NextRequest) {
           district: data.district,
           council: data.council,
           parish: data.parish,
-          address: data.address,
-          postalCode: data.postalCode,
+          morada: data.address || '',
+          postalCode: data.postalCode || '',
         }
       })
     } else {
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
           district: data.district,
           council: data.council,
           parish: data.parish,
-          address: data.address,
+          morada: data.morada || '',
           postalCode: data.postalCode,
           specialties: data.specialties!.split(',').map(s => s.trim()).join(','),
           experience: data.experience!,

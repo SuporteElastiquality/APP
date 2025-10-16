@@ -23,7 +23,7 @@ export default function GoogleSignUp() {
     district: '',
     council: '',
     parish: '',
-    address: '',
+    morada: '',
     postalCode: '',
     specialties: '',
     experience: '',
@@ -275,8 +275,8 @@ export default function GoogleSignUp() {
               <Input
                 label="Endereço (opcional)"
                 type="text"
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                value={formData.morada}
+                onChange={(e) => setFormData({ ...formData, morada: e.target.value })}
                 placeholder="Rua, número, andar"
               />
 
