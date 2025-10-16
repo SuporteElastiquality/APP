@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Button from '@/components/Button'
 import Input from '@/components/Input'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 interface ClientProfile {
   id: string
@@ -17,6 +19,11 @@ interface ClientProfile {
   parish: string
   postalCode?: string
   createdAt: string
+  stats: {
+    totalRequests: number
+    completedRequests: number
+    averageRating: number
+  }
 }
 
 export default function ClientProfilePage() {
@@ -48,27 +55,38 @@ export default function ClientProfilePage() {
 
   const loadClientProfile = async () => {
     try {
-      // Simular carregamento de dados
-      setProfile({
-        id: '1',
-        name: session?.user?.name || 'Nome do Cliente',
-        email: session?.user?.email || 'cliente@exemplo.com',
-        phone: '912345678',
-        district: 'Lisboa',
-        council: 'Lisboa',
-        parish: 'Campolide',
-        postalCode: '1000-001',
-        createdAt: '2024-01-01'
-      })
-      
-      setFormData({
-        name: session?.user?.name || '',
-        phone: '912345678',
-        district: 'Lisboa',
-        council: 'Lisboa',
-        parish: 'Campolide',
-        postalCode: '1000-001'
-      })
+      const response = await fetch('/api/profile/client')
+      if (response.ok) {
+        const data = await response.json()
+        setProfile(data)
+        setFormData({
+          name: data.name,
+          phone: data.phone,
+          district: data.district,
+          council: data.council,
+          parish: data.parish,
+          postalCode: data.postalCode || ''
+        })
+      } else {
+        console.error('Erro ao carregar perfil:', response.statusText)
+        // Fallback para dados básicos
+        setProfile({
+          id: session?.user?.id || '1',
+          name: session?.user?.name || 'Nome do Cliente',
+          email: session?.user?.email || 'cliente@exemplo.com',
+          phone: '',
+          district: '',
+          council: '',
+          parish: '',
+          postalCode: '',
+          createdAt: new Date().toISOString(),
+          stats: {
+            totalRequests: 0,
+            completedRequests: 0,
+            averageRating: 0
+          }
+        })
+      }
     } catch (error) {
       console.error('Erro ao carregar perfil:', error)
     } finally {
@@ -78,18 +96,26 @@ export default function ClientProfilePage() {
 
   const handleSave = async () => {
     try {
-      // Aqui seria a chamada para a API para salvar
-      console.log('Salvando perfil:', formData)
-      setEditing(false)
-      // Atualizar o perfil local
-      if (profile) {
-        setProfile({
-          ...profile,
-          ...formData
-        })
+      const response = await fetch('/api/profile/client', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      if (response.ok) {
+        setEditing(false)
+        // Recarregar perfil atualizado
+        await loadClientProfile()
+      } else {
+        const errorData = await response.json()
+        console.error('Erro ao salvar perfil:', errorData)
+        alert('Erro ao salvar perfil. Tente novamente.')
       }
     } catch (error) {
       console.error('Erro ao salvar perfil:', error)
+      alert('Erro ao salvar perfil. Tente novamente.')
     }
   }
 
@@ -105,8 +131,10 @@ export default function ClientProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="py-8">
+        <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {/* Header */}
           <div className="bg-blue-600 px-6 py-8 text-white">
@@ -241,21 +269,23 @@ export default function ClientProfilePage() {
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Solicitações</h3>
-            <p className="text-3xl font-bold text-blue-600">12</p>
+            <p className="text-3xl font-bold text-blue-600">{profile?.stats.totalRequests || 0}</p>
             <p className="text-sm text-gray-600">Total de serviços solicitados</p>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Concluídos</h3>
-            <p className="text-3xl font-bold text-green-600">8</p>
+            <p className="text-3xl font-bold text-green-600">{profile?.stats.completedRequests || 0}</p>
             <p className="text-sm text-gray-600">Serviços finalizados</p>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Avaliação</h3>
-            <p className="text-3xl font-bold text-yellow-600">4.8</p>
+            <p className="text-3xl font-bold text-yellow-600">{profile?.stats.averageRating || 0}</p>
             <p className="text-sm text-gray-600">Média das avaliações</p>
           </div>
         </div>
+        </div>
       </div>
+      <Footer />
     </div>
   )
 }
