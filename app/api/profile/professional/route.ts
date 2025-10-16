@@ -42,32 +42,12 @@ export async function GET() {
     }
 
     // Calcular estatísticas do profissional
-    const totalJobs = await prisma.serviceRequest.count({
-      where: {
-        professionalId: user.id,
-        status: { in: ['IN_PROGRESS', 'COMPLETED'] }
-      }
-    })
+    // Por enquanto, usar dados do perfil profissional
+    const totalJobs = user.professionalProfile?.completedJobs || 0
+    const completedJobs = user.professionalProfile?.completedJobs || 0
+    const reviews = [] // Por enquanto, sem reviews
 
-    const completedJobs = await prisma.serviceRequest.count({
-      where: {
-        professionalId: user.id,
-        status: 'COMPLETED'
-      }
-    })
-
-    const reviews = await prisma.review.findMany({
-      where: {
-        professionalId: user.id
-      },
-      select: {
-        rating: true
-      }
-    })
-
-    const averageRating = reviews.length > 0 
-      ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length 
-      : 0
+    const averageRating = user.professionalProfile?.rating || 0
 
     const profile = {
       id: user.id,
@@ -83,7 +63,7 @@ export async function GET() {
       experience: user.professionalProfile?.experience || '',
       bio: user.professionalProfile?.bio || '',
       rating: Math.round(averageRating * 10) / 10,
-      totalReviews: reviews.length,
+      totalReviews: user.professionalProfile?.totalReviews || 0,
       totalJobs,
       completedJobs,
       createdAt: user.createdAt.toISOString()
