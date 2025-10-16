@@ -60,9 +60,17 @@ export default function LocationInput({
     try {
       const location = await getCurrentLocation()
       if (location) {
-        const locationString = `${location.parish}, ${location.council}, ${location.district}`
+        // getCurrentLocation retorna apenas {latitude, longitude}
+        // Vamos usar as coordenadas para buscar o endereço
+        const locationString = `Lat: ${location.latitude.toFixed(4)}, Lng: ${location.longitude.toFixed(4)}`
         onChange(locationString)
-        onLocationSelect(location)
+        // Criar um LocationData básico para compatibilidade
+        const locationData: LocationData = {
+          display_name: locationString,
+          lat: location.latitude.toString(),
+          lon: location.longitude.toString()
+        }
+        onLocationSelect(locationData)
         setShowSuggestions(false)
       }
     } catch (error) {
