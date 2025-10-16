@@ -17,7 +17,8 @@ interface ClientProfile {
   district: string
   council: string
   parish: string
-  postalCode?: string
+  morada: string
+  postalCode: string
   createdAt: string
   stats: {
     totalRequests: number
@@ -37,8 +38,11 @@ export default function ClientProfilePage() {
     district: '',
     council: '',
     parish: '',
+    morada: '',
     postalCode: ''
   })
+  const [errors, setErrors] = useState<{[key: string]: string}>({})
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -65,6 +69,7 @@ export default function ClientProfilePage() {
           district: data.district,
           council: data.council,
           parish: data.parish,
+          morada: data.morada || '',
           postalCode: data.postalCode || ''
         })
       } else {
@@ -78,6 +83,7 @@ export default function ClientProfilePage() {
           district: '',
           council: '',
           parish: '',
+          morada: '',
           postalCode: '',
           createdAt: new Date().toISOString(),
           stats: {
@@ -94,7 +100,55 @@ export default function ClientProfilePage() {
     }
   }
 
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {}
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Nome é obrigatório'
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Nome deve ter pelo menos 2 caracteres'
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Telefone é obrigatório'
+    } else if (!/^9\d{8}$/.test(formData.phone)) {
+      newErrors.phone = 'Telefone deve ter 9 dígitos começando com 9'
+    }
+
+    if (!formData.district.trim()) {
+      newErrors.district = 'Distrito é obrigatório'
+    }
+
+    if (!formData.council.trim()) {
+      newErrors.council = 'Conselho é obrigatório'
+    }
+
+    if (!formData.parish.trim()) {
+      newErrors.parish = 'Freguesia é obrigatória'
+    }
+
+    if (!formData.morada.trim()) {
+      newErrors.morada = 'Morada é obrigatória'
+    } else if (formData.morada.trim().length < 5) {
+      newErrors.morada = 'Morada deve ter pelo menos 5 caracteres'
+    }
+
+    if (!formData.postalCode.trim()) {
+      newErrors.postalCode = 'Código postal é obrigatório'
+    } else if (!/^\d{4}-\d{3}$/.test(formData.postalCode)) {
+      newErrors.postalCode = 'Código postal deve estar no formato 0000-000'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleSave = async () => {
+    if (!validateForm()) {
+      return
+    }
+
+    setSaving(true)
     try {
       const response = await fetch('/api/profile/client', {
         method: 'PUT',
@@ -106,16 +160,24 @@ export default function ClientProfilePage() {
 
       if (response.ok) {
         setEditing(false)
+        setErrors({})
         // Recarregar perfil atualizado
         await loadClientProfile()
+        alert('Perfil atualizado com sucesso!')
       } else {
         const errorData = await response.json()
         console.error('Erro ao salvar perfil:', errorData)
-        alert('Erro ao salvar perfil. Tente novamente.')
+        if (errorData.details) {
+          setErrors(errorData.details.fieldErrors || {})
+        } else {
+          alert('Erro ao salvar perfil. Tente novamente.')
+        }
       }
     } catch (error) {
       console.error('Erro ao salvar perfil:', error)
       alert('Erro ao salvar perfil. Tente novamente.')
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -165,100 +227,158 @@ export default function ClientProfilePage() {
             </div>
 
             {editing ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input
-                  label="Nome Completo"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                />
-                <Input
-                  label="Telefone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="912345678"
-                  required
-                />
-                <Input
-                  label="Distrito"
-                  value={formData.district}
-                  onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                  required
-                />
-                <Input
-                  label="Conselho"
-                  value={formData.council}
-                  onChange={(e) => setFormData({ ...formData, council: e.target.value })}
-                  required
-                />
-                <Input
-                  label="Freguesia"
-                  value={formData.parish}
-                  onChange={(e) => setFormData({ ...formData, parish: e.target.value })}
-                  required
-                />
-                <Input
-                  label="Código Postal"
-                  value={formData.postalCode}
-                  onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
-                  placeholder="1000-001"
-                />
-                <div className="md:col-span-2">
-                  <Button onClick={handleSave} className="w-full">
-                    Salvar Alterações
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Input
+                      label="Nome Completo"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                    />
+                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                  </div>
+                  <div>
+                    <Input
+                      label="Telefone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      placeholder="912345678"
+                      required
+                    />
+                    {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                  </div>
+                </div>
+                
+                <div>
+                  <Input
+                    label="Morada"
+                    value={formData.morada}
+                    onChange={(e) => setFormData({ ...formData, morada: e.target.value })}
+                    placeholder="Rua, número, andar, etc."
+                    required
+                  />
+                  {errors.morada && <p className="text-red-500 text-sm mt-1">{errors.morada}</p>}
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <Input
+                      label="Distrito"
+                      value={formData.district}
+                      onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                      required
+                    />
+                    {errors.district && <p className="text-red-500 text-sm mt-1">{errors.district}</p>}
+                  </div>
+                  <div>
+                    <Input
+                      label="Conselho"
+                      value={formData.council}
+                      onChange={(e) => setFormData({ ...formData, council: e.target.value })}
+                      required
+                    />
+                    {errors.council && <p className="text-red-500 text-sm mt-1">{errors.council}</p>}
+                  </div>
+                  <div>
+                    <Input
+                      label="Freguesia"
+                      value={formData.parish}
+                      onChange={(e) => setFormData({ ...formData, parish: e.target.value })}
+                      required
+                    />
+                    {errors.parish && <p className="text-red-500 text-sm mt-1">{errors.parish}</p>}
+                  </div>
+                </div>
+                
+                <div>
+                  <Input
+                    label="Código Postal"
+                    value={formData.postalCode}
+                    onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
+                    placeholder="1000-001"
+                    required
+                  />
+                  {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>}
+                </div>
+                
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={handleSave} 
+                    className="flex-1"
+                    disabled={saving}
+                  >
+                    {saving ? 'Salvando...' : 'Salvar Alterações'}
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      setEditing(false)
+                      setErrors({})
+                    }} 
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Cancelar
                   </Button>
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nome Completo
-                    </label>
-                    <p className="text-gray-900">{profile?.name}</p>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Nome Completo
+                      </label>
+                      <p className="text-gray-900">{profile?.name}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Email
+                      </label>
+                      <p className="text-gray-900">{profile?.email}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Telefone
+                      </label>
+                      <p className="text-gray-900">{profile?.phone}</p>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
-                    <p className="text-gray-900">{profile?.email}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Telefone
-                    </label>
-                    <p className="text-gray-900">{profile?.phone}</p>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Distrito
-                    </label>
-                    <p className="text-gray-900">{profile?.district}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Conselho
-                    </label>
-                    <p className="text-gray-900">{profile?.council}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Freguesia
-                    </label>
-                    <p className="text-gray-900">{profile?.parish}</p>
-                  </div>
-                  {profile?.postalCode && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Distrito
+                      </label>
+                      <p className="text-gray-900">{profile?.district}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Conselho
+                      </label>
+                      <p className="text-gray-900">{profile?.council}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Freguesia
+                      </label>
+                      <p className="text-gray-900">{profile?.parish}</p>
+                    </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Código Postal
                       </label>
-                      <p className="text-gray-900">{profile.postalCode}</p>
+                      <p className="text-gray-900">{profile?.postalCode}</p>
                     </div>
-                  )}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Morada
+                  </label>
+                  <p className="text-gray-900">{profile?.morada}</p>
                 </div>
               </div>
             )}
