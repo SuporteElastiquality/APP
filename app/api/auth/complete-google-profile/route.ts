@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
           district: data.district,
           council: data.council,
           parish: data.parish,
-          morada: data.morada || '',
+          address: data.morada || '',
           postalCode: data.postalCode,
           specialties: data.specialties!.split(',').map(s => s.trim()).join(','),
           experience: data.experience!,
