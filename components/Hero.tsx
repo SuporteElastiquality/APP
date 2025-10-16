@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Search, MapPin, ChevronRight, Star, Users, Award } from 'lucide-react'
 import Button from './Button'
@@ -8,11 +9,21 @@ import Button from './Button'
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState('')
   const [location, setLocation] = useState('')
+  const router = useRouter()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    // Implementar busca
-    console.log('Search:', searchQuery, 'Location:', location)
+    
+    if (!searchQuery.trim() && !location.trim()) {
+      return
+    }
+
+    // Redirecionar para página de busca
+    const params = new URLSearchParams()
+    if (searchQuery.trim()) params.set('service', searchQuery.trim())
+    if (location.trim()) params.set('location', location.trim())
+    
+    router.push(`/search?${params.toString()}`)
   }
 
   return (
@@ -77,13 +88,17 @@ export default function Hero() {
               <p className="text-primary-100 text-sm">Pesquisas populares:</p>
               <div className="flex flex-wrap gap-2">
                 {['Eletricista', 'Canalizador', 'Limpeza', 'Jardinagem', 'Pintor', 'Carpinteiro'].map((service) => (
-                  <Link
+                  <button
                     key={service}
-                    href={`/services?q=${encodeURIComponent(service)}`}
+                    onClick={() => {
+                      setSearchQuery(service)
+                      setLocation('')
+                      router.push(`/search?service=${encodeURIComponent(service)}`)
+                    }}
                     className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-sm transition-colors"
                   >
                     {service}
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
