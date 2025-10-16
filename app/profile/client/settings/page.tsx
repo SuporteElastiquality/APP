@@ -179,16 +179,12 @@ export default function ClientSettingsPage() {
                       <p className="text-2xl font-bold text-blue-600 mb-1">Cliente Grátis</p>
                       <p className="text-gray-600 mb-4">Acesso completo a todos os serviços sem custos</p>
                       <div className="space-y-2 text-sm text-gray-600">
-                        <p>✅ Acesso a milhares de profissionais</p>
-                        <p>✅ Receba até 5 propostas por serviço</p>
+                        <p>✅ Acesso a profissionais qualificados</p>
                         <p>✅ Sistema de avaliações</p>
                         <p>✅ Chat direto com profissionais</p>
                         <p>✅ Suporte 24/7</p>
                       </div>
                     </div>
-                    <Button variant="outline" onClick={() => window.location.href = '/pricing'}>
-                      Ver Planos Premium
-                    </Button>
                   </div>
                 )}
 
