@@ -106,7 +106,16 @@ export function filterProfessionalsByDistance(
   clientLatitude: number,
   clientLongitude: number,
   maxDistanceKm: number = 15
-) {
+): Array<{
+  id: string
+  professionalProfile?: {
+    latitude?: number | null
+    longitude?: number | null
+    district?: string
+    council?: string
+    parish?: string
+  } | null
+}> {
   return professionals.filter(professional => {
     const profile = professional.professionalProfile
     
@@ -156,4 +165,50 @@ export function getCurrentLocation(): Promise<{latitude: number, longitude: numb
       }
     )
   })
+}
+
+// Tipos para LocationInput
+export interface LocationData {
+  display_name: string
+  lat: string
+  lon: string
+  address?: {
+    city?: string
+    town?: string
+    village?: string
+    county?: string
+    state?: string
+    country?: string
+  }
+}
+
+/**
+ * Busca localizações usando Nominatim (OpenStreetMap)
+ * @param query Termo de busca
+ * @returns Lista de localizações encontradas
+ */
+export async function searchLocations(query: string): Promise<LocationData[]> {
+  try {
+    if (!query.trim()) return []
+    
+    const encodedQuery = encodeURIComponent(query)
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodedQuery}&countrycodes=pt&limit=5&addressdetails=1`
+    )
+    
+    if (!response.ok) {
+      throw new Error('Erro ao buscar localizações')
+    }
+    
+    const data = await response.json()
+    return data.map((item: any) => ({
+      display_name: item.display_name,
+      lat: item.lat,
+      lon: item.lon,
+      address: item.address
+    }))
+  } catch (error) {
+    console.error('Erro ao buscar localizações:', error)
+    return []
+  }
 }
