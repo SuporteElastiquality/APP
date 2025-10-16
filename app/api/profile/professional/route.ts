@@ -128,8 +128,12 @@ export async function PUT(request: NextRequest) {
       }
     })
 
-    // Atualizar ou criar perfil profissional
-    if (updatedUser.professionalProfile) {
+    // Verificar se o perfil profissional existe
+    const existingProfile = await prisma.professionalProfile.findUnique({
+      where: { userId: session.user.id }
+    })
+
+    if (existingProfile) {
       await prisma.professionalProfile.update({
         where: { userId: session.user.id },
         data: {
