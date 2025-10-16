@@ -114,11 +114,17 @@ export default function SignUp() {
 
   // Função para lidar com seleção de localização
   const handleLocationSelect = (location: LocationData) => {
+    // Extrair informações de localização do endereço
+    const address = location.address || {}
+    const district = address.state || address.county || ''
+    const council = address.city || address.town || address.village || ''
+    const parish = address.village || address.town || ''
+    
     setFormData({
       ...formData,
-      district: location.district,
-      council: location.council,
-      parish: location.parish
+      district,
+      council,
+      parish
     })
   }
 
