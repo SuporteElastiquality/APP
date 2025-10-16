@@ -46,11 +46,14 @@ export const registerSchema = z.object({
   parish: z.string()
     .min(1, 'Freguesia é obrigatória')
     .max(100, 'Nome da freguesia muito longo'),
-  specialties: z.string().optional(),
-  experience: z.string().optional(),
+  address: z.string()
+    .max(200, 'Endereço muito longo')
+    .optional(),
   postalCode: z.string()
     .regex(/^\d{4}-\d{3}$/, 'Código postal deve estar no formato XXXX-XXX')
     .optional(),
+  specialties: z.string().optional(),
+  experience: z.string().optional(),
 }).refine((data) => {
   // Senhas devem coincidir
   return data.password === data.confirmPassword
