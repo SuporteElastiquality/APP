@@ -22,6 +22,9 @@ interface Professional {
   }
   rating: number
   completedJobs: number
+  isVerified: boolean
+  isPremium: boolean
+  isElastiquality: boolean
 }
 
 interface SearchResults {
@@ -245,9 +248,9 @@ export default function SearchPage() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {results.professionals.map((prof) => (
-                <Card key={prof.id} className="p-6 hover:shadow-lg transition-shadow">
+                <Card key={prof.id} className={`p-6 hover:shadow-lg transition-shadow ${prof.isElastiquality ? 'ring-2 ring-primary-500 bg-gradient-to-br from-primary-50 to-blue-50' : ''}`}>
                   <div className="flex items-start space-x-4 mb-4">
-                    <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center ${prof.isElastiquality ? 'bg-gradient-to-br from-primary-500 to-blue-600' : 'bg-primary-100'}`}>
                       {prof.image ? (
                         <img 
                           src={prof.image} 
@@ -255,12 +258,29 @@ export default function SearchPage() {
                           className="w-16 h-16 rounded-full object-cover"
                         />
                       ) : (
-                        <Users className="w-8 h-8 text-primary-600" />
+                        <Users className={`w-8 h-8 ${prof.isElastiquality ? 'text-white' : 'text-primary-600'}`} />
                       )}
                     </div>
                     
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 text-lg">{prof.name}</h3>
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h3 className="font-semibold text-gray-900 text-lg">{prof.name}</h3>
+                        {prof.isElastiquality && (
+                          <span className="bg-primary-600 text-white text-xs px-2 py-1 rounded-full font-medium">
+                            OFICIAL
+                          </span>
+                        )}
+                        {prof.isVerified && !prof.isElastiquality && (
+                          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
+                            VERIFICADO
+                          </span>
+                        )}
+                        {prof.isPremium && !prof.isElastiquality && (
+                          <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">
+                            PREMIUM
+                          </span>
+                        )}
+                      </div>
                       <p className="text-gray-600 text-sm">{formatLocation(prof)}</p>
                       
                       <div className="flex items-center space-x-2 mt-2">
@@ -309,8 +329,8 @@ export default function SearchPage() {
                   </div>
                   
                   <div className="mt-6 pt-4 border-t border-gray-200">
-                    <Button className="w-full">
-                      Ver Perfil
+                    <Button className={`w-full ${prof.isElastiquality ? 'bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700' : ''}`}>
+                      {prof.isElastiquality ? 'Contatar Elastiquality' : 'Ver Perfil'}
                     </Button>
                   </div>
                 </Card>

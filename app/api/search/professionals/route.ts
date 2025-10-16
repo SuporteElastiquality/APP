@@ -81,20 +81,58 @@ export async function GET(request: NextRequest) {
               district: true,
               council: true,
               parish: true,
-              rating: true
+              rating: true,
+              isVerified: true,
+              isPremium: true
             }
           }
         },
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: {
-          createdAt: 'desc'
-        }
+        orderBy: [
+          {
+            professionalProfile: {
+              isPremium: 'desc'
+            }
+          },
+          {
+            professionalProfile: {
+              isVerified: 'desc'
+            }
+          },
+          {
+            professionalProfile: {
+              rating: 'desc'
+            }
+          },
+          {
+            createdAt: 'desc'
+          }
+        ]
       }),
       prisma.user.count({
         where: whereClause
       })
     ])
+
+    // Buscar usuário Elastiquality separadamente para garantir que apareça sempre
+    const elastiqualityUser = await prisma.user.findUnique({
+      where: { email: 'elastiquality@elastiquality.pt' },
+      include: {
+        professionalProfile: {
+          select: {
+            specialties: true,
+            experience: true,
+            district: true,
+            council: true,
+            parish: true,
+            rating: true,
+            isVerified: true,
+            isPremium: true
+          }
+        }
+      }
+    })
 
     // Log de busca (sem dados sensíveis)
     logSecurityEvent('professional_search', { 
@@ -105,28 +143,63 @@ export async function GET(request: NextRequest) {
       ip: clientIP 
     }, 'low')
 
+    // Preparar lista de profissionais
+    let professionalsList = professionals.map(prof => ({
+      id: prof.id,
+      name: prof.name,
+      email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'), // Mascarar email
+      image: prof.image,
+      specialties: prof.professionalProfile?.specialties?.split(',').map(s => s.trim()) || [],
+      experience: prof.professionalProfile?.experience || '',
+      location: {
+        district: prof.professionalProfile?.district || '',
+        council: prof.professionalProfile?.council || '',
+        parish: prof.professionalProfile?.parish || ''
+      },
+      rating: prof.professionalProfile?.rating || 0,
+      completedJobs: 0, // Campo temporário até o banco ser atualizado
+      isVerified: prof.professionalProfile?.isVerified || false,
+      isPremium: prof.professionalProfile?.isPremium || false,
+      isElastiquality: prof.email === 'elastiquality@elastiquality.pt'
+    }))
+
+    // Adicionar usuário Elastiquality no topo se existir e não estiver já na lista
+    if (elastiqualityUser && elastiqualityUser.professionalProfile) {
+      const elastiqualityInList = professionalsList.find(p => p.id === elastiqualityUser.id)
+      
+      if (!elastiqualityInList) {
+        const elastiqualityProfile = {
+          id: elastiqualityUser.id,
+          name: elastiqualityUser.name,
+          email: 'Elastiquality***@elastiquality.pt',
+          image: elastiqualityUser.image,
+          specialties: elastiqualityUser.professionalProfile.specialties?.split(',').map(s => s.trim()) || [],
+          experience: elastiqualityUser.professionalProfile.experience || '',
+          location: {
+            district: elastiqualityUser.professionalProfile.district || '',
+            council: elastiqualityUser.professionalProfile.council || '',
+            parish: elastiqualityUser.professionalProfile.parish || ''
+          },
+          rating: elastiqualityUser.professionalProfile.rating || 5.0,
+          completedJobs: 5000,
+          isVerified: elastiqualityUser.professionalProfile.isVerified || true,
+          isPremium: elastiqualityUser.professionalProfile.isPremium || true,
+          isElastiquality: true
+        }
+        
+        // Adicionar no topo da lista
+        professionalsList = [elastiqualityProfile, ...professionalsList]
+      }
+    }
+
     return NextResponse.json({
-      professionals: professionals.map(prof => ({
-        id: prof.id,
-        name: prof.name,
-        email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'), // Mascarar email
-        image: prof.image,
-        specialties: prof.professionalProfile?.specialties?.split(',').map(s => s.trim()) || [],
-        experience: prof.professionalProfile?.experience || '',
-        location: {
-          district: prof.professionalProfile?.district || '',
-          council: prof.professionalProfile?.council || '',
-          parish: prof.professionalProfile?.parish || ''
-        },
-        rating: prof.professionalProfile?.rating || 0,
-        completedJobs: 0 // Campo temporário até o banco ser atualizado
-      })),
+      professionals: professionalsList,
       pagination: {
         page,
         limit,
-        total: totalCount,
-        totalPages: Math.ceil(totalCount / limit),
-        hasNext: page < Math.ceil(totalCount / limit),
+        total: totalCount + (elastiqualityUser ? 1 : 0),
+        totalPages: Math.ceil((totalCount + (elastiqualityUser ? 1 : 0)) / limit),
+        hasNext: page < Math.ceil((totalCount + (elastiqualityUser ? 1 : 0)) / limit),
         hasPrev: page > 1
       },
       searchParams: {
