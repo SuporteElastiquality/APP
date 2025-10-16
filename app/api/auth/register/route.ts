@@ -90,7 +90,9 @@ export async function POST(request: NextRequest) {
           userId: user.id,
           district,
           council,
-          parish
+          parish,
+          morada: address || '',
+          postalCode: postalCode || ''
         }
       })
     } else {
