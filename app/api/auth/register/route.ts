@@ -4,9 +4,30 @@ import { prisma } from '@/lib/prisma'
 // UserType será inferido do schema
 import { registerSchema, validateData } from '@/lib/validations'
 import { sendWelcomeEmail } from '@/lib/email'
+import { getClientIP, checkRateLimit, logSecurityEvent } from '@/lib/security'
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIP = getClientIP(request)
+    
+    // Rate limiting para registro
+    const rateLimit = checkRateLimit(clientIP, 'register')
+    if (!rateLimit.allowed) {
+      logSecurityEvent('rate_limit_exceeded', { 
+        ip: clientIP, 
+        endpoint: 'register',
+        resetTime: rateLimit.resetTime 
+      }, 'medium')
+      
+      return NextResponse.json(
+        { 
+          error: 'Muitas tentativas de registro. Tente novamente mais tarde.',
+          resetTime: rateLimit.resetTime 
+        },
+        { status: 429 }
+      )
+    }
+
     const body = await request.json()
 
     // Validar dados com Zod
@@ -37,6 +58,11 @@ export async function POST(request: NextRequest) {
     })
 
     if (existingUser) {
+      logSecurityEvent('duplicate_registration_attempt', { 
+        email: email.replace(/(.{2}).*(@.*)/, '$1***$2'), 
+        ip: clientIP 
+      }, 'medium')
+      
       return NextResponse.json(
         { error: 'Este email já está em uso' },
         { status: 400 }
@@ -84,6 +110,13 @@ export async function POST(request: NextRequest) {
     sendWelcomeEmail(email, name).catch(error => {
       console.error('Failed to send welcome email:', error)
     })
+
+    // Log de sucesso (sem dados sensíveis)
+    logSecurityEvent('user_registered', { 
+      userId: user.id, 
+      userType: user.userType,
+      ip: clientIP 
+    }, 'low')
 
     return NextResponse.json({
       message: 'Conta criada com sucesso',

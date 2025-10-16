@@ -1,22 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendNewsletterEmail } from '@/lib/email'
+import { getClientIP, checkRateLimit, validateAdminToken, sanitizeInput, logSecurityEvent } from '@/lib/security'
 import { z } from 'zod'
 
 // Schema para validação da newsletter
 const newsletterSchema = z.object({
-  subject: z.string().min(1, 'Assunto é obrigatório'),
-  content: z.string().min(1, 'Conteúdo é obrigatório'),
+  subject: z.string().min(1, 'Assunto é obrigatório').max(200, 'Assunto muito longo'),
+  content: z.string().min(1, 'Conteúdo é obrigatório').max(10000, 'Conteúdo muito longo'),
   targetUsers: z.enum(['ALL', 'CLIENTS', 'PROFESSIONALS']).default('ALL')
 })
 
 export async function POST(request: NextRequest) {
   try {
-    // Verificar se é admin (você pode implementar autenticação admin depois)
-    const authHeader = request.headers.get('authorization')
-    if (authHeader !== `Bearer ${process.env.ADMIN_SECRET}`) {
+    const clientIP = getClientIP(request)
+    
+    // Rate limiting
+    const rateLimit = checkRateLimit(clientIP, 'newsletter')
+    if (!rateLimit.allowed) {
+      logSecurityEvent('rate_limit_exceeded', { 
+        ip: clientIP, 
+        endpoint: 'newsletter',
+        resetTime: rateLimit.resetTime 
+      }, 'medium')
+      
       return NextResponse.json(
-        { error: 'Não autorizado' },
+        { 
+          error: 'Muitas tentativas. Tente novamente mais tarde.',
+          resetTime: rateLimit.resetTime 
+        },
+        { status: 429 }
+      )
+    }
+
+    // Verificar autenticação admin
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logSecurityEvent('unauthorized_newsletter_access', { ip: clientIP }, 'high')
+      return NextResponse.json(
+        { error: 'Token de autorização necessário' },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    if (!validateAdminToken(token)) {
+      logSecurityEvent('invalid_admin_token', { ip: clientIP }, 'critical')
+      return NextResponse.json(
+        { error: 'Token inválido' },
         { status: 401 }
       )
     }
@@ -37,6 +68,10 @@ export async function POST(request: NextRequest) {
 
     const { subject, content, targetUsers } = validation.data
 
+    // Sanitizar inputs
+    const sanitizedSubject = sanitizeInput(subject)
+    const sanitizedContent = sanitizeInput(content)
+
     // Buscar usuários baseado no filtro
     let whereClause = {}
     if (targetUsers === 'CLIENTS') {
@@ -53,12 +88,17 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    console.log(`Sending newsletter to ${users.length} users`)
+    // Log de segurança (sem dados sensíveis)
+    logSecurityEvent('newsletter_sent', { 
+      recipientCount: users.length, 
+      targetUsers,
+      ip: clientIP 
+    }, 'low')
 
     // Enviar emails
     const results = await Promise.allSettled(
       users.map(user => 
-        sendNewsletterEmail(user.email, user.name || 'Usuário', content)
+        sendNewsletterEmail(user.email, user.name || 'Usuário', sanitizedContent)
       )
     )
 

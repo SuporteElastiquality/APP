@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import { prisma } from './prisma'
 import bcrypt from 'bcryptjs'
+import { logSecurityEvent } from './security'
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -35,12 +36,19 @@ export const authOptions: NextAuthOptions = {
         })
 
         if (!user) {
+          logSecurityEvent('login_attempt_user_not_found', { 
+            email: credentials.email?.replace(/(.{2}).*(@.*)/, '$1***$2') 
+          }, 'medium')
           return null
         }
 
         // Verificar se o usuário tem senha (usuários criados via credenciais)
         if (!user.password) {
           // Usuário criado via Google, não pode fazer login com credenciais
+          logSecurityEvent('login_attempt_google_user', { 
+            userId: user.id,
+            email: credentials.email?.replace(/(.{2}).*(@.*)/, '$1***$2') 
+          }, 'medium')
           return null
         }
 
@@ -48,8 +56,19 @@ export const authOptions: NextAuthOptions = {
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
         
         if (!isPasswordValid) {
+          logSecurityEvent('login_attempt_invalid_password', { 
+            userId: user.id,
+            email: credentials.email?.replace(/(.{2}).*(@.*)/, '$1***$2') 
+          }, 'high')
           return null
         }
+
+        // Log de login bem-sucedido
+        logSecurityEvent('successful_login', { 
+          userId: user.id,
+          userType: user.userType,
+          email: credentials.email?.replace(/(.{2}).*(@.*)/, '$1***$2') 
+        }, 'low')
 
         return {
           id: user.id,
