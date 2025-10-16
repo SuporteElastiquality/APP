@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getClientIP, checkRateLimit, logSecurityEvent } from '@/lib/security'
+import { filterProfessionalsByDistance, getCoordinatesFromLocation } from '@/lib/geolocation'
+import { getAllCategories, getCategoryById } from '@/lib/categories'
 
 export async function GET(request: NextRequest) {
   try {
@@ -31,29 +33,68 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const service = searchParams.get('service') || ''
     const location = searchParams.get('location') || ''
+    const category = searchParams.get('category') || ''
+    const clientLatitude = searchParams.get('lat') ? parseFloat(searchParams.get('lat')!) : null
+    const clientLongitude = searchParams.get('lng') ? parseFloat(searchParams.get('lng')!) : null
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '12')
 
-    console.log('🔍 Parâmetros de busca:', { service, location, page, limit })
+    console.log('🔍 Parâmetros de busca:', { 
+      service, 
+      location, 
+      category, 
+      clientLatitude, 
+      clientLongitude, 
+      page, 
+      limit 
+    })
 
     // Validar parâmetros
-    if (!service.trim() && !location.trim()) {
+    if (!service.trim() && !location.trim() && !category.trim()) {
       console.log('❌ Parâmetros inválidos')
       return NextResponse.json(
-        { error: 'Serviço ou localização é obrigatório' },
+        { error: 'Serviço, localização ou categoria é obrigatório' },
         { status: 400 }
       )
     }
 
-    // Query simplificada para teste
+    // Construir query de busca com filtros
+    const whereClause: any = {
+      userType: 'PROFESSIONAL',
+      professionalProfile: {
+        isNot: null,
+        isActive: true // Apenas profissionais ativos
+      }
+    }
+
+    // Filtro por categoria
+    if (category.trim()) {
+      whereClause.professionalProfile.category = {
+        contains: category,
+        mode: 'insensitive'
+      }
+    }
+
+    // Filtro por especialidade/serviço
+    if (service.trim()) {
+      whereClause.professionalProfile.specialties = {
+        contains: service,
+        mode: 'insensitive'
+      }
+    }
+
+    // Filtro por localização (distrito, conselho, freguesia)
+    if (location.trim()) {
+      whereClause.professionalProfile.OR = [
+        { district: { contains: location, mode: 'insensitive' } },
+        { council: { contains: location, mode: 'insensitive' } },
+        { parish: { contains: location, mode: 'insensitive' } }
+      ]
+    }
+
     console.log('🔍 Executando query no banco de dados...')
     const professionals = await prisma.user.findMany({
-      where: {
-        userType: 'PROFESSIONAL',
-        professionalProfile: {
-          isNot: null
-        }
-      },
+      where: whereClause,
       include: {
         professionalProfile: {
           select: {
@@ -62,6 +103,9 @@ export async function GET(request: NextRequest) {
             district: true,
             council: true,
             parish: true,
+            latitude: true,
+            longitude: true,
+            category: true,
             rating: true,
             completedJobs: true,
             isVerified: true,
@@ -69,23 +113,48 @@ export async function GET(request: NextRequest) {
           }
         }
       },
-      take: 10 // Limitar para teste
+      orderBy: [
+        { professionalProfile: { isPremium: 'desc' } },
+        { professionalProfile: { isVerified: 'desc' } },
+        { professionalProfile: { rating: 'desc' } },
+        { createdAt: 'desc' }
+      ],
+      take: 50 // Aumentar limite para filtrar por distância depois
     })
 
     console.log('✅ Profissionais encontrados:', professionals.length)
 
-    // Preparar lista de profissionais simplificada
-    const professionalsList = professionals.map(prof => ({
+    // Filtrar por proximidade geográfica se coordenadas do cliente estiverem disponíveis
+    let filteredProfessionals = professionals
+    
+    if (clientLatitude && clientLongitude) {
+      console.log('🌍 Filtrando por proximidade geográfica...')
+      filteredProfessionals = filterProfessionalsByDistance(
+        professionals,
+        clientLatitude,
+        clientLongitude,
+        15 // 15km de raio
+      )
+      console.log(`📍 Profissionais dentro de 15km: ${filteredProfessionals.length}`)
+    }
+
+    // Preparar lista de profissionais
+    const professionalsList = filteredProfessionals.map(prof => ({
       id: prof.id,
       name: prof.name,
       email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'),
       image: prof.image,
       specialties: prof.professionalProfile?.specialties?.split(',').map(s => s.trim()) || [],
       experience: prof.professionalProfile?.experience || '',
+      category: prof.professionalProfile?.category || '',
       location: {
         district: prof.professionalProfile?.district || '',
         council: prof.professionalProfile?.council || '',
         parish: prof.professionalProfile?.parish || ''
+      },
+      coordinates: {
+        latitude: prof.professionalProfile?.latitude,
+        longitude: prof.professionalProfile?.longitude
       },
       rating: prof.professionalProfile?.rating || 0,
       completedJobs: prof.professionalProfile?.completedJobs || 0,
@@ -94,21 +163,32 @@ export async function GET(request: NextRequest) {
       isElastiquality: prof.email === 'elastiquality@elastiquality.pt'
     }))
 
-    console.log('✅ Lista de profissionais preparada:', professionalsList.length)
+    // Aplicar paginação
+    const startIndex = (page - 1) * limit
+    const endIndex = startIndex + limit
+    const paginatedProfessionals = professionalsList.slice(startIndex, endIndex)
+
+    console.log('✅ Lista de profissionais preparada:', paginatedProfessionals.length)
 
     return NextResponse.json({
-      professionals: professionalsList,
+      professionals: paginatedProfessionals,
       pagination: {
-        page: 1,
-        limit: 10,
+        page,
+        limit,
         total: professionalsList.length,
-        totalPages: 1,
-        hasNext: false,
-        hasPrev: false
+        totalPages: Math.ceil(professionalsList.length / limit),
+        hasNext: endIndex < professionalsList.length,
+        hasPrev: page > 1
       },
       searchParams: {
         service,
-        location
+        location,
+        category
+      },
+      filters: {
+        hasGeographicFilter: !!(clientLatitude && clientLongitude),
+        radiusKm: 15,
+        categories: getAllCategories()
       }
     })
 

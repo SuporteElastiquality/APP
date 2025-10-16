@@ -1,41 +1,152 @@
-// Tipos para localização
-export interface LocationData {
-  district: string
-  council: string
-  parish: string
-  address?: string
-  postalCode?: string
-  coordinates?: {
-    latitude: number
-    longitude: number
+// Funções utilitárias para geolocalização e cálculo de distância
+
+/**
+ * Calcula a distância entre dois pontos geográficos usando a fórmula de Haversine
+ * @param lat1 Latitude do primeiro ponto
+ * @param lon1 Longitude do primeiro ponto
+ * @param lat2 Latitude do segundo ponto
+ * @param lon2 Longitude do segundo ponto
+ * @returns Distância em quilômetros
+ */
+export function calculateDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6371 // Raio da Terra em quilômetros
+  const dLat = toRadians(lat2 - lat1)
+  const dLon = toRadians(lon2 - lon1)
+  
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2)
+  
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const distance = R * c
+  
+  return Math.round(distance * 100) / 100 // Arredondar para 2 casas decimais
+}
+
+/**
+ * Converte graus para radianos
+ */
+function toRadians(degrees: number): number {
+  return degrees * (Math.PI / 180)
+}
+
+/**
+ * Obtém coordenadas geográficas a partir de um endereço usando Nominatim (OpenStreetMap)
+ * @param address Endereço completo
+ * @returns Coordenadas {latitude, longitude} ou null se não encontrado
+ */
+export async function getCoordinatesFromAddress(address: string): Promise<{latitude: number, longitude: number} | null> {
+  try {
+    const encodedAddress = encodeURIComponent(address)
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodedAddress}&countrycodes=pt&limit=1`
+    )
+    
+    if (!response.ok) {
+      throw new Error('Erro ao buscar coordenadas')
+    }
+    
+    const data = await response.json()
+    
+    if (data && data.length > 0) {
+      return {
+        latitude: parseFloat(data[0].lat),
+        longitude: parseFloat(data[0].lon)
+      }
+    }
+    
+    return null
+  } catch (error) {
+    console.error('Erro ao obter coordenadas:', error)
+    return null
   }
 }
 
-// Cache para evitar muitas chamadas à API
-const locationCache = new Map<string, LocationData>()
+/**
+ * Obtém coordenadas geográficas a partir de distrito, conselho e freguesia
+ * @param district Distrito
+ * @param council Conselho
+ * @param parish Freguesia
+ * @returns Coordenadas {latitude, longitude} ou null se não encontrado
+ */
+export async function getCoordinatesFromLocation(
+  district: string,
+  council: string,
+  parish: string
+): Promise<{latitude: number, longitude: number} | null> {
+  const fullAddress = `${parish}, ${council}, ${district}, Portugal`
+  return getCoordinatesFromAddress(fullAddress)
+}
 
-// Função para obter localização atual do usuário
-export async function getCurrentLocation(): Promise<LocationData | null> {
+/**
+ * Filtra profissionais por proximidade geográfica
+ * @param professionals Lista de profissionais
+ * @param clientLatitude Latitude do cliente
+ * @param clientLongitude Longitude do cliente
+ * @param maxDistanceKm Distância máxima em quilômetros (padrão: 15km)
+ * @returns Lista de profissionais dentro do raio especificado
+ */
+export function filterProfessionalsByDistance(
+  professionals: Array<{
+    id: string
+    professionalProfile?: {
+      latitude?: number | null
+      longitude?: number | null
+      district?: string
+      council?: string
+      parish?: string
+    } | null
+  }>,
+  clientLatitude: number,
+  clientLongitude: number,
+  maxDistanceKm: number = 15
+) {
+  return professionals.filter(professional => {
+    const profile = professional.professionalProfile
+    
+    // Se tem coordenadas exatas, usar cálculo de distância
+    if (profile?.latitude && profile?.longitude) {
+      const distance = calculateDistance(
+        clientLatitude,
+        clientLongitude,
+        profile.latitude,
+        profile.longitude
+      )
+      return distance <= maxDistanceKm
+    }
+    
+    // Se não tem coordenadas, assumir mesmo distrito (aproximadamente 15km)
+    // Esta é uma aproximação - em produção seria melhor ter coordenadas exatas
+    return true
+  })
+}
+
+/**
+ * Obtém a localização atual do usuário via geolocalização do navegador
+ * @returns Promise com coordenadas ou null se não disponível
+ */
+export function getCurrentLocation(): Promise<{latitude: number, longitude: number} | null> {
   return new Promise((resolve) => {
     if (!navigator.geolocation) {
-      console.warn('Geolocalização não suportada pelo navegador')
       resolve(null)
       return
     }
-
+    
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords
-          const location = await reverseGeocode(latitude, longitude)
-          resolve(location)
-        } catch (error) {
-          console.error('Erro ao obter localização:', error)
-          resolve(null)
-        }
+      (position) => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
       },
       (error) => {
-        console.warn('Erro de geolocalização:', error.message)
+        console.error('Erro ao obter localização:', error)
         resolve(null)
       },
       {
@@ -46,124 +157,3 @@ export async function getCurrentLocation(): Promise<LocationData | null> {
     )
   })
 }
-
-// Função para geocodificação reversa (coordenadas -> endereço)
-async function reverseGeocode(latitude: number, longitude: number): Promise<LocationData | null> {
-  const cacheKey = `${latitude.toFixed(4)},${longitude.toFixed(4)}`
-  
-  // Verificar cache primeiro
-  if (locationCache.has(cacheKey)) {
-    return locationCache.get(cacheKey)!
-  }
-
-  try {
-    // Usar API de geocodificação reversa (Nominatim - OpenStreetMap)
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1&accept-language=pt`
-    )
-    
-    if (!response.ok) {
-      throw new Error('Erro na API de geocodificação')
-    }
-
-    const data = await response.json()
-    
-    if (!data.address) {
-      throw new Error('Endereço não encontrado')
-    }
-
-    const location: LocationData = {
-      district: data.address.state || data.address.county || 'Lisboa',
-      council: data.address.city || data.address.town || data.address.village || 'Lisboa',
-      parish: data.address.suburb || data.address.neighbourhood || data.address.hamlet || 'Lisboa',
-      address: data.display_name,
-      postalCode: data.address.postcode || '',
-      coordinates: { latitude, longitude }
-    }
-
-    // Salvar no cache
-    locationCache.set(cacheKey, location)
-    
-    return location
-  } catch (error) {
-    console.error('Erro na geocodificação reversa:', error)
-    return null
-  }
-}
-
-// Função para buscar localizações por nome (autocomplete)
-export async function searchLocations(query: string): Promise<LocationData[]> {
-  if (!query || query.length < 3) {
-    return []
-  }
-
-  try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pt&addressdetails=1&limit=5&accept-language=pt`
-    )
-    
-    if (!response.ok) {
-      throw new Error('Erro na API de busca')
-    }
-
-    const data = await response.json()
-    
-    return data.map((item: any) => ({
-      district: item.address?.state || item.address?.county || 'Lisboa',
-      council: item.address?.city || item.address?.town || item.address?.village || 'Lisboa',
-      parish: item.address?.suburb || item.address?.neighbourhood || item.address?.hamlet || 'Lisboa',
-      address: item.display_name,
-      postalCode: item.address?.postcode || '',
-      coordinates: {
-        latitude: parseFloat(item.lat),
-        longitude: parseFloat(item.lon)
-      }
-    }))
-  } catch (error) {
-    console.error('Erro na busca de localizações:', error)
-    return []
-  }
-}
-
-// Função para validar se a localização é em Portugal
-export function isValidPortugueseLocation(location: LocationData): boolean {
-  const portugueseDistricts = [
-    'Aveiro', 'Beja', 'Braga', 'Bragança', 'Castelo Branco', 'Coimbra', 'Évora',
-    'Faro', 'Guarda', 'Leiria', 'Lisboa', 'Portalegre', 'Porto', 'Santarém',
-    'Setúbal', 'Viana do Castelo', 'Vila Real', 'Viseu', 'Açores', 'Madeira'
-  ]
-  
-  return portugueseDistricts.some(district => 
-    location.district.toLowerCase().includes(district.toLowerCase())
-  )
-}
-
-// Hook para usar geolocalização em componentes React
-export function useGeolocation() {
-  const [location, setLocation] = React.useState<LocationData | null>(null)
-  const [loading, setLoading] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
-
-  const getLocation = async () => {
-    setLoading(true)
-    setError(null)
-    
-    try {
-      const currentLocation = await getCurrentLocation()
-      if (currentLocation && isValidPortugueseLocation(currentLocation)) {
-        setLocation(currentLocation)
-      } else {
-        setError('Localização não encontrada em Portugal')
-      }
-    } catch (err) {
-      setError('Erro ao obter localização')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return { location, loading, error, getLocation }
-}
-
-// Importar React para o hook
-import React from 'react'

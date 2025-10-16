@@ -104,6 +104,13 @@ model ProfessionalProfile {
   address     String?  // Endereço completo
   postalCode  String?  // Código postal português
   
+  // Coordenadas geográficas para busca por proximidade
+  latitude    Float?   // Latitude
+  longitude   Float?   // Longitude
+  
+  // Categoria principal do profissional
+  category    String   @default("reparacoes") // Categoria principal (ex: "Construção", "Reparações", "Serviços Domésticos")
+  
   // Informações profissionais
   specialties String // Especialidades separadas por vírgula
   experience  String   // Descrição da experiência
