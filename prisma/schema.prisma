@@ -45,6 +45,8 @@ model User {
   image         String?
   phone         String?   // Telefone português (9 dígitos)
   password      String?   // Senha hasheada (apenas para usuários com credenciais)
+  resetToken    String?   // Token para recuperação de senha
+  resetTokenExpiry DateTime? // Expiração do token de recuperação
   userType      String    @default("CLIENT") // CLIENT ou PROFESSIONAL
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

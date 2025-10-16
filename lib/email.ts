@@ -98,3 +98,62 @@ export async function sendNewsletterEmail(email: string, name: string, content: 
     return { success: false, error }
   }
 }
+
+export async function sendPasswordResetEmail(email: string, name: string, resetToken: string) {
+  try {
+    const resetUrl = `${process.env.NEXTAUTH_URL || 'https://appelastiquality.vercel.app'}/auth/reset-password?token=${resetToken}`
+    
+    await resend.emails.send({
+      from: 'Elastiquality <noreply@elastiquality.vercel.app>',
+      to: [email],
+      subject: 'Recuperação de senha - Elastiquality 🔐',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #3B82F6; font-size: 28px;">Recuperação de Senha</h1>
+          </div>
+          
+          <div style="background: #F8FAFC; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+            <h2 style="color: #1E293B; margin-bottom: 15px;">Olá, ${name}! 👋</h2>
+            <p style="color: #64748B; line-height: 1.6; margin-bottom: 20px;">
+              Recebemos uma solicitação para redefinir a senha da sua conta Elastiquality.
+            </p>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+              <p style="color: #64748B; margin-bottom: 20px;">
+                Clique no botão abaixo para redefinir sua senha:
+              </p>
+              <a href="${resetUrl}" 
+                 style="display: inline-block; background: #3B82F6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                Redefinir Senha
+              </a>
+            </div>
+            
+            <div style="background: #FEF3C7; padding: 15px; border-radius: 6px; margin: 20px 0;">
+              <p style="color: #92400E; margin: 0; font-size: 14px;">
+                <strong>⚠️ Importante:</strong> Este link expira em 1 hora por motivos de segurança.
+              </p>
+            </div>
+            
+            <p style="color: #64748B; line-height: 1.6; font-size: 14px;">
+              Se você não solicitou esta recuperação de senha, pode ignorar este email. 
+              Sua senha permanecerá inalterada.
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #E2E8F0;">
+            <p style="color: #94A3B8; font-size: 14px;">
+              Este email foi enviado pela Elastiquality. Se você tiver dúvidas, entre em contato conosco.
+            </p>
+          </div>
+        </div>
+      `
+    })
+    
+    console.log(`Email de recuperação enviado para ${email}`)
+    return { success: true }
+  } catch (error) {
+    console.error('Erro ao enviar email de recuperação:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' }
+  }
+}
