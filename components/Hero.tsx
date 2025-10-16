@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Search, MapPin, ChevronRight, Star, Users, Award } from 'lucide-react'
@@ -8,10 +8,33 @@ import Button from './Button'
 import LocationInput from './LocationInput'
 import { LocationData } from '@/lib/geolocation'
 
+interface Category {
+  id: string
+  name: string
+  description: string
+  icon: string
+}
+
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState('')
   const [location, setLocation] = useState('')
+  const [category, setCategory] = useState('')
+  const [categories, setCategories] = useState<Category[]>([])
   const router = useRouter()
+
+  // Carregar categorias
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        const data = await response.json()
+        setCategories(data)
+      } catch (error) {
+        console.error('Error loading categories:', error)
+      }
+    }
+    loadCategories()
+  }, [])
 
   // Função para lidar com seleção de localização
   const handleLocationSelect = (locationData: LocationData) => {
@@ -27,7 +50,7 @@ export default function Hero() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!searchQuery.trim() && !location.trim()) {
+    if (!searchQuery.trim() && !location.trim() && !category.trim()) {
       return
     }
 
@@ -35,6 +58,7 @@ export default function Hero() {
     const params = new URLSearchParams()
     if (searchQuery.trim()) params.set('service', searchQuery.trim())
     if (location.trim()) params.set('location', location.trim())
+    if (category.trim()) params.set('category', category.trim())
     
     router.push(`/search?${params.toString()}`)
   }
@@ -66,7 +90,7 @@ export default function Hero() {
             {/* Search Form */}
             <form onSubmit={handleSearch} className="space-y-4">
               <div className="bg-white rounded-xl p-4 shadow-lg">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <input
@@ -76,6 +100,21 @@ export default function Hero() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-gray-900"
                     />
+                  </div>
+                  
+                  <div className="relative">
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-gray-900 bg-white"
+                    >
+                      <option value="">Todas as categorias</option>
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.icon} {cat.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   
                   <LocationInput
@@ -103,6 +142,7 @@ export default function Hero() {
                     onClick={() => {
                       setSearchQuery(service)
                       setLocation('')
+                      setCategory('')
                       router.push(`/search?service=${encodeURIComponent(service)}`)
                     }}
                     className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-sm transition-colors"

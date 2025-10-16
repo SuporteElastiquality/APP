@@ -109,7 +109,7 @@ export default function ProfessionalsPage() {
               </p>
               
               {/* Search Bar */}
-              <div className="max-w-2xl mx-auto">
+              <div className="max-w-3xl mx-auto">
                 <div className="bg-white rounded-xl p-4 shadow-lg">
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 relative">
@@ -119,6 +119,24 @@ export default function ProfessionalsPage() {
                         placeholder="Profissão ou especialidade"
                         className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-transparent outline-none text-gray-900"
                       />
+                    </div>
+                    
+                    <div className="relative">
+                      <select className="w-full md:w-48 pl-4 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-transparent outline-none text-gray-900 bg-white">
+                        <option value="">Todas as categorias</option>
+                        <option value="construcao">🏗️ Construção e Obras</option>
+                        <option value="reparacoes">🔧 Reparações e Manutenção</option>
+                        <option value="servicos-domesticos">🏠 Serviços Domésticos</option>
+                        <option value="automovel">🚗 Automóvel e Transporte</option>
+                        <option value="tecnologia">💻 Tecnologia e Informática</option>
+                        <option value="saude-bem-estar">💆 Saúde e Bem-estar</option>
+                        <option value="educacao">📚 Educação e Formação</option>
+                        <option value="eventos">🎉 Eventos e Catering</option>
+                        <option value="fotografia-video">📸 Fotografia e Vídeo</option>
+                        <option value="design-marketing">🎨 Design e Marketing</option>
+                        <option value="consultoria">💼 Consultoria e Serviços Profissionais</option>
+                        <option value="outros">⚙️ Outros Serviços</option>
+                      </select>
                     </div>
                     
                     <div className="relative">
