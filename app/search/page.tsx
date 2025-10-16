@@ -75,7 +75,12 @@ export default function SearchPage() {
   // Função para lidar com seleção de localização
   const handleLocationSelect = (location: LocationData) => {
     setLocationData(location)
-    const locationString = `${location.parish}, ${location.council}, ${location.district}`
+    // Extrair informações de localização do endereço
+    const address = location.address || {}
+    const district = address.state || address.county || ''
+    const council = address.city || address.town || address.village || ''
+    const parish = address.village || address.town || ''
+    const locationString = `${parish}, ${council}, ${district}`
     setLocation(locationString)
   }
 
