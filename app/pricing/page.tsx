@@ -1,52 +1,53 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Check, Euro, Users, Star, Coins, CreditCard, Shield, TrendingUp, Zap } from 'lucide-react'
+import { Check, Euro, Users, Star, CreditCard, Shield, TrendingUp, Zap } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
-const coinPackages = [
+const qualityPackages = [
   {
     name: 'Única',
-    coins: 1,
+    quality: 1,
     price: 1.00,
     discount: 0,
-    costPerCoin: 1.00,
+    costPerQuality: 1.00,
     description: 'Perfeito para testar',
     color: 'bg-gray-600'
   },
   {
     name: 'Básico',
-    coins: 10,
+    quality: 10,
     price: 9.90,
     discount: 1,
-    costPerCoin: 0.99,
+    costPerQuality: 0.99,
     description: 'Ideal para começar',
     color: 'bg-blue-600'
   },
   {
     name: 'Padrão',
-    coins: 25,
+    quality: 25,
     price: 23.75,
     discount: 5,
-    costPerCoin: 0.95,
+    costPerQuality: 0.95,
     popular: true,
     description: 'Mais popular',
     color: 'bg-primary-600'
   },
   {
     name: 'Premium',
-    coins: 50,
+    quality: 50,
     price: 45.00,
     discount: 10,
-    costPerCoin: 0.90,
+    costPerQuality: 0.90,
     description: 'Melhor valor',
     color: 'bg-green-600'
   },
   {
     name: 'Pro',
-    coins: 100,
+    quality: 100,
     price: 85.00,
     discount: 15,
-    costPerCoin: 0.85,
+    costPerQuality: 0.85,
     description: 'Máxima economia',
     color: 'bg-purple-600'
   }
@@ -63,9 +64,15 @@ export default function PricingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <div className="flex items-center justify-center mb-6">
-                <Coins className="w-12 h-12 mr-3" />
+                <Image
+                  src="/favicon-32x32.png"
+                  alt="Quality"
+                  width={48}
+                  height={48}
+                  className="mr-3"
+                />
                 <h1 className="text-4xl lg:text-5xl font-bold">
-                  Sistema de Moedas
+                  Sistema de Quality
                 </h1>
               </div>
               <p className="text-xl text-primary-100 mb-8 max-w-3xl mx-auto">
@@ -86,7 +93,7 @@ export default function PricingPage() {
                   <Shield className="w-8 h-8 text-blue-400 mx-auto mb-3" />
                   <h3 className="font-semibold mb-2">Sem Expiracão</h3>
                   <p className="text-primary-100 text-sm">
-                    Suas moedas não expiram e podem ser usadas quando quiser
+                    Suas quality não expiram e podem ser usadas quando quiser
                   </p>
                 </div>
                 
@@ -94,7 +101,7 @@ export default function PricingPage() {
                   <CreditCard className="w-8 h-8 text-purple-400 mx-auto mb-3" />
                   <h3 className="font-semibold mb-2">Reembolso 30 dias</h3>
                   <p className="text-primary-100 text-sm">
-                    Garantia de reembolso para moedas não utilizadas
+                    Garantia de reembolso para quality não utilizadas
                   </p>
                 </div>
               </div>
@@ -131,7 +138,7 @@ export default function PricingPage() {
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Profissional Desbloqueia Contato</h3>
                 <p className="text-gray-600 text-sm">
-                  Profissionais usam 1 moeda para ver dados completos do cliente
+                  Profissionais usam 1 quality para ver dados completos do cliente
                 </p>
               </div>
               
@@ -153,7 +160,7 @@ export default function PricingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Pacotes de Moedas
+                Pacotes de Quality
               </h2>
               <p className="text-xl text-gray-600">
                 Escolha o pacote que melhor se adequa ao seu volume de negócios
@@ -161,10 +168,10 @@ export default function PricingPage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              {coinPackages.map((pkg, index) => (
+              {qualityPackages.map((pkg, index) => (
                 <div
                   key={index}
-                  className={`relative bg-white rounded-xl shadow-sm border-2 transition-all duration-200 hover:shadow-lg ${
+                  className={`relative bg-white rounded-xl shadow-sm border-2 transition-all duration-200 hover:shadow-lg flex flex-col ${
                     pkg.popular 
                       ? 'border-primary-500 ring-2 ring-primary-200' 
                       : 'border-gray-200 hover:border-primary-300'
@@ -179,13 +186,19 @@ export default function PricingPage() {
                     </div>
                   )}
                   
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col flex-grow">
                     <div className="text-center mb-6">
                       <h3 className="text-xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
                       <div className="flex items-center justify-center mb-2">
-                        <Coins className="w-6 h-6 text-primary-600 mr-2" />
-                        <span className="text-3xl font-bold text-primary-600">{pkg.coins}</span>
-                        <span className="text-gray-600 ml-1">moedas</span>
+                        <Image
+                          src="/favicon-32x32.png"
+                          alt="Quality"
+                          width={24}
+                          height={24}
+                          className="mr-2"
+                        />
+                        <span className="text-3xl font-bold text-primary-600">{pkg.quality}</span>
+                        <span className="text-gray-600 ml-1">quality</span>
                       </div>
                       <p className="text-sm text-gray-500">{pkg.description}</p>
                     </div>
@@ -198,16 +211,18 @@ export default function PricingPage() {
                         </div>
                       )}
                       <div className="text-xs text-gray-500">
-                        €{pkg.costPerCoin.toFixed(2)} por moeda
+                        €{pkg.costPerQuality.toFixed(2)} por quality
                       </div>
                     </div>
                     
-                    <Link
-                      href="/moedas"
-                      className={`w-full ${pkg.color} hover:opacity-90 text-white font-medium py-3 px-6 rounded-lg transition-opacity block text-center`}
-                    >
-                      Comprar Agora
-                    </Link>
+                    <div className="mt-auto">
+                      <Link
+                        href="/quality"
+                        className={`w-full ${pkg.color} hover:opacity-90 text-white font-medium py-3 px-6 rounded-lg transition-opacity block text-center`}
+                      >
+                        Comprar Agora
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -277,25 +292,25 @@ export default function PricingPage() {
                 </h3>
                 <p className="text-gray-600">
                   Acreditamos que encontrar o profissional certo deve ser sempre grátis. 
-                  Nossa receita vem dos profissionais que compram moedas para desbloquear contatos.
+                  Nossa receita vem dos profissionais que compram quality para desbloquear contatos.
                 </p>
               </div>
 
               <div className="bg-gray-50 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Como funcionam as moedas?
+                  Como funcionam as quality?
                 </h3>
                 <p className="text-gray-600">
-                  Profissionais compram pacotes de moedas e usam 1 moeda para desbloquear os dados de contato de um cliente interessado em seus serviços.
+                  Profissionais compram pacotes de quality e usam 1 quality para desbloquear os dados de contato de um cliente interessado em seus serviços.
                 </p>
               </div>
 
               <div className="bg-gray-50 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  As moedas expiram?
+                  As quality expiram?
                 </h3>
                 <p className="text-gray-600">
-                  Não! Suas moedas não expiram e podem ser usadas quando quiser. Você tem total controle sobre quando usar seus créditos.
+                  Não! Suas quality não expiram e podem ser usadas quando quiser. Você tem total controle sobre quando usar seus créditos.
                 </p>
               </div>
 
@@ -304,7 +319,7 @@ export default function PricingPage() {
                   Posso obter reembolso?
                 </h3>
                 <p className="text-gray-600">
-                  Sim! Oferecemos reembolso em 30 dias para moedas não utilizadas. Processo automático via Stripe.
+                  Sim! Oferecemos reembolso em 30 dias para quality não utilizadas. Processo automático via Stripe.
                 </p>
               </div>
 
@@ -313,7 +328,7 @@ export default function PricingPage() {
                   Como funciona o pagamento?
                 </h3>
                 <p className="text-gray-600">
-                  Aceitamos cartões de crédito e débito através do Stripe. Pagamento único por pacote de moedas, sem assinaturas mensais.
+                  Aceitamos cartões de crédito e débito através do Stripe. Pagamento único por pacote de quality, sem assinaturas mensais.
                 </p>
               </div>
 
@@ -322,7 +337,7 @@ export default function PricingPage() {
                   Qual o retorno do investimento?
                 </h3>
                 <p className="text-gray-600">
-                  Profissionais relatam ROI de 8.400%+. Com €23,75 (25 moedas) você pode desbloquear 25 clientes e potencialmente gerar €2.000+ em receita.
+                  Profissionais relatam ROI de 8.400%+. Com €23,75 (25 quality) você pode desbloquear 25 clientes e potencialmente gerar €2.000+ em receita.
                 </p>
               </div>
             </div>
@@ -372,7 +387,7 @@ export default function PricingPage() {
               <div className="mt-8 p-6 bg-green-50 rounded-lg">
                 <h4 className="font-semibold text-green-900 mb-2">Como funciona na prática:</h4>
                 <p className="text-green-800 text-sm">
-                  Com 25 moedas, você pode desbloquear 25 clientes interessados em pintura. 
+                  Com 25 quality, você pode desbloquear 25 clientes interessados em pintura. 
                   Se apenas 10% (2,5 clientes) contratarem seus serviços por €800 cada, 
                   você já terá recuperado o investimento e gerado lucro significativo.
                 </p>
@@ -398,10 +413,10 @@ export default function PricingPage() {
                 Cadastrar-se Agora
               </Link>
               <Link
-                href="/moedas"
+                href="/quality"
                 className="border border-white/30 text-white hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition-colors"
               >
-                Comprar Moedas
+                Comprar Quality
               </Link>
             </div>
           </div>

@@ -6,75 +6,76 @@ import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Button from '@/components/Button'
-import { Coins, CreditCard, Check, Star, TrendingUp, Shield } from 'lucide-react'
+import { CreditCard, Check, Star, TrendingUp, Shield } from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
+import Image from 'next/image'
 
-interface CoinPackage {
+interface QualityPackage {
   id: string
   name: string
-  coins: number
+  quality: number
   price: number
   discount: number
-  costPerCoin: number
+  costPerQuality: number
   popular?: boolean
   description: string
 }
 
-const coinPackages: CoinPackage[] = [
+const qualityPackages: QualityPackage[] = [
   {
     id: 'single',
     name: 'Única',
-    coins: 1,
+    quality: 1,
     price: 1.00,
     discount: 0,
-    costPerCoin: 1.00,
+    costPerQuality: 1.00,
     description: 'Perfeito para testar'
   },
   {
     id: 'basic',
     name: 'Básico',
-    coins: 10,
+    quality: 10,
     price: 9.90,
     discount: 1,
-    costPerCoin: 0.99,
+    costPerQuality: 0.99,
     description: 'Ideal para começar'
   },
   {
     id: 'standard',
     name: 'Padrão',
-    coins: 25,
+    quality: 25,
     price: 23.75,
     discount: 5,
-    costPerCoin: 0.95,
+    costPerQuality: 0.95,
     popular: true,
     description: 'Mais popular'
   },
   {
     id: 'premium',
     name: 'Premium',
-    coins: 50,
+    quality: 50,
     price: 45.00,
     discount: 10,
-    costPerCoin: 0.90,
+    costPerQuality: 0.90,
     description: 'Melhor valor'
   },
   {
     id: 'pro',
     name: 'Pro',
-    coins: 100,
+    quality: 100,
     price: 85.00,
     discount: 15,
-    costPerCoin: 0.85,
+    costPerQuality: 0.85,
     description: 'Máxima economia'
   }
 ]
 
-export default function MoedasPage() {
+export default function QualityPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [selectedPackage, setSelectedPackage] = useState<CoinPackage | null>(null)
+  const [selectedPackage, setSelectedPackage] = useState<QualityPackage | null>(null)
   const [loading, setLoading] = useState(false)
-  const [userCoins, setUserCoins] = useState(0)
+  const [userQuality, setUserQuality] = useState(0)
 
   // Verificar se o usuário está logado e é profissional
   useEffect(() => {
@@ -171,19 +172,31 @@ export default function MoedasPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <Coins className="w-12 h-12 text-primary-600 mr-3" />
-            <h1 className="text-4xl font-bold text-gray-900">Sistema de Moedas</h1>
+            <Image
+              src="/favicon-32x32.png"
+              alt="Quality"
+              width={48}
+              height={48}
+              className="mr-3"
+            />
+            <h1 className="text-4xl font-bold text-gray-900">Sistema de Quality</h1>
           </div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Desbloqueie contatos de clientes interessados em seus serviços. 
-            Compre moedas e conecte-se com leads qualificados.
+            Compre quality e conecte-se com leads qualificados.
           </p>
           
           {/* Saldo atual */}
           <div className="mt-6 inline-flex items-center bg-primary-50 px-6 py-3 rounded-full">
-            <Coins className="w-5 h-5 text-primary-600 mr-2" />
+            <Image
+              src="/favicon-32x32.png"
+              alt="Quality"
+              width={20}
+              height={20}
+              className="mr-2"
+            />
             <span className="text-lg font-semibold text-primary-700">
-              Seu saldo: {userCoins} moedas
+              Seu saldo: {userQuality} quality
             </span>
           </div>
         </div>

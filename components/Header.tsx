@@ -92,11 +92,17 @@ export default function Header() {
                     </Link>
                     {session.user.userType === 'PROFESSIONAL' && (
                       <Link
-                        href="/moedas"
+                        href="/quality"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        <Coins className="w-4 h-4 mr-3" />
-                        Moedas
+                        <Image
+                          src="/favicon-32x32.png"
+                          alt="Quality"
+                          width={16}
+                          height={16}
+                          className="mr-3"
+                        />
+                        Quality
                       </Link>
                     )}
                     <Link
