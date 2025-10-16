@@ -9,6 +9,8 @@ import { Eye, EyeOff, Mail, Lock, User, Phone, MapPin } from 'lucide-react'
 import Button from '@/components/Button'
 import Input from '@/components/Input'
 import Select from '@/components/Select'
+import LocationInput from '@/components/LocationInput'
+import { LocationData } from '@/lib/geolocation'
 
 const portugueseDistricts = [
   { value: 'lisboa', label: 'Lisboa' },
@@ -47,6 +49,7 @@ export default function SignUp() {
     specialties: '',
     experience: ''
   })
+  const [locationString, setLocationString] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -107,6 +110,16 @@ export default function SignUp() {
 
   const prevStep = () => {
     setStep(step - 1)
+  }
+
+  // Função para lidar com seleção de localização
+  const handleLocationSelect = (location: LocationData) => {
+    setFormData({
+      ...formData,
+      district: location.district,
+      council: location.council,
+      parish: location.parish
+    })
   }
 
   return (
@@ -272,31 +285,35 @@ export default function SignUp() {
                   helperText="Formato português: 9 dígitos"
                 />
 
-                <Select
-                  label="Distrito"
-                  value={formData.district}
-                  onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                  options={portugueseDistricts}
-                  required
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Localização
+                  </label>
+                  <LocationInput
+                    value={locationString}
+                    onChange={setLocationString}
+                    onLocationSelect={handleLocationSelect}
+                    placeholder="Digite sua localização ou use a localização atual"
+                    required
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Digite sua localização ou clique no ícone de localização para usar sua posição atual
+                  </p>
+                </div>
 
-                <Input
-                  label="Concelho"
-                  type="text"
-                  value={formData.council}
-                  onChange={(e) => setFormData({ ...formData, council: e.target.value })}
-                  placeholder="Ex: Lisboa, Porto, Braga"
-                  required
-                />
+                {/* Campos de localização preenchidos automaticamente */}
+                {formData.district && formData.council && formData.parish && (
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm text-green-700">
+                      <strong>Localização detectada:</strong> {formData.parish}, {formData.council}, {formData.district}
+                    </p>
+                  </div>
+                )}
 
-                <Input
-                  label="Freguesia"
-                  type="text"
-                  value={formData.parish}
-                  onChange={(e) => setFormData({ ...formData, parish: e.target.value })}
-                  placeholder="Sua freguesia"
-                  required
-                />
+                {/* Campos ocultos para envio do formulário */}
+                <input type="hidden" name="district" value={formData.district} />
+                <input type="hidden" name="council" value={formData.council} />
+                <input type="hidden" name="parish" value={formData.parish} />
 
                 {formData.userType === 'PROFESSIONAL' && (
                   <>

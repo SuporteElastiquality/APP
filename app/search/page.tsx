@@ -7,6 +7,8 @@ import Footer from '@/components/Footer'
 import { Search, MapPin, Star, Users, Award, Filter, ChevronLeft, ChevronRight } from 'lucide-react'
 import Button from '@/components/Button'
 import Card from '@/components/Card'
+import LocationInput from '@/components/LocationInput'
+import { LocationData } from '@/lib/geolocation'
 
 interface Professional {
   id: string
@@ -49,6 +51,7 @@ export default function SearchPage() {
   
   const [searchQuery, setSearchQuery] = useState('')
   const [location, setLocation] = useState('')
+  const [locationData, setLocationData] = useState<LocationData | null>(null)
   const [results, setResults] = useState<SearchResults | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -68,6 +71,13 @@ export default function SearchPage() {
       performSearch(service, loc, parseInt(page))
     }
   }, [searchParams])
+
+  // Função para lidar com seleção de localização
+  const handleLocationSelect = (location: LocationData) => {
+    setLocationData(location)
+    const locationString = `${location.parish}, ${location.council}, ${location.district}`
+    setLocation(locationString)
+  }
 
   const performSearch = async (service: string, loc: string, page: number = 1) => {
     if (!service.trim() && !loc.trim()) return
@@ -140,16 +150,12 @@ export default function SearchPage() {
                 />
               </div>
               
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Onde está localizado?"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-gray-900"
-                />
-              </div>
+              <LocationInput
+                value={location}
+                onChange={setLocation}
+                onLocationSelect={handleLocationSelect}
+                placeholder="Onde está localizado?"
+              />
               
               <Button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white">
                 Buscar Profissionais

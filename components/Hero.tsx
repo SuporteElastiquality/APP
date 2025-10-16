@@ -5,11 +5,19 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Search, MapPin, ChevronRight, Star, Users, Award } from 'lucide-react'
 import Button from './Button'
+import LocationInput from './LocationInput'
+import { LocationData } from '@/lib/geolocation'
 
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState('')
   const [location, setLocation] = useState('')
   const router = useRouter()
+
+  // Função para lidar com seleção de localização
+  const handleLocationSelect = (locationData: LocationData) => {
+    const locationString = `${locationData.parish}, ${locationData.council}, ${locationData.district}`
+    setLocation(locationString)
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,16 +73,13 @@ export default function Hero() {
                     />
                   </div>
                   
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <input
-                      type="text"
-                      placeholder="Onde está localizado?"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-gray-900"
-                    />
-                  </div>
+                  <LocationInput
+                    value={location}
+                    onChange={setLocation}
+                    onLocationSelect={handleLocationSelect}
+                    placeholder="Onde está localizado?"
+                    className="w-full"
+                  />
                   
                   <Button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white">
                     Buscar Profissionais
