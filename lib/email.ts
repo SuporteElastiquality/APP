@@ -11,10 +11,10 @@ export async function sendWelcomeEmail(email: string, name: string) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://appelastiquality-328pjpicm-suporte-elastiquality.vercel.app/logo.png" 
+            <h1 style="color: #3B82F6; font-size: 28px; margin: 0 0 20px 0;">Bem-vindo à</h1>
+            <img src="https://appelastiquality-rpimnnckw-suporte-elastiquality.vercel.app/logo.png" 
                  alt="Elastiquality" 
-                 style="height: 60px; margin-bottom: 20px;">
-            <h1 style="color: #3B82F6; font-size: 28px; margin: 0;">Bem-vindo à</h1>
+                 style="height: 60px;">
           </div>
           
           <div style="background: #F8FAFC; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
