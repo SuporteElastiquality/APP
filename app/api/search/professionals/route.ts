@@ -73,25 +73,29 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ Profissionais encontrados:', professionals.length)
 
-    // Filtrar por categoria se especificada
-    let filteredProfessionals = professionals
+    // Separar Elastiquality dos outros profissionais
+    const elastiqualityProf = professionals.find(prof => prof.email === 'elastiquality@elastiquality.pt')
+    const otherProfessionals = professionals.filter(prof => prof.email !== 'elastiquality@elastiquality.pt')
+
+    // Filtrar outros profissionais por categoria se especificada
+    let filteredOtherProfessionals = otherProfessionals
     if (category.trim()) {
-      filteredProfessionals = professionals.filter(prof => 
+      filteredOtherProfessionals = otherProfessionals.filter(prof => 
         prof.professionalProfile?.category?.toLowerCase().includes(category.toLowerCase())
       )
     }
 
-    // Filtrar por especialidade se especificada
+    // Filtrar outros profissionais por especialidade se especificada
     if (service.trim()) {
-      filteredProfessionals = filteredProfessionals.filter(prof => 
+      filteredOtherProfessionals = filteredOtherProfessionals.filter(prof => 
         prof.professionalProfile?.specialties?.toLowerCase().includes(service.toLowerCase())
       )
     }
 
-    // Filtrar por localização se especificada
+    // Filtrar outros profissionais por localização se especificada
     if (location.trim()) {
       const locationLower = location.toLowerCase()
-      filteredProfessionals = filteredProfessionals.filter(prof => {
+      filteredOtherProfessionals = filteredOtherProfessionals.filter(prof => {
         const profile = prof.professionalProfile
         return profile?.district?.toLowerCase().includes(locationLower) ||
                profile?.council?.toLowerCase().includes(locationLower) ||
@@ -99,16 +103,49 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Ordenar por proximidade administrativa
-    if (location.trim()) {
-      const locationLower = location.toLowerCase()
-      filteredProfessionals.sort((a, b) => {
-        const aProfile = a.professionalProfile
-        const bProfile = b.professionalProfile
+    // Combinar Elastiquality (sempre no topo) com outros profissionais filtrados
+    const filteredProfessionals = elastiqualityProf 
+      ? [elastiqualityProf, ...filteredOtherProfessionals]
+      : filteredOtherProfessionals
+
+    // Ordenar profissionais
+    filteredProfessionals.sort((a, b) => {
+      const aProfile = a.professionalProfile
+      const bProfile = b.professionalProfile
+      
+      if (!aProfile || !bProfile) return 0
+      
+      // Prioridade 1: Elastiquality sempre no topo
+      const aIsElastiquality = a.email === 'elastiquality@elastiquality.pt'
+      const bIsElastiquality = b.email === 'elastiquality@elastiquality.pt'
+      
+      if (aIsElastiquality && !bIsElastiquality) return -1
+      if (!aIsElastiquality && bIsElastiquality) return 1
+      
+      // Prioridade 2: Profissionais verificados e premium
+      const aIsVerified = aProfile.isVerified && aProfile.isPremium
+      const bIsVerified = bProfile.isVerified && bProfile.isPremium
+      
+      if (aIsVerified && !bIsVerified) return -1
+      if (!aIsVerified && bIsVerified) return 1
+      
+      // Prioridade 3: Melhor avaliação
+      const aRating = aProfile.rating || 0
+      const bRating = bProfile.rating || 0
+      
+      if (aRating !== bRating) return bRating - aRating
+      
+      // Prioridade 4: Mais trabalhos concluídos
+      const aCompleted = aProfile.completedJobs || 0
+      const bCompleted = bProfile.completedJobs || 0
+      
+      if (aCompleted !== bCompleted) return bCompleted - aCompleted
+      
+      // Prioridade 5: Proximidade administrativa (se localização especificada)
+      if (location.trim()) {
+        const locationLower = location.toLowerCase()
         
-        if (!aProfile || !bProfile) return 0
-        
-        // Prioridade 1: Mesma freguesia
+        // Mesma freguesia
         const aParish = aProfile.parish?.toLowerCase() || ''
         const bParish = bProfile.parish?.toLowerCase() || ''
         const aParishMatch = aParish.includes(locationLower) || locationLower.includes(aParish)
@@ -117,7 +154,7 @@ export async function GET(request: NextRequest) {
         if (aParishMatch && !bParishMatch) return -1
         if (!aParishMatch && bParishMatch) return 1
         
-        // Prioridade 2: Mesmo conselho
+        // Mesmo conselho
         const aCouncil = aProfile.council?.toLowerCase() || ''
         const bCouncil = bProfile.council?.toLowerCase() || ''
         const aCouncilMatch = aCouncil.includes(locationLower) || locationLower.includes(aCouncil)
@@ -126,7 +163,7 @@ export async function GET(request: NextRequest) {
         if (aCouncilMatch && !bCouncilMatch) return -1
         if (!aCouncilMatch && bCouncilMatch) return 1
         
-        // Prioridade 3: Mesmo distrito
+        // Mesmo distrito
         const aDistrict = aProfile.district?.toLowerCase() || ''
         const bDistrict = bProfile.district?.toLowerCase() || ''
         const aDistrictMatch = aDistrict.includes(locationLower) || locationLower.includes(aDistrict)
@@ -134,10 +171,10 @@ export async function GET(request: NextRequest) {
         
         if (aDistrictMatch && !bDistrictMatch) return -1
         if (!aDistrictMatch && bDistrictMatch) return 1
-        
-        return 0
-      })
-    }
+      }
+      
+      return 0
+    })
 
     // Preparar lista de profissionais
     const professionalsList = filteredProfessionals.map(prof => ({

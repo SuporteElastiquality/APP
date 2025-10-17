@@ -1,123 +1,104 @@
-const { PrismaClient } = require('@prisma/client')
-const bcrypt = require('bcryptjs')
-
-const prisma = new PrismaClient()
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
 async function createElastiqualityProfessional() {
+  const prisma = new PrismaClient();
+  
   try {
-    console.log('🌱 Criando usuário profissional Elastiquality...')
-
     // Verificar se já existe
     const existingUser = await prisma.user.findUnique({
       where: { email: 'elastiquality@elastiquality.pt' }
-    })
-
+    });
+    
     if (existingUser) {
-      console.log('⏭️  Usuário Elastiquality já existe, atualizando...')
+      console.log('Usuário já existe:', existingUser);
       
-      // Atualizar para profissional se não for
-      if (existingUser.userType !== 'PROFESSIONAL') {
-        await prisma.user.update({
-          where: { id: existingUser.id },
-          data: { userType: 'PROFESSIONAL' }
-        })
-        console.log('✅ Tipo de usuário atualizado para PROFESSIONAL')
-      }
-
-      // Verificar/atualizar perfil profissional
-      const existingProfile = await prisma.professionalProfile.findUnique({
+      // Verificar se tem perfil profissional
+      const professionalProfile = await prisma.professionalProfile.findUnique({
         where: { userId: existingUser.id }
-      })
-
-      if (existingProfile) {
-        await prisma.professionalProfile.update({
-          where: { userId: existingUser.id },
-          data: {
-            district: 'Lisboa',
-            council: 'Lisboa',
-            parish: 'Lisboa',
-            specialties: 'Canalizações,Eletricidade,Pintura,Carpintaria,Alvenaria,Telhados,Aquecimento,Ar Condicionado,Jardinagem,Limpeza,Mudanças,Reparações Gerais,Construção,Renovação,Manutenção,Instalações,Reparações Automóveis,Informática,Fotografia,Catering,Organização de Eventos,Design,Consultoria',
-            experience: 'Elastiquality é a plataforma líder em Portugal para conectar clientes com profissionais de serviços. Como intermediador oficial, garantimos a qualidade e confiabilidade de todos os serviços oferecidos através da nossa rede de profissionais verificados.',
-            rating: 5.0,
-            totalReviews: 1000,
-            completedJobs: 5000,
-            isVerified: true,
-            isActive: true,
-            isPremium: true
-          }
-        })
-        console.log('✅ Perfil profissional atualizado')
+      });
+      
+      if (professionalProfile) {
+        console.log('Perfil profissional já existe:', professionalProfile);
+        return;
       } else {
-        await prisma.professionalProfile.create({
+        console.log('Usuário existe mas não tem perfil profissional, criando...');
+        
+        // Criar perfil profissional
+        const newProfile = await prisma.professionalProfile.create({
           data: {
             userId: existingUser.id,
-            district: 'Lisboa',
-            council: 'Lisboa',
-            parish: 'Lisboa',
-            specialties: 'Canalizações,Eletricidade,Pintura,Carpintaria,Alvenaria,Telhados,Aquecimento,Ar Condicionado,Jardinagem,Limpeza,Mudanças,Reparações Gerais,Construção,Renovação,Manutenção,Instalações,Reparações Automóveis,Informática,Fotografia,Catering,Organização de Eventos,Design,Consultoria',
-            experience: 'Elastiquality é a plataforma líder em Portugal para conectar clientes com profissionais de serviços. Como intermediador oficial, garantimos a qualidade e confiabilidade de todos os serviços oferecidos através da nossa rede de profissionais verificados.',
+            district: 'Setúbal',
+            council: 'Seixal',
+            parish: 'Corroios',
+            address: 'Praceta Antero de Quental, Corroios',
+            postalCode: '2855-094',
+            category: 'construcao-reforma',
+            specialties: 'Pedreiro,Eletricista,Encanador,Pintor,Gesseiro,Azulejista,Instalador de drywall,Marcenaria e móveis sob medida',
+            experience: 'Mais de 10 anos de experiência em construção e reforma residencial e comercial',
+            bio: 'A Elastiquality é uma empresa especializada em serviços de construção e reforma, oferecendo soluções completas para residências e empresas. Nossa equipe de profissionais qualificados garante qualidade e pontualidade em todos os projetos.',
             rating: 5.0,
-            totalReviews: 1000,
-            completedJobs: 5000,
+            totalReviews: 0,
+            completedJobs: 0,
             isVerified: true,
             isActive: true,
             isPremium: true
           }
-        })
-        console.log('✅ Perfil profissional criado')
+        });
+        
+        console.log('Perfil profissional criado:', newProfile);
       }
-
-      console.log('🎉 Usuário Elastiquality atualizado com sucesso!')
-      return
+    } else {
+      console.log('Usuário não existe, criando usuário e perfil profissional...');
+      
+      // Criar hash da senha
+      const hashedPassword = await bcrypt.hash('Elastiquality123!', 12);
+      
+      // Criar usuário
+      const newUser = await prisma.user.create({
+        data: {
+          name: 'Elastiquality',
+          email: 'elastiquality@elastiquality.pt',
+          password: hashedPassword,
+          userType: 'PROFESSIONAL',
+          emailVerified: new Date()
+        }
+      });
+      
+      console.log('Usuário criado:', newUser);
+      
+      // Criar perfil profissional
+      const newProfile = await prisma.professionalProfile.create({
+        data: {
+          userId: newUser.id,
+          district: 'Setúbal',
+          council: 'Seixal',
+          parish: 'Corroios',
+          address: 'Praceta Antero de Quental, Corroios',
+          postalCode: '2855-094',
+          category: 'construcao-reforma',
+          specialties: 'Pedreiro,Eletricista,Encanador,Pintor,Gesseiro,Azulejista,Instalador de drywall,Marcenaria e móveis sob medida',
+          experience: 'Mais de 10 anos de experiência em construção e reforma residencial e comercial',
+          bio: 'A Elastiquality é uma empresa especializada em serviços de construção e reforma, oferecendo soluções completas para residências e empresas. Nossa equipe de profissionais qualificados garante qualidade e pontualidade em todos os projetos.',
+          rating: 5.0,
+          totalReviews: 0,
+          completedJobs: 0,
+          isVerified: true,
+          isActive: true,
+          isPremium: true
+        }
+      });
+      
+      console.log('Perfil profissional criado:', newProfile);
     }
-
-    // Hash da senha
-    const hashedPassword = await bcrypt.hash('Elastiquality2024!', 12)
-
-    // Criar usuário
-    const user = await prisma.user.create({
-      data: {
-        name: 'Elastiquality',
-        email: 'elastiquality@elastiquality.pt',
-        phone: '912345678',
-        password: hashedPassword,
-        userType: 'PROFESSIONAL',
-      }
-    })
-
-    console.log('✅ Usuário Elastiquality criado com sucesso')
-
-    // Criar perfil profissional
-    await prisma.professionalProfile.create({
-      data: {
-        userId: user.id,
-        district: 'Lisboa',
-        council: 'Lisboa',
-        parish: 'Lisboa',
-        specialties: 'Canalizações,Eletricidade,Pintura,Carpintaria,Alvenaria,Telhados,Aquecimento,Ar Condicionado,Jardinagem,Limpeza,Mudanças,Reparações Gerais,Construção,Renovação,Manutenção,Instalações,Reparações Automóveis,Informática,Fotografia,Catering,Organização de Eventos,Design,Consultoria',
-        experience: 'Elastiquality é a plataforma líder em Portugal para conectar clientes com profissionais de serviços. Como intermediador oficial, garantimos a qualidade e confiabilidade de todos os serviços oferecidos através da nossa rede de profissionais verificados.',
-        rating: 5.0,
-        totalReviews: 1000,
-        completedJobs: 5000,
-        isVerified: true,
-        isActive: true,
-        isPremium: true
-      }
-    })
-
-    console.log('✅ Perfil profissional Elastiquality criado com sucesso')
-    console.log('🎉 Usuário profissional Elastiquality criado com sucesso!')
-    console.log('📧 Email: elastiquality@elastiquality.pt')
-    console.log('🔑 Senha: Elastiquality2024!')
-    console.log('⭐ Rating: 5.0 (1000 avaliações)')
-    console.log('🏆 Status: Verificado, Ativo, Premium')
-    console.log('🔧 Especialidades: Todas as categorias de serviços')
-
+    
+    console.log('✅ Elastiquality profissional configurada com sucesso!');
+    
   } catch (error) {
-    console.error('❌ Erro ao criar usuário Elastiquality:', error)
+    console.error('❌ Erro ao criar profissional Elastiquality:', error);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }
 
-createElastiqualityProfessional()
+createElastiqualityProfessional();
