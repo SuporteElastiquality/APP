@@ -1,6 +1,7 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Search, MessageCircle, CheckCircle, Star, ArrowRight, Clock, Euro, Shield } from 'lucide-react'
+import Link from 'next/link'
 
 const steps = [
   {
@@ -274,12 +275,18 @@ export default function HowItWorksPage() {
               Milhares de clientes já encontraram os melhores profissionais através da nossa plataforma.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-primary-600 hover:bg-gray-50 px-8 py-3 rounded-lg font-medium transition-colors">
+              <Link
+                href="/auth/signup"
+                className="bg-white text-primary-600 hover:bg-gray-50 px-8 py-3 rounded-lg font-medium transition-colors"
+              >
                 Solicitar um Serviço
-              </button>
-              <button className="border border-white/30 text-white hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition-colors">
+              </Link>
+              <Link
+                href="/services"
+                className="border border-white/30 text-white hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition-colors"
+              >
                 Ver Serviços Disponíveis
-              </button>
+              </Link>
             </div>
           </div>
         </section>
