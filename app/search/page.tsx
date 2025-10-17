@@ -421,26 +421,17 @@ export default function SearchPage() {
                   </div>
                   
                   <div className="mt-6 pt-4 border-t border-gray-200">
-                    {prof.isElastiquality ? (
-                      <div className="space-y-2">
-                        <Button 
-                          onClick={() => window.open('mailto:elastiquality@elastiquality.pt?subject=Contato via Elastiquality&body=Olá, gostaria de solicitar um orçamento para o serviço de ' + (results?.searchParams.service || 'serviço') + '.', '_blank')}
-                          className="w-full bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700"
-                        >
-                          📧 Enviar Email
-                        </Button>
-                        <Button 
-                          onClick={() => window.open('tel:+351900000000', '_self')}
-                          className="w-full bg-green-600 hover:bg-green-700"
-                        >
-                          📞 Ligar Agora
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button className="w-full">
-                        Ver Perfil
-                      </Button>
-                    )}
+                    <Button 
+                      onClick={() => {
+                        // Extrair apenas o primeiro nome
+                        const firstName = prof.name.split(' ')[0]
+                        // Redirecionar para página de mensagens com o profissional
+                        router.push(`/messages?professional=${prof.id}&name=${firstName}`)
+                      }}
+                      className={`w-full ${prof.isElastiquality ? 'bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700' : ''}`}
+                    >
+                      Contatar {prof.name.split(' ')[0]}
+                    </Button>
                   </div>
                 </Card>
               ))}

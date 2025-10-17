@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { MessageCircle, Send, User, Clock, Search, Plus } from 'lucide-react'
@@ -45,6 +45,7 @@ interface Message {
 export default function MessagesPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [rooms, setRooms] = useState<ChatRoom[]>([])
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
@@ -52,6 +53,8 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [targetProfessional, setTargetProfessional] = useState<string | null>(null)
+  const [targetName, setTargetName] = useState<string | null>(null)
 
   // Redirecionar se não autenticado
   useEffect(() => {
@@ -59,6 +62,17 @@ export default function MessagesPage() {
       router.push('/auth/signin')
     }
   }, [status, router])
+
+  // Carregar parâmetros da URL
+  useEffect(() => {
+    const professional = searchParams.get('professional')
+    const name = searchParams.get('name')
+    
+    if (professional && name) {
+      setTargetProfessional(professional)
+      setTargetName(name)
+    }
+  }, [searchParams])
 
   // Carregar salas de chat
   useEffect(() => {
@@ -80,11 +94,51 @@ export default function MessagesPage() {
       if (response.ok) {
         const data = await response.json()
         setRooms(data)
+        
+        // Se há um profissional alvo, procurar ou criar conversa
+        if (targetProfessional && targetName) {
+          const existingRoom = data.find((room: ChatRoom) => 
+            room.participants.some(p => p.id === targetProfessional)
+          )
+          
+          if (existingRoom) {
+            setSelectedRoom(existingRoom)
+          } else {
+            // Criar nova conversa
+            await createNewConversation()
+          }
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar salas de chat:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const createNewConversation = async () => {
+    if (!targetProfessional || !session?.user?.id) return
+
+    try {
+      const response = await fetch('/api/chat/rooms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          participantId: targetProfessional,
+          type: 'DIRECT'
+        }),
+      })
+
+      if (response.ok) {
+        const newRoom = await response.json()
+        setSelectedRoom(newRoom)
+        // Recarregar lista de salas
+        loadChatRooms()
+      }
+    } catch (error) {
+      console.error('Erro ao criar conversa:', error)
     }
   }
 
@@ -216,7 +270,7 @@ export default function MessagesPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <h3 className="text-sm font-medium text-gray-900 truncate">
-                              {participant?.name}
+                              {participant?.name.split(' ')[0]}
                             </h3>
                             <span className="text-xs text-gray-500">
                               {lastMessage ? new Date(lastMessage.createdAt).toLocaleTimeString('pt-BR', {
@@ -268,7 +322,7 @@ export default function MessagesPage() {
                     </div>
                     <div>
                       <h2 className="text-lg font-medium text-gray-900">
-                        {selectedRoom.participants[0]?.name}
+                        {selectedRoom.participants[0]?.name.split(' ')[0]}
                       </h2>
                       <p className="text-sm text-gray-500">
                         {selectedRoom.participants[0]?.userType === 'PROFESSIONAL' ? 'Profissional' : 'Cliente'}
