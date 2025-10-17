@@ -110,6 +110,11 @@ export default function AddressAutocomplete({
     const parish = address.village || address.town || ''
     const postalCode = address.postcode || ''
 
+    // Fechar sugestões e limpar IMEDIATAMENTE
+    setShowSuggestions(false)
+    setSuggestions([])
+    setSelectedIndex(-1)
+
     // Atualizar o campo de morada
     onChange(morada)
 
@@ -121,11 +126,6 @@ export default function AddressAutocomplete({
       parish,
       postalCode
     })
-
-    // Fechar sugestões e limpar
-    setShowSuggestions(false)
-    setSuggestions([])
-    setSelectedIndex(-1)
     
     // Focar no próximo campo (número da casa)
     setTimeout(() => {

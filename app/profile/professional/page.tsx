@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Button from '@/components/Button'
 import Input from '@/components/Input'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import AddressAutocomplete from '@/components/AddressAutocomplete'
 
 interface ProfessionalProfile {
@@ -174,17 +176,6 @@ export default function ProfessionalProfilePage() {
       newErrors.phone = 'Telefone deve ter 9 dígitos começando com 9'
     }
     
-    if (!formData.district.trim()) {
-      newErrors.district = 'Distrito é obrigatório'
-    }
-    
-    if (!formData.council.trim()) {
-      newErrors.council = 'Conselho é obrigatório'
-    }
-    
-    if (!formData.parish.trim()) {
-      newErrors.parish = 'Freguesia é obrigatória'
-    }
     
     if (!formData.morada.trim()) {
       newErrors.morada = 'Morada é obrigatória'
@@ -293,8 +284,11 @@ export default function ProfessionalProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <div className="py-8">
+        <div className="max-w-6xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {/* Header */}
           <div className="bg-green-600 px-6 py-8 text-white">
@@ -437,44 +431,6 @@ export default function ProfessionalProfilePage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div>
-                    <Input
-                      label="Distrito"
-                      value={formData.district}
-                      onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                      placeholder="Preenchido automaticamente"
-                      className="bg-gray-50"
-                      required
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
-                    {errors.district && <p className="text-red-500 text-sm mt-1">{errors.district}</p>}
-                  </div>
-                  <div>
-                    <Input
-                      label="Conselho"
-                      value={formData.council}
-                      onChange={(e) => setFormData({ ...formData, council: e.target.value })}
-                      placeholder="Preenchido automaticamente"
-                      className="bg-gray-50"
-                      required
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
-                    {errors.council && <p className="text-red-500 text-sm mt-1">{errors.council}</p>}
-                  </div>
-                  <div>
-                    <Input
-                      label="Freguesia"
-                      value={formData.parish}
-                      onChange={(e) => setFormData({ ...formData, parish: e.target.value })}
-                      placeholder="Preenchido automaticamente"
-                      className="bg-gray-50"
-                      required
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
-                    {errors.parish && <p className="text-red-500 text-sm mt-1">{errors.parish}</p>}
-                  </div>
-                </div>
                 
                 <div>
                   <Input
@@ -664,7 +620,10 @@ export default function ProfessionalProfilePage() {
             <p className="text-sm text-gray-600">Taxa de conclusão</p>
           </div>
         </div>
+        </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }
