@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Button from '@/components/Button'
 import Input from '@/components/Input'
+import AddressAutocomplete from '@/components/AddressAutocomplete'
 
 interface ProfessionalProfile {
   id: string
@@ -15,7 +16,9 @@ interface ProfessionalProfile {
   district: string
   council: string
   parish: string
-  address: string
+  morada: string
+  houseNumber: string
+  apartment: string
   postalCode: string
   specialties: string[]
   experience: string
@@ -39,7 +42,9 @@ export default function ProfessionalProfilePage() {
     district: '',
     council: '',
     parish: '',
-    address: '',
+    morada: '',
+    houseNumber: '',
+    apartment: '',
     postalCode: '',
     specialties: [] as string[],
     experience: '',
@@ -87,7 +92,9 @@ export default function ProfessionalProfilePage() {
           district: data.district || '',
           council: data.council || '',
           parish: data.parish || '',
-          address: data.address || '',
+          morada: data.morada || '',
+          houseNumber: data.houseNumber || '',
+          apartment: data.apartment || '',
           postalCode: data.postalCode || '',
           specialties: data.specialties || [],
           experience: data.experience || '',
@@ -103,7 +110,9 @@ export default function ProfessionalProfilePage() {
           district: '',
           council: '',
           parish: '',
-          address: '',
+          morada: '',
+          houseNumber: '',
+          apartment: '',
           postalCode: '',
           specialties: [],
           experience: '',
@@ -126,7 +135,9 @@ export default function ProfessionalProfilePage() {
         district: '',
         council: '',
         parish: '',
-        address: '',
+        morada: '',
+        houseNumber: '',
+        apartment: '',
         postalCode: '',
         specialties: [],
         experience: '',
@@ -175,10 +186,10 @@ export default function ProfessionalProfilePage() {
       newErrors.parish = 'Freguesia é obrigatória'
     }
     
-    if (!formData.address.trim()) {
-      newErrors.address = 'Morada é obrigatória'
-    } else if (formData.address.trim().length < 5) {
-      newErrors.address = 'Morada deve ter pelo menos 5 caracteres'
+    if (!formData.morada.trim()) {
+      newErrors.morada = 'Morada é obrigatória'
+    } else if (formData.morada.trim().length < 5) {
+      newErrors.morada = 'Morada deve ter pelo menos 5 caracteres'
     }
     
     if (!formData.postalCode.trim()) {
@@ -242,6 +253,23 @@ export default function ProfessionalProfilePage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleAddressSelect = (addressData: {
+    morada: string
+    district: string
+    council: string
+    parish: string
+    postalCode: string
+  }) => {
+    setFormData(prev => ({
+      ...prev,
+      morada: addressData.morada,
+      district: addressData.district,
+      council: addressData.council,
+      parish: addressData.parish,
+      postalCode: addressData.postalCode
+    }))
   }
 
   const toggleSpecialty = (specialty: string) => {
@@ -379,14 +407,73 @@ export default function ProfessionalProfilePage() {
                 </div>
                 
                 <div>
-                  <Input
-                    label="Morada"
-                    value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    placeholder="Rua, número, andar, etc."
+                  <AddressAutocomplete
+                    label="Morada (Rua/Avenida/Praceta)"
+                    value={formData.morada}
+                    onChange={(value) => setFormData({ ...formData, morada: value })}
+                    onAddressSelect={handleAddressSelect}
+                    placeholder="Digite sua morada..."
                     required
+                    error={errors.morada}
                   />
-                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Input
+                      label="Número da Casa/Prédio"
+                      value={formData.houseNumber}
+                      onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
+                      placeholder="Ex: 123"
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      label="Apartamento/Sala (opcional)"
+                      value={formData.apartment}
+                      onChange={(e) => setFormData({ ...formData, apartment: e.target.value })}
+                      placeholder="Ex: 3F"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <Input
+                      label="Distrito"
+                      value={formData.district}
+                      onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                      placeholder="Preenchido automaticamente"
+                      className="bg-gray-50"
+                      required
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
+                    {errors.district && <p className="text-red-500 text-sm mt-1">{errors.district}</p>}
+                  </div>
+                  <div>
+                    <Input
+                      label="Conselho"
+                      value={formData.council}
+                      onChange={(e) => setFormData({ ...formData, council: e.target.value })}
+                      placeholder="Preenchido automaticamente"
+                      className="bg-gray-50"
+                      required
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
+                    {errors.council && <p className="text-red-500 text-sm mt-1">{errors.council}</p>}
+                  </div>
+                  <div>
+                    <Input
+                      label="Freguesia"
+                      value={formData.parish}
+                      onChange={(e) => setFormData({ ...formData, parish: e.target.value })}
+                      placeholder="Preenchido automaticamente"
+                      className="bg-gray-50"
+                      required
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
+                    {errors.parish && <p className="text-red-500 text-sm mt-1">{errors.parish}</p>}
+                  </div>
                 </div>
                 
                 <div>
@@ -394,10 +481,12 @@ export default function ProfessionalProfilePage() {
                     label="Código Postal"
                     value={formData.postalCode}
                     onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
-                    placeholder="1000-001"
+                    placeholder="1000-001 (preenchido automaticamente)"
+                    className="bg-gray-50"
                     required
                   />
                   {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>}
+                  <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
                 </div>
 
                 <div>
@@ -504,7 +593,11 @@ export default function ProfessionalProfilePage() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Morada
                       </label>
-                      <p className="text-gray-900">{profile?.address || 'Não informado'}</p>
+                      <p className="text-gray-900">
+                        {profile?.morada || 'Não informado'}
+                        {profile?.houseNumber && `, ${profile.houseNumber}`}
+                        {profile?.apartment && `, ${profile.apartment}`}
+                      </p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -103,7 +103,9 @@ model ProfessionalProfile {
   district    String   // Distrito
   council     String   // Conselho/Concelho
   parish      String   // Freguesia
-  address     String?  // Endereço completo
+  address     String?  // Endereço completo (morada)
+  houseNumber String?  // Número da casa/prédio (opcional)
+  apartment   String?  // Apartamento/sala (opcional)
   postalCode  String?  // Código postal português
   
         // Coordenadas geográficas (removidas - não mais necessárias)
