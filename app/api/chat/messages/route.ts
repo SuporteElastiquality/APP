@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
 
     // Enviar notificação por email para o destinatário
     const recipient = room.participants.find(p => p.id !== session.user.id)
-    if (recipient) {
+    if (recipient && recipient.name && recipient.email) {
       try {
         await sendNewMessageNotification({
           recipientName: recipient.name,
