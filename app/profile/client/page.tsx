@@ -36,7 +36,8 @@ export default function ClientProfilePage() {
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     phone: '',
     district: '',
     council: '',
@@ -85,8 +86,14 @@ export default function ClientProfilePage() {
       if (response.ok) {
         const data = await response.json()
         setProfile(data)
+        // Separar nome completo em primeiro nome e apelido
+        const nameParts = data.name.split(' ')
+        const firstName = nameParts[0] || ''
+        const lastName = nameParts.slice(1).join(' ') || ''
+        
         setFormData({
-          name: data.name,
+          firstName,
+          lastName,
           phone: data.phone,
           district: data.district,
           council: data.council,
@@ -129,10 +136,16 @@ export default function ClientProfilePage() {
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {}
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Nome é obrigatório'
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Nome deve ter pelo menos 2 caracteres'
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'Nome é obrigatório'
+    } else if (formData.firstName.trim().length < 2) {
+      newErrors.firstName = 'Nome deve ter pelo menos 2 caracteres'
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Apelido é obrigatório'
+    } else if (formData.lastName.trim().length < 2) {
+      newErrors.lastName = 'Apelido deve ter pelo menos 2 caracteres'
     }
 
     if (!formData.phone.trim()) {
@@ -176,12 +189,18 @@ export default function ClientProfilePage() {
 
     setSaving(true)
     try {
+      // Combinar firstName e lastName em name para a API
+      const dataToSend = {
+        ...formData,
+        name: `${formData.firstName} ${formData.lastName}`.trim()
+      }
+      
       const response = await fetch('/api/profile/client', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(dataToSend)
       })
 
       if (response.ok) {
@@ -257,24 +276,36 @@ export default function ClientProfilePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <Input
-                      label="Nome Completo"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      label="Nome"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                      placeholder="Seu nome"
                       required
                     />
-                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                    {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
                   </div>
                   <div>
                     <Input
-                      label="Telefone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="912345678"
+                      label="Apelido"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                      placeholder="Seu apelido"
                       required
                     />
-                    {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                    {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
                   </div>
+                </div>
+                
+                <div>
+                  <Input
+                    label="Telefone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="912345678"
+                    required
+                  />
+                  {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
                 </div>
                 
                 <div>
@@ -388,9 +419,15 @@ export default function ClientProfilePage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Nome Completo
+                        Nome
                       </label>
-                      <p className="text-gray-900">{profile?.name}</p>
+                      <p className="text-gray-900">{profile?.name?.split(' ')[0] || ''}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Apelido
+                      </label>
+                      <p className="text-gray-900">{profile?.name?.split(' ').slice(1).join(' ') || ''}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
