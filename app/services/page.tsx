@@ -1,15 +1,17 @@
+'use client'
+
+import { useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Search, MapPin, Filter, Star, Clock, Euro } from 'lucide-react'
+import { Search, MapPin, Filter, Star } from 'lucide-react'
 import Link from 'next/link'
 
-const services = [
+const allServices = [
   {
     id: 1,
     name: 'Eletricista',
     category: 'Reparações',
     description: 'Instalações elétricas, reparações e manutenção',
-    price: '€25-50/hora',
     rating: 4.8,
     reviews: 156,
     image: null
@@ -19,7 +21,6 @@ const services = [
     name: 'Canalizador',
     category: 'Reparações',
     description: 'Reparações de canalizações e instalações',
-    price: '€30-60/hora',
     rating: 4.9,
     reviews: 203,
     image: null
@@ -29,7 +30,6 @@ const services = [
     name: 'Limpeza Doméstica',
     category: 'Casa e Jardim',
     description: 'Serviços de limpeza e organização',
-    price: '€15-25/hora',
     rating: 4.7,
     reviews: 89,
     image: null
@@ -39,7 +39,6 @@ const services = [
     name: 'Jardinagem',
     category: 'Casa e Jardim',
     description: 'Manutenção de jardins e paisagismo',
-    price: '€20-35/hora',
     rating: 4.8,
     reviews: 124,
     image: null
@@ -49,7 +48,6 @@ const services = [
     name: 'Pintor',
     category: 'Casa e Jardim',
     description: 'Pintura de interiores e exteriores',
-    price: '€18-30/hora',
     rating: 4.6,
     reviews: 97,
     image: null
@@ -59,14 +57,89 @@ const services = [
     name: 'Mecânico',
     category: 'Automóvel',
     description: 'Reparações e manutenção automóvel',
-    price: '€35-70/hora',
     rating: 4.9,
     reviews: 178,
+    image: null
+  },
+  {
+    id: 7,
+    name: 'Cabeleireiro',
+    category: 'Beleza',
+    description: 'Cortes, penteados e tratamentos capilares',
+    rating: 4.8,
+    reviews: 234,
+    image: null
+  },
+  {
+    id: 8,
+    name: 'Fisioterapeuta',
+    category: 'Saúde',
+    description: 'Tratamentos fisioterapêuticos',
+    rating: 4.9,
+    reviews: 167,
+    image: null
+  },
+  {
+    id: 9,
+    name: 'Designer Gráfico',
+    category: 'Criativo',
+    description: 'Design de logotipos e identidade visual',
+    rating: 4.7,
+    reviews: 123,
+    image: null
+  },
+  {
+    id: 10,
+    name: 'Fotógrafo',
+    category: 'Eventos',
+    description: 'Fotografia de eventos e retratos',
+    rating: 4.8,
+    reviews: 145,
+    image: null
+  },
+  {
+    id: 11,
+    name: 'Personal Trainer',
+    category: 'Saúde',
+    description: 'Treino personalizado e fitness',
+    rating: 4.6,
+    reviews: 98,
+    image: null
+  },
+  {
+    id: 12,
+    name: 'Consultor Contabilístico',
+    category: 'Administrativo',
+    description: 'Serviços contabilísticos e fiscais',
+    rating: 4.8,
+    reviews: 134,
     image: null
   }
 ]
 
+// Função para mapear categorias para IDs
+const getCategoryId = (category: string) => {
+  const categoryMap: { [key: string]: string } = {
+    'Reparações': 'construcao-reforma',
+    'Casa e Jardim': 'limpeza',
+    'Automóvel': 'automotivos',
+    'Beleza': 'beleza-estetica',
+    'Saúde': 'saude-bem-estar',
+    'Criativo': 'criativos-design',
+    'Eventos': 'eventos-festas',
+    'Administrativo': 'administrativos-financeiros'
+  }
+  return categoryMap[category] || 'construcao-reforma'
+}
+
 export default function ServicesPage() {
+  const [visibleServices, setVisibleServices] = useState(6)
+
+  const loadMoreServices = () => {
+    setVisibleServices(prev => prev + 6)
+  }
+
+  const services = allServices.slice(0, visibleServices)
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -186,7 +259,12 @@ export default function ServicesPage() {
                   
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-primary-600 font-medium">{service.category}</span>
+                      <Link 
+                        href={`/services/${getCategoryId(service.category)}`}
+                        className="text-sm text-primary-600 font-medium hover:text-primary-700 transition-colors"
+                      >
+                        {service.category}
+                      </Link>
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                         <span className="text-sm text-gray-600">{service.rating}</span>
@@ -197,12 +275,7 @@ export default function ServicesPage() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">{service.name}</h3>
                     <p className="text-gray-600 mb-4">{service.description}</p>
                     
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-1 text-green-600">
-                        <Euro className="w-4 h-4" />
-                        <span className="font-medium">{service.price}</span>
-                      </div>
-                      
+                    <div className="flex justify-end">
                       <Link
                         href={`/search?service=${encodeURIComponent(service.name)}`}
                         className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
@@ -216,11 +289,16 @@ export default function ServicesPage() {
             </div>
             
             {/* Load More */}
-            <div className="text-center mt-12">
-              <button className="bg-white border border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-3 rounded-lg font-medium transition-colors">
-                Carregar Mais Serviços
-              </button>
-            </div>
+            {visibleServices < allServices.length && (
+              <div className="text-center mt-12">
+                <button 
+                  onClick={loadMoreServices}
+                  className="bg-white border border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Carregar Mais Serviços
+                </button>
+              </div>
+            )}
           </div>
         </section>
 

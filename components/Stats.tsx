@@ -1,29 +1,11 @@
-import { Users, Star, MapPin, Award } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 
 const stats = [
-  {
-    icon: Users,
-    value: '50,000+',
-    label: 'Profissionais Cadastrados',
-    description: 'Em todo o território português'
-  },
-  {
-    icon: Star,
-    value: '4.8/5',
-    label: 'Avaliação Média',
-    description: 'Baseada em 100,000+ avaliações'
-  },
   {
     icon: MapPin,
     value: '308',
     label: 'Concelhos Cobertos',
     description: 'Em Portugal Continental e Ilhas'
-  },
-  {
-    icon: Award,
-    value: '98%',
-    label: 'Taxa de Satisfação',
-    description: 'Clientes satisfeitos com o serviço'
   }
 ]
 
@@ -31,7 +13,7 @@ export default function Stats() {
   return (
     <section className="py-16 bg-primary-600 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="flex justify-center">
           {stats.map((stat, index) => {
             const IconComponent = stat.icon
             return (

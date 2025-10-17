@@ -2,74 +2,74 @@
 export const SERVICE_CATEGORIES = [
   {
     id: 'construcao-reforma',
-    name: 'Construção e Reforma',
-    description: 'Pedreiro, Eletricista, Encanador, Pintor, Gesseiro, Azulejista, Drywall, Marcenaria',
+    name: 'Serviços de Construção e Remodelação',
+    description: 'Pedreiro, Eletricista, Canalizador, Pintor, Gesseiro, Azulejista, Instalador de Pladur, Marcenaria e móveis sob medida, Carpinteiro',
     icon: '🏗️'
   },
   {
     id: 'servicos-domesticos',
     name: 'Serviços Domésticos',
-    description: 'Diarista, Passadeira, Cozinheira, Babá, Cuidador de idosos, Lavanderia',
+    description: 'Engomadeira, Cozinheira, Ama (Babysitter), Cuidador de idosos, Lavanderia',
     icon: '🏠'
   },
   {
     id: 'limpeza',
     name: 'Serviços de Limpeza',
-    description: 'Limpeza residencial, pós-obra, comercial, vidros, estofados, caixa d\'água',
+    description: 'Limpeza residencial, Limpeza pós-obra, Limpeza comercial/empresarial, Limpeza de vidros, Limpeza de estofos e carpetes',
     icon: '🧹'
   },
   {
     id: 'tecnologia-informatica',
-    name: 'Tecnologia e Informática',
-    description: 'Suporte técnico, formatação, redes, desenvolvimento, marketing digital',
+    name: 'Serviços de Tecnologia e Informática',
+    description: 'Suporte técnico, Formatação e manutenção de computadores, Instalação de redes (Wi-Fi, cabeamento), Desenvolvimento de sites, Criação de aplicativos, Marketing digital (tráfego pago, SEO, redes sociais)',
     icon: '💻'
   },
   {
     id: 'automotivos',
-    name: 'Serviços Automotivos',
-    description: 'Mecânico, funilaria, troca de óleo, guincho, higienização, polimento',
+    name: 'Serviço Automóvel',
+    description: 'Mecânica, Eletricista auto, Chapa e pintura, Mudança de óleo, Serviço de reboque, Higienização interna, Polimento e cristalização, Reparação/Carregamento de ar-condicionado',
     icon: '🚗'
   },
   {
     id: 'beleza-estetica',
     name: 'Beleza e Estética',
-    description: 'Cabeleireiro, maquiagem, manicure, depilação, esteticista, massoterapia',
+    description: 'Cabeleireiro, Maquiador(a), Manicure e pedicure, Unhas de Gel/Gelinho, Massagens relaxamento, Depilação, Designer de sobrancelhas, Esteticista (limpeza de pele, peeling, etc.), Massoterapeuta',
     icon: '💄'
   },
   {
     id: 'saude-bem-estar',
-    name: 'Saúde e Bem-estar',
-    description: 'Fisioterapia, nutrição, personal trainer, psicologia, acupuntura',
+    name: 'Serviços de Saúde e Bem-Estar',
+    description: 'Fisioterapia, Nutricionista, Personal trainer, Psicólogo, Terapeuta ocupacional, Acupuntura',
     icon: '💆'
   },
   {
     id: 'transporte-logistica',
-    name: 'Transporte e Logística',
-    description: 'Frete, mudanças, motoboy, transporte executivo, aluguel de veículos',
+    name: 'Serviços de Transporte e Logística',
+    description: 'Transporte e mudanças, Serviço de entregas, Transporte executivo, Transporte escolar, Aluguer de viaturas',
     icon: '🚛'
   },
   {
     id: 'educacao',
-    name: 'Serviços Educacionais',
-    description: 'Aulas particulares, reforço escolar, cursos online, tradução',
+    name: 'Educação',
+    description: 'Aulas particulares (matemática, inglês, etc.), Reforço escolar, Cursos online, Tradução e revisão de textos, Treino corporativo',
     icon: '📚'
   },
   {
     id: 'eventos-festas',
     name: 'Eventos e Festas',
-    description: 'Buffet, garçom, DJ, fotografia, decoração, cerimonialista',
+    description: 'Buffet, Empregado de mesa/copeiro, Técnico de som (DJ), Fotógrafo e videomaker, Decoração de festas, Aluguer de mobiliário e equipamentos, Organização de eventos',
     icon: '🎉'
   },
   {
     id: 'administrativos-financeiros',
-    name: 'Administrativos e Financeiros',
-    description: 'Consultoria contábil, imposto de renda, jurídica, planejamento financeiro',
+    name: 'Serviços Administrativos e Financeiros',
+    description: 'Consultoria contabilidade, Declaração de IRS, Consultoria jurídica, Planejamento financeiro, Consultoria empresarial, Serviços de RH (recrutamento e seleção)',
     icon: '💼'
   },
   {
     id: 'criativos-design',
-    name: 'Criativos e Design',
-    description: 'Design gráfico, conteúdo digital, edição de vídeo, fotografia, redação',
+    name: 'Serviços Criativos e Design',
+    description: 'Design gráfico (logotipos, identidade visual), Criação de conteúdo para redes sociais, Edição de vídeo, Fotografia profissional, Redação publicitária, Ilustração',
     icon: '🎨'
   }
 ] as const

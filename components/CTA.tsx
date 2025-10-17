@@ -14,7 +14,7 @@ export default function CTA() {
             Disponível para iOS e Android.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="#"
               className="inline-flex items-center px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
@@ -29,21 +29,6 @@ export default function CTA() {
               <Download className="w-5 h-5 mr-2" />
               Download para Android
             </a>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">4.8★</div>
-              <p className="text-primary-100">Avaliação no App Store</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">4.9★</div>
-              <p className="text-primary-100">Avaliação no Google Play</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">1M+</div>
-              <p className="text-primary-100">Downloads</p>
-            </div>
           </div>
         </div>
       </div>

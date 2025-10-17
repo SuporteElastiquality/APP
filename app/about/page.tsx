@@ -1,15 +1,9 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Users, Award, MapPin, Heart, Target, Lightbulb, Shield, Clock } from 'lucide-react'
+import { Award, MapPin, Heart, Target, Lightbulb, Shield, Clock } from 'lucide-react'
 import Link from 'next/link'
 
 const stats = [
-  {
-    icon: Users,
-    value: '50,000+',
-    label: 'Profissionais Cadastrados',
-    description: 'Em todo o território português'
-  },
   {
     icon: Award,
     value: '98%',
@@ -92,7 +86,7 @@ export default function AboutPage() {
                 Sobre a Elastiquality
               </h1>
               <p className="text-xl text-primary-100 mb-8 max-w-3xl mx-auto">
-                Somos a plataforma líder em Portugal para conectar clientes com profissionais 
+                Temos o objetivo de ser a plataforma líder em Portugal para conectar clientes com profissionais 
                 de serviços, revolucionando a forma como as pessoas encontram soluções para suas necessidades.
               </p>
             </div>
@@ -109,7 +103,7 @@ export default function AboutPage() {
                 </h2>
                 <div className="space-y-4 text-gray-600">
                   <p>
-                    A Elastiquality nasceu em 2020 com uma visão simples mas poderosa: 
+                    A Elastiquality nasceu em 2024 com uma visão simples mas poderosa: 
                     democratizar o acesso a serviços de qualidade em Portugal.
                   </p>
                   <p>
@@ -117,17 +111,12 @@ export default function AboutPage() {
                     confiáveis para resolver suas necessidades do dia a dia, enquanto muitos 
                     profissionais talentosos lutavam para encontrar clientes.
                   </p>
-                  <p>
-                    Hoje, somos a maior plataforma de serviços do país, conectando mais de 
-                    50.000 profissionais com milhares de clientes em todos os 308 concelhos 
-                    de Portugal.
-                  </p>
                 </div>
               </div>
               
               <div className="bg-gray-100 rounded-xl p-8">
                 <div className="text-center">
-                  <div className="text-6xl font-bold text-primary-600 mb-2">2020</div>
+                  <div className="text-6xl font-bold text-primary-600 mb-2">2024</div>
                   <p className="text-gray-600 mb-6">Fundação da Elastiquality</p>
                   
                   <div className="space-y-4">
@@ -153,7 +142,7 @@ export default function AboutPage() {
         {/* Stats */}
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {stats.map((stat, index) => {
                 const IconComponent = stat.icon
                 return (

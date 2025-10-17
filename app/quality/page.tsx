@@ -175,9 +175,10 @@ export default function QualityPage() {
             <Image
               src="/favicon-32x32.png"
               alt="Quality"
-              width={48}
-              height={48}
+              width={64}
+              height={64}
               className="mr-3"
+              quality={100}
             />
             <h1 className="text-4xl font-bold text-gray-900">Sistema de Quality</h1>
           </div>
@@ -191,9 +192,10 @@ export default function QualityPage() {
             <Image
               src="/favicon-32x32.png"
               alt="Quality"
-              width={20}
-              height={20}
+              width={24}
+              height={24}
               className="mr-2"
+              quality={100}
             />
             <span className="text-lg font-semibold text-primary-700">
               Seu saldo: {userQuality} quality
@@ -260,9 +262,10 @@ export default function QualityPage() {
                         <Image
                           src="/favicon-32x32.png"
                           alt="Quality"
-                          width={24}
-                          height={24}
+                          width={28}
+                          height={28}
                           className="mr-2"
+                          quality={100}
                         />
                         <span className="text-3xl font-bold text-primary-600">{pkg.quality}</span>
                         <span className="text-gray-600 ml-1">quality</span>
@@ -310,7 +313,7 @@ export default function QualityPage() {
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-primary-600">1</span>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Compre Moedas</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Compre Quality</h3>
               <p className="text-gray-600 text-sm">
                 Escolha um pacote e faça o pagamento seguro via Stripe
               </p>
