@@ -240,9 +240,9 @@ export default function MessagesPage() {
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-[600px] flex">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-[600px] flex flex-col md:flex-row">
           {/* Sidebar - Lista de conversas */}
-          <div className="w-1/3 border-r border-gray-200 flex flex-col">
+          <div className="w-full md:w-1/3 border-r-0 md:border-r border-b md:border-b-0 border-gray-200 flex flex-col h-1/2 md:h-full">
             <div className="p-4 border-b border-gray-200">
               <h1 className="text-xl font-semibold text-gray-900">Mensagens</h1>
               <div className="mt-3">
@@ -323,7 +323,7 @@ export default function MessagesPage() {
           </div>
 
           {/* Área principal - Chat */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col h-1/2 md:h-full">
             {selectedRoom ? (
               <>
                 {/* Header do chat */}

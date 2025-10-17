@@ -188,14 +188,14 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       
       {/* Notification Bell */}
       {session && (
-        <div className="fixed top-4 right-4 z-50">
+        <div className="fixed top-20 right-4 z-50 md:top-24">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="relative bg-white rounded-full p-3 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow"
+            className="relative bg-white rounded-full p-2.5 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow"
           >
-            <Bell className="w-6 h-6 text-gray-600" />
+            <Bell className="w-5 h-5 text-gray-600" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
