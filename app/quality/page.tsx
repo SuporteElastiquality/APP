@@ -91,23 +91,23 @@ export default function QualityPage() {
       return
     }
 
-    // Carregar moedas do usuário
-    loadUserCoins()
+    // Carregar quality do usuário
+    loadUserQuality()
   }, [session, status, router])
 
-  const loadUserCoins = async () => {
+  const loadUserQuality = async () => {
     try {
       const response = await fetch('/api/coins/balance')
       if (response.ok) {
         const data = await response.json()
-        setUserCoins(data.balance)
+        setUserQuality(data.balance)
       }
     } catch (error) {
-      console.error('Erro ao carregar moedas:', error)
+      console.error('Erro ao carregar quality:', error)
     }
   }
 
-  const handlePurchase = async (coinPackage: CoinPackage) => {
+  const handlePurchase = async (qualityPackage: QualityPackage) => {
     if (!session?.user) return
 
     setLoading(true)
@@ -119,9 +119,9 @@ export default function QualityPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          packageId: coinPackage.id,
-          amount: coinPackage.price,
-          coins: coinPackage.coins
+          packageId: qualityPackage.id,
+          amount: qualityPackage.price,
+          coins: qualityPackage.quality
         }),
       })
 
@@ -144,9 +144,9 @@ export default function QualityPage() {
         throw new Error(error.message)
       }
 
-      // Sucesso - atualizar moedas
-      await loadUserCoins()
-      alert(`Compra realizada com sucesso! Você recebeu ${coinPackage.coins} moedas.`)
+      // Sucesso - atualizar quality
+      await loadUserQuality()
+      alert(`Compra realizada com sucesso! Você recebeu ${qualityPackage.quality} quality.`)
       
     } catch (error) {
       console.error('Erro no pagamento:', error)
@@ -231,11 +231,11 @@ export default function QualityPage() {
         {/* Pacotes de Moedas */}
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
-            Escolha seu Pacote de Moedas
+            Escolha seu Pacote de Quality
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {coinPackages.map((pkg) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              {qualityPackages.map((pkg) => (
               <div
                 key={pkg.id}
                 className={`relative bg-white rounded-xl shadow-sm border-2 transition-all duration-200 hover:shadow-lg ${
@@ -256,11 +256,17 @@ export default function QualityPage() {
                 <div className="p-6">
                   <div className="text-center mb-6">
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-                    <div className="flex items-center justify-center mb-2">
-                      <Coins className="w-6 h-6 text-primary-600 mr-2" />
-                      <span className="text-3xl font-bold text-primary-600">{pkg.coins}</span>
-                      <span className="text-gray-600 ml-1">moedas</span>
-                    </div>
+                      <div className="flex items-center justify-center mb-2">
+                        <Image
+                          src="/favicon-32x32.png"
+                          alt="Quality"
+                          width={24}
+                          height={24}
+                          className="mr-2"
+                        />
+                        <span className="text-3xl font-bold text-primary-600">{pkg.quality}</span>
+                        <span className="text-gray-600 ml-1">quality</span>
+                      </div>
                     <p className="text-sm text-gray-500">{pkg.description}</p>
                   </div>
                   
@@ -271,9 +277,9 @@ export default function QualityPage() {
                         {pkg.discount}% de desconto
                       </div>
                     )}
-                    <div className="text-xs text-gray-500">
-                      €{pkg.costPerCoin.toFixed(2)} por moeda
-                    </div>
+                      <div className="text-xs text-gray-500">
+                        €{pkg.costPerQuality.toFixed(2)} por quality
+                      </div>
                   </div>
                   
                   <Button
