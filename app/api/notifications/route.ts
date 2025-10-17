@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         console.error('Erro ao enviar notificação por email:', error)
         return NextResponse.json(
-          { error: 'Erro ao enviar notificação por email', details: error.message },
+          { error: 'Erro ao enviar notificação por email', details: error instanceof Error ? error.message : String(error) },
           { status: 500 }
         )
       }
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error sending notification:', error)
     return NextResponse.json(
-      { error: 'Failed to send notification', details: error.message },
+      { error: 'Failed to send notification', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     )
   }
