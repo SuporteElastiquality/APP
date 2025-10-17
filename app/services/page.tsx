@@ -10,7 +10,7 @@ const allServices = [
   {
     id: 1,
     name: 'Eletricista',
-    category: 'Reparações',
+    category: 'Serviços de Construção e Remodelação',
     description: 'Instalações elétricas, reparações e manutenção',
     rating: 4.8,
     reviews: 156,
@@ -19,7 +19,7 @@ const allServices = [
   {
     id: 2,
     name: 'Canalizador',
-    category: 'Reparações',
+    category: 'Serviços de Construção e Remodelação',
     description: 'Reparações de canalizações e instalações',
     rating: 4.9,
     reviews: 203,
@@ -27,35 +27,35 @@ const allServices = [
   },
   {
     id: 3,
-    name: 'Limpeza Doméstica',
-    category: 'Casa e Jardim',
-    description: 'Serviços de limpeza e organização',
+    name: 'Limpeza Residencial',
+    category: 'Serviços de Limpeza',
+    description: 'Limpeza de casas e apartamentos',
     rating: 4.7,
     reviews: 89,
     image: null
   },
   {
     id: 4,
-    name: 'Jardinagem',
-    category: 'Casa e Jardim',
-    description: 'Manutenção de jardins e paisagismo',
+    name: 'Pintor',
+    category: 'Serviços de Construção e Remodelação',
+    description: 'Pintura de interiores e exteriores',
     rating: 4.8,
     reviews: 124,
     image: null
   },
   {
     id: 5,
-    name: 'Pintor',
-    category: 'Casa e Jardim',
-    description: 'Pintura de interiores e exteriores',
+    name: 'Gesseiro',
+    category: 'Serviços de Construção e Remodelação',
+    description: 'Instalação e reparação de gesso',
     rating: 4.6,
     reviews: 97,
     image: null
   },
   {
     id: 6,
-    name: 'Mecânico',
-    category: 'Automóvel',
+    name: 'Mecânica',
+    category: 'Serviço Automóvel',
     description: 'Reparações e manutenção automóvel',
     rating: 4.9,
     reviews: 178,
@@ -64,7 +64,7 @@ const allServices = [
   {
     id: 7,
     name: 'Cabeleireiro',
-    category: 'Beleza',
+    category: 'Beleza e Estética',
     description: 'Cortes, penteados e tratamentos capilares',
     rating: 4.8,
     reviews: 234,
@@ -72,8 +72,8 @@ const allServices = [
   },
   {
     id: 8,
-    name: 'Fisioterapeuta',
-    category: 'Saúde',
+    name: 'Fisioterapia',
+    category: 'Serviços de Saúde e Bem-Estar',
     description: 'Tratamentos fisioterapêuticos',
     rating: 4.9,
     reviews: 167,
@@ -81,9 +81,9 @@ const allServices = [
   },
   {
     id: 9,
-    name: 'Designer Gráfico',
-    category: 'Criativo',
-    description: 'Design de logotipos e identidade visual',
+    name: 'Design Gráfico',
+    category: 'Serviços Criativos e Design',
+    description: 'Logotipos e identidade visual',
     rating: 4.7,
     reviews: 123,
     image: null
@@ -91,7 +91,7 @@ const allServices = [
   {
     id: 10,
     name: 'Fotógrafo',
-    category: 'Eventos',
+    category: 'Eventos e Festas',
     description: 'Fotografia de eventos e retratos',
     rating: 4.8,
     reviews: 145,
@@ -100,7 +100,7 @@ const allServices = [
   {
     id: 11,
     name: 'Personal Trainer',
-    category: 'Saúde',
+    category: 'Serviços de Saúde e Bem-Estar',
     description: 'Treino personalizado e fitness',
     rating: 4.6,
     reviews: 98,
@@ -108,8 +108,8 @@ const allServices = [
   },
   {
     id: 12,
-    name: 'Consultor Contabilístico',
-    category: 'Administrativo',
+    name: 'Consultoria Contábil',
+    category: 'Serviços Administrativos e Financeiros',
     description: 'Serviços contabilísticos e fiscais',
     rating: 4.8,
     reviews: 134,
@@ -120,14 +120,18 @@ const allServices = [
 // Função para mapear categorias para IDs
 const getCategoryId = (category: string) => {
   const categoryMap: { [key: string]: string } = {
-    'Reparações': 'construcao-reforma',
-    'Casa e Jardim': 'limpeza',
-    'Automóvel': 'automotivos',
-    'Beleza': 'beleza-estetica',
-    'Saúde': 'saude-bem-estar',
-    'Criativo': 'criativos-design',
-    'Eventos': 'eventos-festas',
-    'Administrativo': 'administrativos-financeiros'
+    'Serviços de Construção e Remodelação': 'construcao-reforma',
+    'Serviços Domésticos': 'servicos-domesticos',
+    'Serviços de Limpeza': 'limpeza',
+    'Serviços de Tecnologia e Informática': 'tecnologia-informatica',
+    'Serviço Automóvel': 'automotivos',
+    'Beleza e Estética': 'beleza-estetica',
+    'Serviços de Saúde e Bem-Estar': 'saude-bem-estar',
+    'Serviços de Transporte e Logística': 'transporte-logistica',
+    'Educação': 'educacao',
+    'Eventos e Festas': 'eventos-festas',
+    'Serviços Administrativos e Financeiros': 'administrativos-financeiros',
+    'Serviços Criativos e Design': 'criativos-design'
   }
   return categoryMap[category] || 'construcao-reforma'
 }
@@ -223,10 +227,18 @@ export default function ServicesPage() {
               
               <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none">
                 <option>Todas as Categorias</option>
-                <option>Reparações</option>
-                <option>Casa e Jardim</option>
-                <option>Automóvel</option>
-                <option>Beleza</option>
+                <option>Serviços de Construção e Remodelação</option>
+                <option>Serviços Domésticos</option>
+                <option>Serviços de Limpeza</option>
+                <option>Serviços de Tecnologia e Informática</option>
+                <option>Serviço Automóvel</option>
+                <option>Beleza e Estética</option>
+                <option>Serviços de Saúde e Bem-Estar</option>
+                <option>Serviços de Transporte e Logística</option>
+                <option>Educação</option>
+                <option>Eventos e Festas</option>
+                <option>Serviços Administrativos e Financeiros</option>
+                <option>Serviços Criativos e Design</option>
               </select>
               
               <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none">
