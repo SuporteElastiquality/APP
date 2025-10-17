@@ -64,25 +64,36 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
     const checkNewMessages = async () => {
       try {
+        console.log('Verificando novas mensagens...')
         const response = await fetch('/api/chat/rooms')
         if (response.ok) {
           const rooms = await response.json()
+          console.log('Salas encontradas:', rooms.length)
           
           // Verificar se há mensagens não lidas
           for (const room of rooms) {
             if (room.messages && room.messages.length > 0) {
               const lastMessage = room.messages[0]
               const isFromOtherUser = lastMessage.sender.id !== session.user.id
-              const isRecent = new Date(lastMessage.createdAt) > new Date(Date.now() - 30000) // Últimos 30 segundos
+              const isRecent = new Date(lastMessage.createdAt) > new Date(Date.now() - 60000) // Últimos 60 segundos
+              
+              console.log('Verificando mensagem:', {
+                roomId: room.id,
+                isFromOtherUser,
+                isRecent,
+                messageTime: lastMessage.createdAt,
+                now: new Date().toISOString()
+              })
               
               if (isFromOtherUser && isRecent) {
                 // Verificar se já existe notificação para esta mensagem
                 const existingNotification = notifications.find(n => 
                   n.actionUrl?.includes(room.id) && 
-                  n.timestamp.getTime() === new Date(lastMessage.createdAt).getTime()
+                  Math.abs(n.timestamp.getTime() - new Date(lastMessage.createdAt).getTime()) < 5000 // 5 segundos de tolerância
                 )
                 
                 if (!existingNotification) {
+                  console.log('Adicionando notificação para:', room.participants[0]?.name)
                   addNotification({
                     type: 'message',
                     title: 'Nova mensagem',
@@ -93,17 +104,20 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
               }
             }
           }
+        } else {
+          console.error('Erro ao buscar salas:', response.status)
         }
       } catch (error) {
         console.error('Erro ao verificar mensagens:', error)
       }
     }
 
-    // Verificar a cada 30 segundos
+    // Verificar imediatamente e depois a cada 30 segundos
+    checkNewMessages()
     const interval = setInterval(checkNewMessages, 30000)
     
     return () => clearInterval(interval)
-  }, [session?.user?.id, notifications])
+  }, [session?.user?.id])
 
   const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
     const newNotification: Notification = {

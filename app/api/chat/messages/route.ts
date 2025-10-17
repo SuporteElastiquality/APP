@@ -151,19 +151,28 @@ export async function POST(request: NextRequest) {
 
     // Enviar notificação por email para o destinatário
     const recipient = room.participants.find(p => p.id !== session.user.id)
+    console.log('Enviando notificação de email:', {
+      recipient,
+      senderName: session.user.name,
+      messagePreview: content
+    })
+    
     if (recipient && recipient.name && recipient.email) {
       try {
-        await sendNewMessageNotification({
+        const emailResult = await sendNewMessageNotification({
           recipientName: recipient.name,
           recipientEmail: recipient.email,
           senderName: session.user.name || 'Usuário',
           messagePreview: content,
           conversationUrl: `${process.env.NEXTAUTH_URL}/messages?room=${roomId}`
         })
+        console.log('Resultado do envio de email:', emailResult)
       } catch (error) {
         console.error('Erro ao enviar notificação de email:', error)
         // Não falhar a criação da mensagem se o email falhar
       }
+    } else {
+      console.log('Recipient não encontrado ou dados incompletos:', recipient)
     }
 
     return NextResponse.json(message)
