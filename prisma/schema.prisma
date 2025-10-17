@@ -111,7 +111,7 @@ model ProfessionalProfile {
         // longitude   Float?   // Longitude
   
   // Categoria principal do profissional
-  category    String   @default("reparacoes") // Categoria principal (ex: "Construção", "Reparações", "Serviços Domésticos")
+  category    String   @default("construcao-reforma") // Categoria principal (ex: "Construção e Reforma", "Serviços Domésticos", "Limpeza")
   
   // Informações profissionais
   specialties String // Especialidades separadas por vírgula

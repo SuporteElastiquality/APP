@@ -1,76 +1,76 @@
 // Categorias de serviços disponíveis para profissionais
 export const SERVICE_CATEGORIES = [
   {
-    id: 'construcao',
-    name: 'Construção e Obras',
-    description: 'Construção, demolição, reformas e obras gerais',
+    id: 'construcao-reforma',
+    name: 'Construção e Reforma',
+    description: 'Pedreiro, Eletricista, Encanador, Pintor, Gesseiro, Azulejista, Drywall, Marcenaria',
     icon: '🏗️'
-  },
-  {
-    id: 'reparacoes',
-    name: 'Reparações e Manutenção',
-    description: 'Reparações elétricas, canalizações, eletrodomésticos',
-    icon: '🔧'
   },
   {
     id: 'servicos-domesticos',
     name: 'Serviços Domésticos',
-    description: 'Limpeza, jardinagem, mudanças, organização',
+    description: 'Diarista, Passadeira, Cozinheira, Babá, Cuidador de idosos, Lavanderia',
     icon: '🏠'
   },
   {
-    id: 'automovel',
-    name: 'Automóvel e Transporte',
-    description: 'Mecânica, pneus, lavagem, transporte',
+    id: 'limpeza',
+    name: 'Serviços de Limpeza',
+    description: 'Limpeza residencial, pós-obra, comercial, vidros, estofados, caixa d\'água',
+    icon: '🧹'
+  },
+  {
+    id: 'tecnologia-informatica',
+    name: 'Tecnologia e Informática',
+    description: 'Suporte técnico, formatação, redes, desenvolvimento, marketing digital',
+    icon: '💻'
+  },
+  {
+    id: 'automotivos',
+    name: 'Serviços Automotivos',
+    description: 'Mecânico, funilaria, troca de óleo, guincho, higienização, polimento',
     icon: '🚗'
   },
   {
-    id: 'tecnologia',
-    name: 'Tecnologia e Informática',
-    description: 'Informática, redes, eletrônicos, software',
-    icon: '💻'
+    id: 'beleza-estetica',
+    name: 'Beleza e Estética',
+    description: 'Cabeleireiro, maquiagem, manicure, depilação, esteticista, massoterapia',
+    icon: '💄'
   },
   {
     id: 'saude-bem-estar',
     name: 'Saúde e Bem-estar',
-    description: 'Fisioterapia, massagens, cuidados pessoais',
+    description: 'Fisioterapia, nutrição, personal trainer, psicologia, acupuntura',
     icon: '💆'
   },
   {
+    id: 'transporte-logistica',
+    name: 'Transporte e Logística',
+    description: 'Frete, mudanças, motoboy, transporte executivo, aluguel de veículos',
+    icon: '🚛'
+  },
+  {
     id: 'educacao',
-    name: 'Educação e Formação',
-    description: 'Explicações, cursos, formação profissional',
+    name: 'Serviços Educacionais',
+    description: 'Aulas particulares, reforço escolar, cursos online, tradução',
     icon: '📚'
   },
   {
-    id: 'eventos',
-    name: 'Eventos e Catering',
-    description: 'Organização de eventos, catering, decoração',
+    id: 'eventos-festas',
+    name: 'Eventos e Festas',
+    description: 'Buffet, garçom, DJ, fotografia, decoração, cerimonialista',
     icon: '🎉'
   },
   {
-    id: 'fotografia-video',
-    name: 'Fotografia e Vídeo',
-    description: 'Fotografia, vídeo, edição, drones',
-    icon: '📸'
-  },
-  {
-    id: 'design-marketing',
-    name: 'Design e Marketing',
-    description: 'Design gráfico, web design, marketing digital',
-    icon: '🎨'
-  },
-  {
-    id: 'consultoria',
-    name: 'Consultoria e Serviços Profissionais',
-    description: 'Consultoria empresarial, jurídica, financeira',
+    id: 'administrativos-financeiros',
+    name: 'Administrativos e Financeiros',
+    description: 'Consultoria contábil, imposto de renda, jurídica, planejamento financeiro',
     icon: '💼'
   },
   {
-    id: 'outros',
-    name: 'Outros Serviços',
-    description: 'Outros serviços não categorizados',
-    icon: '⚙️'
+    id: 'criativos-design',
+    name: 'Criativos e Design',
+    description: 'Design gráfico, conteúdo digital, edição de vídeo, fotografia, redação',
+    icon: '🎨'
   }
 ] as const
 
