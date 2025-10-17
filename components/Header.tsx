@@ -185,7 +185,88 @@ export default function Header() {
                 Sobre
               </Link>
               
-              {!session && (
+              {session ? (
+                <div className="pt-4 space-y-2 border-t border-gray-200">
+                  <div className="px-3 py-2">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                        {session.user.image ? (
+                          <Image
+                            src={session.user.image}
+                            alt={session.user.name || 'User'}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 rounded-full"
+                          />
+                        ) : (
+                          <User className="w-4 h-4 text-primary-600" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{session.user.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {session.user.userType === 'PROFESSIONAL' ? 'Profissional' : 'Cliente'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Link
+                    href={session.user.userType === 'CLIENT' ? '/profile/client' : '/profile/professional'}
+                    className="flex items-center px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px]"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <User className="w-4 h-4 mr-3" />
+                    Meu Perfil
+                  </Link>
+                  
+                  <Link
+                    href="/messages"
+                    className="flex items-center px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px]"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <MessageCircle className="w-4 h-4 mr-3" />
+                    Mensagens
+                  </Link>
+                  
+                  {session.user.userType === 'PROFESSIONAL' && (
+                    <Link
+                      href="/quality"
+                      className="flex items-center px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px]"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Image
+                        src="/favicon-32x32.png"
+                        alt="Quality"
+                        width={16}
+                        height={16}
+                        className="mr-3"
+                      />
+                      Quality
+                    </Link>
+                  )}
+                  
+                  <Link
+                    href={session.user.userType === 'CLIENT' ? '/profile/client/settings' : '/profile/professional/settings'}
+                    className="flex items-center px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px]"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Settings className="w-4 h-4 mr-3" />
+                    Configurações
+                  </Link>
+                  
+                  <button
+                    onClick={() => {
+                      signOut()
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center w-full px-3 py-3 text-red-600 hover:bg-red-50 transition-colors rounded-lg min-h-[44px]"
+                  >
+                    <LogOut className="w-4 h-4 mr-3" />
+                    Sair
+                  </button>
+                </div>
+              ) : (
                 <div className="pt-4 space-y-2">
                   <Link
                     href="/auth/signin"
