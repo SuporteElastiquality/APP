@@ -5,14 +5,10 @@ import { sendSystemNotification } from '@/lib/notification-email'
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     const body = await request.json()
-    const { type, title, message, actionUrl, recipientEmail } = body
+    const { type, title, message, actionUrl, recipientEmail, recipientName } = body
+
+    console.log('Recebida requisição de notificação:', { type, title, message, recipientEmail })
 
     // Validar dados básicos
     if (!type || !title || !message) {
@@ -25,17 +21,19 @@ export async function POST(request: NextRequest) {
     // Enviar notificação por email
     if (recipientEmail) {
       try {
-        await sendSystemNotification({
-          recipientName: session.user.name || 'Usuário',
+        console.log('Enviando notificação por email para:', recipientEmail)
+        const result = await sendSystemNotification({
+          recipientName: recipientName || 'Usuário',
           recipientEmail,
           title,
           message,
           actionUrl
         })
+        console.log('Resultado do envio de email:', result)
       } catch (error) {
         console.error('Erro ao enviar notificação por email:', error)
         return NextResponse.json(
-          { error: 'Erro ao enviar notificação por email' },
+          { error: 'Erro ao enviar notificação por email', details: error.message },
           { status: 500 }
         )
       }
@@ -48,7 +46,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error sending notification:', error)
     return NextResponse.json(
-      { error: 'Failed to send notification' },
+      { error: 'Failed to send notification', details: error.message },
       { status: 500 }
     )
   }

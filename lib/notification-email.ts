@@ -60,6 +60,19 @@ export async function sendSystemNotification({
   actionUrl
 }: SystemNotificationData) {
   try {
+    console.log('Tentando enviar notificação do sistema:', {
+      recipientName,
+      recipientEmail,
+      title,
+      message
+    })
+
+    // Verificar se a API key está configurada
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY não configurada!')
+      return { success: false, error: 'RESEND_API_KEY não configurada' }
+    }
+
     const { data, error } = await resend.emails.send({
       from: 'Elastiquality <notificacoes@elastiquality.pt>',
       to: [recipientEmail],
@@ -96,10 +109,10 @@ export async function sendSystemNotification({
       return { success: false, error }
     }
 
-    console.log('Notificação do sistema enviada:', data)
+    console.log('Notificação do sistema enviada com sucesso:', data)
     return { success: true, data }
   } catch (error) {
     console.error('Erro ao enviar notificação do sistema:', error)
-    return { success: false, error }
+    return { success: false, error: error.message }
   }
 }
