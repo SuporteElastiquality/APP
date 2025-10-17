@@ -154,32 +154,32 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
+          <div className="md:hidden bg-white border-t border-gray-200 relative z-50">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <Link
                 href="/services"
-                className="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors"
+                className="block px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px] flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Serviços
               </Link>
               <Link
                 href="/professionals"
-                className="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors"
+                className="block px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px] flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Profissionais
               </Link>
               <Link
                 href="/how-it-works"
-                className="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors"
+                className="block px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px] flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Como Funciona
               </Link>
               <Link
                 href="/about"
-                className="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors"
+                className="block px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px] flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Sobre
@@ -189,14 +189,14 @@ export default function Header() {
                 <div className="pt-4 space-y-2">
                   <Link
                     href="/auth/signin"
-                    className="block px-3 py-2 text-gray-600 hover:text-primary-600 transition-colors"
+                    className="block px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px] flex items-center"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Entrar
                   </Link>
                   <Link
                     href="/auth/signup"
-                    className="block mx-3 btn-primary text-center"
+                    className="block mx-3 btn-primary text-center min-h-[44px] flex items-center justify-center"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Cadastrar

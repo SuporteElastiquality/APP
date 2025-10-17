@@ -6,6 +6,7 @@ import HowItWorks from '@/components/HowItWorks'
 import Testimonials from '@/components/Testimonials'
 import Stats from '@/components/Stats'
 import CTA from '@/components/CTA'
+import TestMobileLinks from '@/components/TestMobileLinks'
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Header />
       
       <main>
+        <TestMobileLinks />
         <Hero />
         <Stats />
         <ServiceCategories />
