@@ -7,7 +7,7 @@ import Button from '@/components/Button'
 import Input from '@/components/Input'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { User, Bell, Shield, CreditCard, HelpCircle } from 'lucide-react'
+import { User, Bell, Shield, HelpCircle } from 'lucide-react'
 
 export default function ClientSettingsPage() {
   const { data: session, status } = useSession()
@@ -41,7 +41,6 @@ export default function ClientSettingsPage() {
     { id: 'profile', label: 'Perfil', icon: User },
     { id: 'notifications', label: 'Notificações', icon: Bell },
     { id: 'security', label: 'Segurança', icon: Shield },
-    { id: 'billing', label: 'Faturação', icon: CreditCard },
     { id: 'help', label: 'Ajuda', icon: HelpCircle }
   ]
 
@@ -171,22 +170,6 @@ export default function ClientSettingsPage() {
                   </div>
                 )}
 
-                {activeTab === 'billing' && (
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-gray-900">Faturação e Pagamentos</h2>
-                    <div className="p-6 bg-gray-50 rounded-lg">
-                      <h3 className="font-medium text-gray-900 mb-2">Plano Atual</h3>
-                      <p className="text-2xl font-bold text-blue-600 mb-1">Cliente Grátis</p>
-                      <p className="text-gray-600 mb-4">Acesso completo a todos os serviços sem custos</p>
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <p>✅ Acesso a profissionais qualificados</p>
-                        <p>✅ Sistema de avaliações</p>
-                        <p>✅ Chat direto com profissionais</p>
-                        <p>✅ Suporte 24/7</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {activeTab === 'help' && (
                   <div className="space-y-6">
