@@ -8,6 +8,7 @@ import Footer from '@/components/Footer'
 import { MessageCircle, Send, User, Clock, Search, Plus } from 'lucide-react'
 import Button from '@/components/Button'
 import Input from '@/components/Input'
+import { useNotifications } from '@/hooks/useNotifications'
 
 interface ChatRoom {
   id: string
@@ -46,6 +47,7 @@ export default function MessagesPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { addNotification } = useNotifications()
   const [rooms, setRooms] = useState<ChatRoom[]>([])
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
@@ -140,6 +142,15 @@ export default function MessagesPage() {
         const newRoom = await response.json()
         console.log('Conversa criada com sucesso:', newRoom)
         setSelectedRoom(newRoom)
+        
+        // Adicionar notificação de conversa criada
+        addNotification({
+          type: 'message',
+          title: 'Conversa iniciada',
+          message: `Conversa iniciada com ${targetName}`,
+          actionUrl: `/messages?room=${newRoom.id}`
+        })
+        
         // Recarregar lista de salas
         await loadChatRooms()
       } else {

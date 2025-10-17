@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { messageSchema, messageQuerySchema, validateData } from '@/lib/validations'
+import { sendNewMessageNotification } from '@/lib/notification-email'
 
 export async function GET(request: NextRequest) {
   try {
@@ -98,13 +99,22 @@ export async function POST(request: NextRequest) {
 
     const { roomId, content, type } = validation.data!
 
-    // Verificar se o usuário tem acesso ao chat
+    // Verificar se o usuário tem acesso ao chat e buscar participantes
     const room = await prisma.chatRoom.findFirst({
       where: {
         id: roomId,
         participants: {
           some: {
             id: session.user.id
+          }
+        }
+      },
+      include: {
+        participants: {
+          select: {
+            id: true,
+            name: true,
+            email: true
           }
         }
       }
@@ -138,6 +148,23 @@ export async function POST(request: NextRequest) {
       where: { id: roomId },
       data: { lastMessage: new Date() }
     })
+
+    // Enviar notificação por email para o destinatário
+    const recipient = room.participants.find(p => p.id !== session.user.id)
+    if (recipient) {
+      try {
+        await sendNewMessageNotification({
+          recipientName: recipient.name,
+          recipientEmail: recipient.email,
+          senderName: session.user.name || 'Usuário',
+          messagePreview: content,
+          conversationUrl: `${process.env.NEXTAUTH_URL}/messages?room=${roomId}`
+        })
+      } catch (error) {
+        console.error('Erro ao enviar notificação de email:', error)
+        // Não falhar a criação da mensagem se o email falhar
+      }
+    }
 
     return NextResponse.json(message)
   } catch (error) {
