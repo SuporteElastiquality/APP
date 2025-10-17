@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Search, MapPin, Filter, Star } from 'lucide-react'
@@ -14,7 +15,7 @@ const allServices = [
     description: 'Instalações elétricas, reparações e manutenção',
     rating: 4.8,
     reviews: 156,
-    image: null
+    image: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 2,
@@ -23,7 +24,7 @@ const allServices = [
     description: 'Reparações de canalizações e instalações',
     rating: 4.9,
     reviews: 203,
-    image: null
+    image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 3,
@@ -32,7 +33,7 @@ const allServices = [
     description: 'Limpeza de casas e apartamentos',
     rating: 4.7,
     reviews: 89,
-    image: null
+    image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 4,
@@ -41,7 +42,7 @@ const allServices = [
     description: 'Pintura de interiores e exteriores',
     rating: 4.8,
     reviews: 124,
-    image: null
+    image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 5,
@@ -50,7 +51,7 @@ const allServices = [
     description: 'Instalação e reparação de gesso',
     rating: 4.6,
     reviews: 97,
-    image: null
+    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 6,
@@ -59,7 +60,7 @@ const allServices = [
     description: 'Reparações e manutenção automóvel',
     rating: 4.9,
     reviews: 178,
-    image: null
+    image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 7,
@@ -68,7 +69,7 @@ const allServices = [
     description: 'Cortes, penteados e tratamentos capilares',
     rating: 4.8,
     reviews: 234,
-    image: null
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 8,
@@ -77,7 +78,7 @@ const allServices = [
     description: 'Tratamentos fisioterapêuticos',
     rating: 4.9,
     reviews: 167,
-    image: null
+    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 9,
@@ -86,7 +87,7 @@ const allServices = [
     description: 'Logotipos e identidade visual',
     rating: 4.7,
     reviews: 123,
-    image: null
+    image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 10,
@@ -95,7 +96,7 @@ const allServices = [
     description: 'Fotografia de eventos e retratos',
     rating: 4.8,
     reviews: 145,
-    image: null
+    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 11,
@@ -104,7 +105,7 @@ const allServices = [
     description: 'Treino personalizado e fitness',
     rating: 4.6,
     reviews: 98,
-    image: null
+    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&crop=center'
   },
   {
     id: 12,
@@ -113,7 +114,7 @@ const allServices = [
     description: 'Serviços contabilísticos e fiscais',
     rating: 4.8,
     reviews: 134,
-    image: null
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop&crop=center'
   }
 ]
 
@@ -265,8 +266,14 @@ export default function ServicesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.map((service) => (
                 <div key={service.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                  <div className="h-48 bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500">Imagem do Serviço</span>
+                  <div className="h-48 relative overflow-hidden">
+                    <Image
+                      src={service.image}
+                      alt={service.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                   </div>
                   
                   <div className="p-6">

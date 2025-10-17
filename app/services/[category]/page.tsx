@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Star, Euro, ArrowLeft } from 'lucide-react'
@@ -11,95 +12,95 @@ import { getAllCategories } from '@/lib/categories'
 // Dados de exemplo de serviços por categoria
 const servicesByCategory = {
   'construcao-reforma': [
-    { id: 1, name: 'Pedreiro', description: 'Construção e reparação de alvenaria', rating: 4.8, reviews: 156 },
-    { id: 2, name: 'Eletricista', description: 'Instalações elétricas e reparações', rating: 4.9, reviews: 203 },
-    { id: 3, name: 'Canalizador', description: 'Reparações de canalizações', rating: 4.7, reviews: 89 },
-    { id: 4, name: 'Pintor', description: 'Pintura de interiores e exteriores', rating: 4.6, reviews: 97 },
-    { id: 5, name: 'Gesseiro', description: 'Instalação e reparação de gesso', rating: 4.5, reviews: 78 },
-    { id: 6, name: 'Azulejista', description: 'Colocação e reparação de azulejos', rating: 4.8, reviews: 124 },
-    { id: 7, name: 'Instalador de Pladur', description: 'Instalação de paredes de pladur', rating: 4.4, reviews: 65 },
-    { id: 8, name: 'Marcenaria', description: 'Móveis sob medida e reparações', rating: 4.7, reviews: 112 },
-    { id: 9, name: 'Carpinteiro', description: 'Trabalhos em madeira', rating: 4.6, reviews: 88 }
+    { id: 1, name: 'Pedreiro', description: 'Construção e reparação de alvenaria', rating: 4.8, reviews: 156, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Eletricista', description: 'Instalações elétricas e reparações', rating: 4.9, reviews: 203, image: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Canalizador', description: 'Reparações de canalizações', rating: 4.7, reviews: 89, image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Pintor', description: 'Pintura de interiores e exteriores', rating: 4.6, reviews: 97, image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Gesseiro', description: 'Instalação e reparação de gesso', rating: 4.5, reviews: 78, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center' },
+    { id: 6, name: 'Azulejista', description: 'Colocação e reparação de azulejos', rating: 4.8, reviews: 124, image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center' },
+    { id: 7, name: 'Instalador de Pladur', description: 'Instalação de paredes de pladur', rating: 4.4, reviews: 65, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center' },
+    { id: 8, name: 'Marcenaria', description: 'Móveis sob medida e reparações', rating: 4.7, reviews: 112, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center' },
+    { id: 9, name: 'Carpinteiro', description: 'Trabalhos em madeira', rating: 4.6, reviews: 88, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center' }
   ],
   'servicos-domesticos': [
-    { id: 1, name: 'Engomadeira', description: 'Serviços de engomaria', rating: 4.8, reviews: 45 },
-    { id: 2, name: 'Cozinheira', description: 'Preparação de refeições', rating: 4.9, reviews: 67 },
-    { id: 3, name: 'Ama (Babysitter)', description: 'Cuidado de crianças', rating: 4.7, reviews: 89 },
-    { id: 4, name: 'Cuidador de idosos', description: 'Assistência a idosos', rating: 4.8, reviews: 123 },
-    { id: 5, name: 'Lavanderia', description: 'Serviços de lavanderia', rating: 4.6, reviews: 56 }
+    { id: 1, name: 'Engomadeira', description: 'Serviços de engomaria', rating: 4.8, reviews: 45, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Cozinheira', description: 'Preparação de refeições', rating: 4.9, reviews: 67, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Ama (Babysitter)', description: 'Cuidado de crianças', rating: 4.7, reviews: 89, image: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Cuidador de idosos', description: 'Assistência a idosos', rating: 4.8, reviews: 123, image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Lavanderia', description: 'Serviços de lavanderia', rating: 4.6, reviews: 56, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center' }
   ],
   'limpeza': [
-    { id: 1, name: 'Limpeza Residencial', description: 'Limpeza de casas e apartamentos', rating: 4.8, reviews: 234 },
-    { id: 2, name: 'Limpeza Pós-obra', description: 'Limpeza após construção', rating: 4.7, reviews: 89 },
-    { id: 3, name: 'Limpeza Comercial', description: 'Limpeza de escritórios e lojas', rating: 4.6, reviews: 156 },
-    { id: 4, name: 'Limpeza de Vidros', description: 'Limpeza especializada de vidros', rating: 4.9, reviews: 78 },
-    { id: 5, name: 'Limpeza de Estofos', description: 'Limpeza de sofás e cadeiras', rating: 4.5, reviews: 67 }
+    { id: 1, name: 'Limpeza Residencial', description: 'Limpeza de casas e apartamentos', rating: 4.8, reviews: 234, image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Limpeza Pós-obra', description: 'Limpeza após construção', rating: 4.7, reviews: 89, image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Limpeza Comercial', description: 'Limpeza de escritórios e lojas', rating: 4.6, reviews: 156, image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Limpeza de Vidros', description: 'Limpeza especializada de vidros', rating: 4.9, reviews: 78, image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Limpeza de Estofos', description: 'Limpeza de sofás e cadeiras', rating: 4.5, reviews: 67, image: 'https://images.unsplash.com/photo-1581578731548-c6a0c3f2fcc0?w=400&h=300&fit=crop&crop=center' }
   ],
   'tecnologia-informatica': [
-    { id: 1, name: 'Suporte Técnico', description: 'Assistência técnica em informática', rating: 4.8, reviews: 189 },
-    { id: 2, name: 'Formatação de Computadores', description: 'Formatação e manutenção', rating: 4.7, reviews: 145 },
-    { id: 3, name: 'Instalação de Redes', description: 'Wi-Fi e cabeamento', rating: 4.9, reviews: 98 },
-    { id: 4, name: 'Desenvolvimento de Sites', description: 'Criação de websites', rating: 4.6, reviews: 76 },
-    { id: 5, name: 'Criação de Aplicativos', description: 'Desenvolvimento de apps', rating: 4.8, reviews: 54 },
-    { id: 6, name: 'Marketing Digital', description: 'SEO e redes sociais', rating: 4.7, reviews: 87 }
+    { id: 1, name: 'Suporte Técnico', description: 'Assistência técnica em informática', rating: 4.8, reviews: 189, image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Formatação de Computadores', description: 'Formatação e manutenção', rating: 4.7, reviews: 145, image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Instalação de Redes', description: 'Wi-Fi e cabeamento', rating: 4.9, reviews: 98, image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Desenvolvimento de Sites', description: 'Criação de websites', rating: 4.6, reviews: 76, image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Criação de Aplicativos', description: 'Desenvolvimento de apps', rating: 4.8, reviews: 54, image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center' },
+    { id: 6, name: 'Marketing Digital', description: 'SEO e redes sociais', rating: 4.7, reviews: 87, image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center' }
   ],
   'automotivos': [
-    { id: 1, name: 'Mecânica', description: 'Reparações automóveis', rating: 4.8, reviews: 178 },
-    { id: 2, name: 'Eletricista Auto', description: 'Sistemas elétricos automóveis', rating: 4.7, reviews: 123 },
-    { id: 3, name: 'Chapa e Pintura', description: 'Reparação de carroçaria', rating: 4.6, reviews: 89 },
-    { id: 4, name: 'Mudança de Óleo', description: 'Serviços de manutenção', rating: 4.9, reviews: 234 },
-    { id: 5, name: 'Serviço de Reboque', description: 'Reboque e assistência', rating: 4.8, reviews: 156 },
-    { id: 6, name: 'Higienização Interna', description: 'Limpeza automóvel', rating: 4.5, reviews: 67 }
+    { id: 1, name: 'Mecânica', description: 'Reparações automóveis', rating: 4.8, reviews: 178, image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Eletricista Auto', description: 'Sistemas elétricos automóveis', rating: 4.7, reviews: 123, image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Chapa e Pintura', description: 'Reparação de carroçaria', rating: 4.6, reviews: 89, image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Mudança de Óleo', description: 'Serviços de manutenção', rating: 4.9, reviews: 234, image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Serviço de Reboque', description: 'Reboque e assistência', rating: 4.8, reviews: 156, image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop&crop=center' },
+    { id: 6, name: 'Higienização Interna', description: 'Limpeza automóvel', rating: 4.5, reviews: 67, image: 'https://images.unsplash.com/photo-1486754735734-325b5831c3ad?w=400&h=300&fit=crop&crop=center' }
   ],
   'beleza-estetica': [
-    { id: 1, name: 'Cabeleireiro', description: 'Cortes e penteados', rating: 4.8, reviews: 234 },
-    { id: 2, name: 'Maquiador(a)', description: 'Maquilhagem profissional', rating: 4.7, reviews: 156 },
-    { id: 3, name: 'Manicure e Pedicure', description: 'Cuidados das unhas', rating: 4.9, reviews: 189 },
-    { id: 4, name: 'Unhas de Gel', description: 'Aplicação de gel', rating: 4.6, reviews: 123 },
-    { id: 5, name: 'Massagens', description: 'Massagens relaxamento', rating: 4.8, reviews: 98 },
-    { id: 6, name: 'Depilação', description: 'Serviços de depilação', rating: 4.7, reviews: 145 }
+    { id: 1, name: 'Cabeleireiro', description: 'Cortes e penteados', rating: 4.8, reviews: 234, image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Maquiador(a)', description: 'Maquilhagem profissional', rating: 4.7, reviews: 156, image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Manicure e Pedicure', description: 'Cuidados das unhas', rating: 4.9, reviews: 189, image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Unhas de Gel', description: 'Aplicação de gel', rating: 4.6, reviews: 123, image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Massagens', description: 'Massagens relaxamento', rating: 4.8, reviews: 98, image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&crop=center' },
+    { id: 6, name: 'Depilação', description: 'Serviços de depilação', rating: 4.7, reviews: 145, image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&crop=center' }
   ],
   'saude-bem-estar': [
-    { id: 1, name: 'Fisioterapia', description: 'Tratamentos fisioterapêuticos', rating: 4.9, reviews: 167 },
-    { id: 2, name: 'Nutricionista', description: 'Consultoria nutricional', rating: 4.8, reviews: 134 },
-    { id: 3, name: 'Personal Trainer', description: 'Treino personalizado', rating: 4.7, reviews: 189 },
-    { id: 4, name: 'Psicólogo', description: 'Acompanhamento psicológico', rating: 4.8, reviews: 98 },
-    { id: 5, name: 'Acupuntura', description: 'Tratamentos de acupuntura', rating: 4.6, reviews: 76 }
+    { id: 1, name: 'Fisioterapia', description: 'Tratamentos fisioterapêuticos', rating: 4.9, reviews: 167, image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Nutricionista', description: 'Consultoria nutricional', rating: 4.8, reviews: 134, image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Personal Trainer', description: 'Treino personalizado', rating: 4.7, reviews: 189, image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Psicólogo', description: 'Acompanhamento psicológico', rating: 4.8, reviews: 98, image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Acupuntura', description: 'Tratamentos de acupuntura', rating: 4.6, reviews: 76, image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop&crop=center' }
   ],
   'transporte-logistica': [
-    { id: 1, name: 'Transporte e Mudanças', description: 'Serviços de mudança', rating: 4.8, reviews: 145 },
-    { id: 2, name: 'Serviço de Entregas', description: 'Entregas rápidas', rating: 4.7, reviews: 123 },
-    { id: 3, name: 'Transporte Executivo', description: 'Transporte de executivos', rating: 4.9, reviews: 89 },
-    { id: 4, name: 'Transporte Escolar', description: 'Transporte de crianças', rating: 4.8, reviews: 67 },
-    { id: 5, name: 'Aluguer de Viaturas', description: 'Aluguer de veículos', rating: 4.6, reviews: 98 }
+    { id: 1, name: 'Transporte e Mudanças', description: 'Serviços de mudança', rating: 4.8, reviews: 145, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Serviço de Entregas', description: 'Entregas rápidas', rating: 4.7, reviews: 123, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Transporte Executivo', description: 'Transporte de executivos', rating: 4.9, reviews: 89, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Transporte Escolar', description: 'Transporte de crianças', rating: 4.8, reviews: 67, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Aluguer de Viaturas', description: 'Aluguer de veículos', rating: 4.6, reviews: 98, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center' }
   ],
   'educacao': [
-    { id: 1, name: 'Aulas Particulares', description: 'Matemática, inglês, etc.', rating: 4.8, reviews: 234 },
-    { id: 2, name: 'Reforço Escolar', description: 'Apoio ao estudo', rating: 4.7, reviews: 156 },
-    { id: 3, name: 'Cursos Online', description: 'Formação à distância', rating: 4.6, reviews: 89 },
-    { id: 4, name: 'Tradução', description: 'Serviços de tradução', rating: 4.9, reviews: 78 },
-    { id: 5, name: 'Treino Corporativo', description: 'Formação empresarial', rating: 4.8, reviews: 123 }
+    { id: 1, name: 'Aulas Particulares', description: 'Matemática, inglês, etc.', rating: 4.8, reviews: 234, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Reforço Escolar', description: 'Apoio ao estudo', rating: 4.7, reviews: 156, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Cursos Online', description: 'Formação à distância', rating: 4.6, reviews: 89, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Tradução', description: 'Serviços de tradução', rating: 4.9, reviews: 78, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Treino Corporativo', description: 'Formação empresarial', rating: 4.8, reviews: 123, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' }
   ],
   'eventos-festas': [
-    { id: 1, name: 'Buffet', description: 'Serviços de catering', rating: 4.8, reviews: 189 },
-    { id: 2, name: 'Empregado de Mesa', description: 'Serviço de mesa', rating: 4.7, reviews: 145 },
-    { id: 3, name: 'DJ', description: 'Serviços de som', rating: 4.6, reviews: 123 },
-    { id: 4, name: 'Fotógrafo', description: 'Fotografia de eventos', rating: 4.9, reviews: 167 },
-    { id: 5, name: 'Decoração de Festas', description: 'Decoração de eventos', rating: 4.8, reviews: 98 }
+    { id: 1, name: 'Buffet', description: 'Serviços de catering', rating: 4.8, reviews: 189, image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Empregado de Mesa', description: 'Serviço de mesa', rating: 4.7, reviews: 145, image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'DJ', description: 'Serviços de som', rating: 4.6, reviews: 123, image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Fotógrafo', description: 'Fotografia de eventos', rating: 4.9, reviews: 167, image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Decoração de Festas', description: 'Decoração de eventos', rating: 4.8, reviews: 98, image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop&crop=center' }
   ],
   'administrativos-financeiros': [
-    { id: 1, name: 'Consultoria Contábil', description: 'Serviços contabilísticos', rating: 4.8, reviews: 134 },
-    { id: 2, name: 'Declaração de IRS', description: 'Preparação de IRS', rating: 4.9, reviews: 189 },
-    { id: 3, name: 'Consultoria Jurídica', description: 'Aconselhamento legal', rating: 4.7, reviews: 156 },
-    { id: 4, name: 'Planejamento Financeiro', description: 'Gestão financeira', rating: 4.8, reviews: 98 },
-    { id: 5, name: 'Recursos Humanos', description: 'Serviços de RH', rating: 4.6, reviews: 76 }
+    { id: 1, name: 'Consultoria Contábil', description: 'Serviços contabilísticos', rating: 4.8, reviews: 134, image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Declaração de IRS', description: 'Preparação de IRS', rating: 4.9, reviews: 189, image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Consultoria Jurídica', description: 'Aconselhamento legal', rating: 4.7, reviews: 156, image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Planejamento Financeiro', description: 'Gestão financeira', rating: 4.8, reviews: 98, image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Recursos Humanos', description: 'Serviços de RH', rating: 4.6, reviews: 76, image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop&crop=center' }
   ],
   'criativos-design': [
-    { id: 1, name: 'Design Gráfico', description: 'Logotipos e identidade visual', rating: 4.8, reviews: 167 },
-    { id: 2, name: 'Criação de Conteúdo', description: 'Conteúdo para redes sociais', rating: 4.7, reviews: 123 },
-    { id: 3, name: 'Edição de Vídeo', description: 'Produção e edição', rating: 4.9, reviews: 89 },
-    { id: 4, name: 'Fotografia Profissional', description: 'Sessões fotográficas', rating: 4.8, reviews: 145 },
-    { id: 5, name: 'Redação Publicitária', description: 'Textos publicitários', rating: 4.6, reviews: 67 }
+    { id: 1, name: 'Design Gráfico', description: 'Logotipos e identidade visual', rating: 4.8, reviews: 167, image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Criação de Conteúdo', description: 'Conteúdo para redes sociais', rating: 4.7, reviews: 123, image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Edição de Vídeo', description: 'Produção e edição', rating: 4.9, reviews: 89, image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Fotografia Profissional', description: 'Sessões fotográficas', rating: 4.8, reviews: 145, image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Redação Publicitária', description: 'Textos publicitários', rating: 4.6, reviews: 67, image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center' }
   ]
 }
 
@@ -188,8 +189,14 @@ export default function CategoryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.slice(0, visibleServices).map((service) => (
                 <div key={service.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                  <div className="h-48 bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500">Imagem do Serviço</span>
+                  <div className="h-48 relative overflow-hidden">
+                    <Image
+                      src={service.image}
+                      alt={service.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                   </div>
                   
                   <div className="p-6">
