@@ -7,100 +7,100 @@ import {
   Car, 
   Scissors, 
   Paintbrush, 
-  TreePine,
+  Sparkles,
   Camera,
   GraduationCap,
   Heart,
-  Dumbbell,
+  Truck,
   Music,
-  Utensils,
+  Briefcase,
   ChevronRight
 } from 'lucide-react'
 
 const categories = [
   {
-    name: 'Reparações',
+    name: 'Serviços de Construção e Remodelação',
     icon: Wrench,
-    services: ['Eletricista', 'Canalizador', 'Carpinteiro', 'Serralheiro'],
+    services: ['Eletricista', 'Canalizador', 'Pintor', 'Gesseiro', 'Azulejista', 'Carpinteiro'],
     color: 'bg-blue-100 text-blue-600',
-    searchQuery: 'Reparações'
+    searchQuery: 'construcao-reforma'
   },
   {
-    name: 'Casa e Jardim',
+    name: 'Serviços Domésticos',
     icon: Home,
-    services: ['Limpeza', 'Jardinagem', 'Pintor', 'Decorador'],
+    services: ['Engomadeira', 'Cozinheira', 'Ama (Babysitter)', 'Cuidador de idosos', 'Lavanderia'],
     color: 'bg-green-100 text-green-600',
-    searchQuery: 'Casa e Jardim'
+    searchQuery: 'servicos-domesticos'
   },
   {
-    name: 'Automóvel',
-    icon: Car,
-    services: ['Mecânico', 'Pintura Auto', 'Vidros', 'Pneus'],
-    color: 'bg-gray-100 text-gray-600',
-    searchQuery: 'Automóvel'
+    name: 'Serviços de Limpeza',
+    icon: Sparkles,
+    services: ['Limpeza Residencial', 'Limpeza Pós-obra', 'Limpeza Comercial', 'Limpeza de Vidros'],
+    color: 'bg-cyan-100 text-cyan-600',
+    searchQuery: 'limpeza'
   },
   {
-    name: 'Beleza e Bem-estar',
-    icon: Scissors,
-    services: ['Cabeleireiro', 'Estética', 'Massagem', 'Manicure'],
-    color: 'bg-pink-100 text-pink-600',
-    searchQuery: 'Beleza e Bem-estar'
-  },
-  {
-    name: 'Arte e Design',
+    name: 'Serviços de Tecnologia e Informática',
     icon: Paintbrush,
-    services: ['Design Gráfico', 'Fotógrafo', 'Arte', 'Tatuagem'],
+    services: ['Suporte Técnico', 'Formatação', 'Instalação de Redes', 'Desenvolvimento de Sites'],
     color: 'bg-purple-100 text-purple-600',
-    searchQuery: 'Arte e Design'
+    searchQuery: 'tecnologia-informatica'
   },
   {
-    name: 'Jardinagem',
-    icon: TreePine,
-    services: ['Paisagismo', 'Manutenção', 'Plantas', 'Irrigação'],
-    color: 'bg-emerald-100 text-emerald-600',
-    searchQuery: 'Jardinagem'
+    name: 'Serviço Automóvel',
+    icon: Car,
+    services: ['Mecânica', 'Eletricista Auto', 'Chapa e Pintura', 'Mudança de Óleo'],
+    color: 'bg-gray-100 text-gray-600',
+    searchQuery: 'automotivos'
   },
   {
-    name: 'Fotografia',
-    icon: Camera,
-    services: ['Eventos', 'Retratos', 'Produto', 'Drone'],
-    color: 'bg-amber-100 text-amber-600',
-    searchQuery: 'Fotografia'
+    name: 'Beleza e Estética',
+    icon: Scissors,
+    services: ['Cabeleireiro', 'Maquiador(a)', 'Manicure e Pedicure', 'Massagens'],
+    color: 'bg-pink-100 text-pink-600',
+    searchQuery: 'beleza-estetica'
+  },
+  {
+    name: 'Serviços de Saúde e Bem-Estar',
+    icon: Heart,
+    services: ['Fisioterapia', 'Nutricionista', 'Personal Trainer', 'Psicólogo'],
+    color: 'bg-red-100 text-red-600',
+    searchQuery: 'saude-bem-estar'
+  },
+  {
+    name: 'Serviços de Transporte e Logística',
+    icon: Truck,
+    services: ['Transporte e Mudanças', 'Serviço de Entregas', 'Transporte Executivo', 'Aluguer de Viaturas'],
+    color: 'bg-orange-100 text-orange-600',
+    searchQuery: 'transporte-logistica'
   },
   {
     name: 'Educação',
     icon: GraduationCap,
-    services: ['Explicações', 'Formação', 'Idiomas', 'Música'],
+    services: ['Aulas Particulares', 'Reforço Escolar', 'Cursos Online', 'Tradução'],
     color: 'bg-indigo-100 text-indigo-600',
-    searchQuery: 'Educação'
+    searchQuery: 'educacao'
   },
   {
-    name: 'Saúde',
-    icon: Heart,
-    services: ['Fisioterapia', 'Nutrição', 'Psicologia', 'Terapias'],
-    color: 'bg-red-100 text-red-600',
-    searchQuery: 'Saúde'
-  },
-  {
-    name: 'Desporto',
-    icon: Dumbbell,
-    services: ['Personal Trainer', 'Yoga', 'Pilates', 'Natação'],
-    color: 'bg-orange-100 text-orange-600',
-    searchQuery: 'Desporto'
-  },
-  {
-    name: 'Entretenimento',
+    name: 'Eventos e Festas',
     icon: Music,
-    services: ['DJ', 'Animação', 'Música', 'Eventos'],
+    services: ['Buffet', 'Empregado de Mesa', 'DJ', 'Fotógrafo', 'Decoração'],
     color: 'bg-yellow-100 text-yellow-600',
-    searchQuery: 'Entretenimento'
+    searchQuery: 'eventos-festas'
   },
   {
-    name: 'Gastronomia',
-    icon: Utensils,
-    services: ['Catering', 'Chef', 'Pastelaria', 'Sommelier'],
+    name: 'Serviços Administrativos e Financeiros',
+    icon: Briefcase,
+    services: ['Consultoria Contábil', 'Declaração de IRS', 'Consultoria Jurídica', 'Planejamento Financeiro'],
+    color: 'bg-amber-100 text-amber-600',
+    searchQuery: 'administrativos-financeiros'
+  },
+  {
+    name: 'Serviços Criativos e Design',
+    icon: Camera,
+    services: ['Design Gráfico', 'Criação de Conteúdo', 'Edição de Vídeo', 'Fotografia Profissional'],
     color: 'bg-rose-100 text-rose-600',
-    searchQuery: 'Gastronomia'
+    searchQuery: 'criativos-design'
   }
 ]
 
@@ -108,7 +108,7 @@ export default function ServiceCategories() {
   const router = useRouter()
 
   const handleCategoryClick = (searchQuery: string) => {
-    router.push(`/search?service=${encodeURIComponent(searchQuery)}`)
+    router.push(`/services/${searchQuery}`)
   }
 
   return (
