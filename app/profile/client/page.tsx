@@ -8,6 +8,7 @@ import Button from '@/components/Button'
 import Input from '@/components/Input'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import AddressAutocomplete from '@/components/AddressAutocomplete'
 
 interface ClientProfile {
   id: string
@@ -43,6 +44,23 @@ export default function ClientProfilePage() {
   })
   const [errors, setErrors] = useState<{[key: string]: string}>({})
   const [saving, setSaving] = useState(false)
+
+  const handleAddressSelect = (addressData: {
+    morada: string
+    district: string
+    council: string
+    parish: string
+    postalCode: string
+  }) => {
+    setFormData(prev => ({
+      ...prev,
+      morada: addressData.morada,
+      district: addressData.district,
+      council: addressData.council,
+      parish: addressData.parish,
+      postalCode: addressData.postalCode
+    }))
+  }
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -252,14 +270,15 @@ export default function ClientProfilePage() {
                 </div>
                 
                 <div>
-                  <Input
+                  <AddressAutocomplete
                     label="Morada"
                     value={formData.morada}
-                    onChange={(e) => setFormData({ ...formData, morada: e.target.value })}
-                    placeholder="Rua, número, andar, etc."
+                    onChange={(value) => setFormData({ ...formData, morada: value })}
+                    onAddressSelect={handleAddressSelect}
+                    placeholder="Digite sua morada para autopreenchimento..."
                     required
+                    error={errors.morada}
                   />
-                  {errors.morada && <p className="text-red-500 text-sm mt-1">{errors.morada}</p>}
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -268,27 +287,36 @@ export default function ClientProfilePage() {
                       label="Distrito"
                       value={formData.district}
                       onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                      placeholder="Preenchido automaticamente"
+                      className="bg-gray-50"
                       required
                     />
                     {errors.district && <p className="text-red-500 text-sm mt-1">{errors.district}</p>}
+                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
                   </div>
                   <div>
                     <Input
                       label="Conselho"
                       value={formData.council}
                       onChange={(e) => setFormData({ ...formData, council: e.target.value })}
+                      placeholder="Preenchido automaticamente"
+                      className="bg-gray-50"
                       required
                     />
                     {errors.council && <p className="text-red-500 text-sm mt-1">{errors.council}</p>}
+                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
                   </div>
                   <div>
                     <Input
                       label="Freguesia"
                       value={formData.parish}
                       onChange={(e) => setFormData({ ...formData, parish: e.target.value })}
+                      placeholder="Preenchido automaticamente"
+                      className="bg-gray-50"
                       required
                     />
                     {errors.parish && <p className="text-red-500 text-sm mt-1">{errors.parish}</p>}
+                    <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
                   </div>
                 </div>
                 
@@ -297,10 +325,12 @@ export default function ClientProfilePage() {
                     label="Código Postal"
                     value={formData.postalCode}
                     onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
-                    placeholder="1000-001"
+                    placeholder="1000-001 (preenchido automaticamente)"
+                    className="bg-gray-50"
                     required
                   />
                   {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>}
+                  <p className="text-xs text-gray-500 mt-1">Preenchido automaticamente pela morada</p>
                 </div>
                 
                 <div className="flex gap-4">
