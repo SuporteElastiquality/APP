@@ -21,10 +21,14 @@ const SERVICE_STATUS = [
 
 // Schema de validação para registro de usuário
 export const registerSchema = z.object({
-  name: z.string()
+  firstName: z.string()
     .min(2, 'Nome deve ter pelo menos 2 caracteres')
-    .max(100, 'Nome muito longo')
+    .max(50, 'Nome muito longo')
     .regex(/^[a-zA-ZÀ-ÿ\s]+$/, 'Nome deve conter apenas letras e espaços'),
+  lastName: z.string()
+    .min(2, 'Apelido deve ter pelo menos 2 caracteres')
+    .max(50, 'Apelido muito longo')
+    .regex(/^[a-zA-ZÀ-ÿ\s]+$/, 'Apelido deve conter apenas letras e espaços'),
   email: z.string()
     .email('Email inválido')
     .max(255, 'Email muito longo')

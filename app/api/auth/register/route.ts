@@ -40,7 +40,8 @@ export async function POST(request: NextRequest) {
     }
 
     const {
-      name,
+      firstName,
+      lastName,
       email,
       password,
       phone,
@@ -53,6 +54,9 @@ export async function POST(request: NextRequest) {
       specialties,
       experience
     } = validation.data!
+
+    // Combinar firstName e lastName em name
+    const name = `${firstName} ${lastName}`.trim()
 
     // Verificar se o email já existe
     const existingUser = await prisma.user.findUnique({

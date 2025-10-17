@@ -37,7 +37,8 @@ const portugueseDistricts = [
 export default function SignUp() {
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -103,7 +104,7 @@ export default function SignUp() {
   }
 
   const nextStep = () => {
-    if (step === 1 && formData.name && formData.email && formData.password && formData.confirmPassword) {
+    if (step === 1 && formData.firstName && formData.lastName && formData.email && formData.password && formData.confirmPassword) {
       setStep(2)
     }
   }
@@ -182,14 +183,25 @@ export default function SignUp() {
           <form onSubmit={handleSubmit}>
             {step === 1 && (
               <div className="space-y-6">
-                <Input
-                  label="Nome"
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Seu nome"
-                  required
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    label="Nome"
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    placeholder="Seu nome"
+                    required
+                  />
+
+                  <Input
+                    label="Apelido"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    placeholder="Seu apelido"
+                    required
+                  />
+                </div>
 
                 <Input
                   label="Email"
@@ -240,7 +252,7 @@ export default function SignUp() {
                   type="button"
                   onClick={nextStep}
                   className="w-full"
-                  disabled={!formData.name || !formData.email || !formData.password || !formData.confirmPassword}
+                  disabled={!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword}
                 >
                   Continuar
                 </Button>
