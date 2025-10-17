@@ -183,11 +183,11 @@ export default function SignUp() {
             {step === 1 && (
               <div className="space-y-6">
                 <Input
-                  label="Nome completo"
+                  label="Nome"
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Seu nome completo"
+                  placeholder="Seu nome"
                   required
                 />
 
