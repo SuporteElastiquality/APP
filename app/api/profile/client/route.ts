@@ -12,6 +12,8 @@ const updateClientProfileSchema = z.object({
   council: z.string().min(1, 'Conselho é obrigatório'),
   parish: z.string().min(1, 'Freguesia é obrigatória'),
   morada: z.string().min(5, 'Morada deve ter pelo menos 5 caracteres'),
+  houseNumber: z.string().optional(),
+  apartment: z.string().optional(),
   postalCode: z.string().regex(/^\d{4}-\d{3}$/, 'Código postal deve estar no formato 0000-000')
 })
 
@@ -67,6 +69,8 @@ export async function GET(request: NextRequest) {
       council: user.clientProfile?.council || '',
       parish: user.clientProfile?.parish || '',
       morada: user.clientProfile?.morada || '',
+      houseNumber: user.clientProfile?.houseNumber || '',
+      apartment: user.clientProfile?.apartment || '',
       postalCode: user.clientProfile?.postalCode || '',
       createdAt: user.createdAt,
       stats: {
@@ -102,7 +106,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Dados inválidos', details: validation.errors }, { status: 400 })
     }
 
-    const { name, phone, district, council, parish, morada, postalCode } = validation.data!
+    const { name, phone, district, council, parish, morada, houseNumber, apartment, postalCode } = validation.data!
 
     // Atualizar usuário
     const updatedUser = await prisma.user.update({
@@ -125,6 +129,8 @@ export async function PUT(request: NextRequest) {
           council,
           parish,
           morada,
+          houseNumber,
+          apartment,
           postalCode
         }
       })
@@ -136,6 +142,8 @@ export async function PUT(request: NextRequest) {
           council,
           parish,
           morada,
+          houseNumber,
+          apartment,
           postalCode
         }
       })

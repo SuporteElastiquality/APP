@@ -19,6 +19,8 @@ interface ClientProfile {
   council: string
   parish: string
   morada: string
+  houseNumber?: string
+  apartment?: string
   postalCode: string
   createdAt: string
   stats: {
@@ -40,6 +42,8 @@ export default function ClientProfilePage() {
     council: '',
     parish: '',
     morada: '',
+    houseNumber: '',
+    apartment: '',
     postalCode: ''
   })
   const [errors, setErrors] = useState<{[key: string]: string}>({})
@@ -88,6 +92,8 @@ export default function ClientProfilePage() {
           council: data.council,
           parish: data.parish,
           morada: data.morada || '',
+          houseNumber: data.houseNumber || '',
+          apartment: data.apartment || '',
           postalCode: data.postalCode || ''
         })
       } else {
@@ -102,6 +108,8 @@ export default function ClientProfilePage() {
           council: '',
           parish: '',
           morada: '',
+          houseNumber: '',
+          apartment: '',
           postalCode: '',
           createdAt: new Date().toISOString(),
           stats: {
@@ -271,7 +279,7 @@ export default function ClientProfilePage() {
                 
                 <div>
                   <AddressAutocomplete
-                    label="Morada"
+                    label="Morada (Rua/Avenida/Praceta)"
                     value={formData.morada}
                     onChange={(value) => setFormData({ ...formData, morada: value })}
                     onAddressSelect={handleAddressSelect}
@@ -279,6 +287,27 @@ export default function ClientProfilePage() {
                     required
                     error={errors.morada}
                   />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Input
+                      label="Número da Casa/Prédio"
+                      value={formData.houseNumber}
+                      onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
+                      placeholder="Ex: 123, 45A, 12-14"
+                    />
+                    {errors.houseNumber && <p className="text-red-500 text-sm mt-1">{errors.houseNumber}</p>}
+                  </div>
+                  <div>
+                    <Input
+                      label="Apartamento/Sala (opcional)"
+                      value={formData.apartment}
+                      onChange={(e) => setFormData({ ...formData, apartment: e.target.value })}
+                      placeholder="Ex: 2º D, Sala 5, Loja A"
+                    />
+                    {errors.apartment && <p className="text-red-500 text-sm mt-1">{errors.apartment}</p>}
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -406,9 +435,13 @@ export default function ClientProfilePage() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Morada
+                    Morada Completa
                   </label>
-                  <p className="text-gray-900">{profile?.morada}</p>
+                  <p className="text-gray-900">
+                    {profile?.morada}
+                    {profile?.houseNumber && `, ${profile.houseNumber}`}
+                    {profile?.apartment && `, ${profile.apartment}`}
+                  </p>
                 </div>
               </div>
             )}

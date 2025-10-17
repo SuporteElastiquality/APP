@@ -83,7 +83,9 @@ model ClientProfile {
   district  String   // Distrito
   council   String   // Conselho/Concelho
   parish    String   // Freguesia
-  morada    String   // Morada completa (obrigatório)
+  morada    String   // Rua/Avenida/Praceta (obrigatório)
+  houseNumber String? // Número da casa/prédio (opcional)
+  apartment   String? // Apartamento/sala (opcional)
   postalCode String  // Código postal português (obrigatório)
   
   createdAt DateTime @default(now())

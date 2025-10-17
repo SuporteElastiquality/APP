@@ -102,12 +102,8 @@ export default function AddressAutocomplete({
     const address = suggestion.address
     const displayName = suggestion.display_name
 
-    // Extrair informações do endereço
-    const morada = [
-      address.house_number,
-      address.road,
-      address.suburb
-    ].filter(Boolean).join(' ') || displayName.split(',')[0]
+    // Extrair informações do endereço - apenas rua/nome da via
+    const morada = address.road || address.suburb || displayName.split(',')[0] || ''
 
     const district = address.state || address.county || ''
     const council = address.city || address.town || address.village || ''
@@ -126,8 +122,18 @@ export default function AddressAutocomplete({
       postalCode
     })
 
+    // Fechar sugestões e limpar
     setShowSuggestions(false)
     setSuggestions([])
+    setSelectedIndex(-1)
+    
+    // Focar no próximo campo (número da casa)
+    setTimeout(() => {
+      const nextInput = document.querySelector('input[placeholder*="número"]') as HTMLInputElement
+      if (nextInput) {
+        nextInput.focus()
+      }
+    }, 100)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
