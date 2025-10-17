@@ -74,12 +74,12 @@ export default function MessagesPage() {
     }
   }, [searchParams])
 
-  // Carregar salas de chat
+  // Carregar salas de chat e criar conversa se necessário
   useEffect(() => {
     if (session?.user?.id) {
       loadChatRooms()
     }
-  }, [session])
+  }, [session, targetProfessional, targetName])
 
   // Carregar mensagens quando uma sala é selecionada
   useEffect(() => {
@@ -117,7 +117,12 @@ export default function MessagesPage() {
   }
 
   const createNewConversation = async () => {
-    if (!targetProfessional || !session?.user?.id) return
+    if (!targetProfessional || !session?.user?.id) {
+      console.log('Não é possível criar conversa:', { targetProfessional, userId: session?.user?.id })
+      return
+    }
+
+    console.log('Criando nova conversa com:', targetProfessional)
 
     try {
       const response = await fetch('/api/chat/rooms', {
@@ -133,9 +138,13 @@ export default function MessagesPage() {
 
       if (response.ok) {
         const newRoom = await response.json()
+        console.log('Conversa criada com sucesso:', newRoom)
         setSelectedRoom(newRoom)
         // Recarregar lista de salas
-        loadChatRooms()
+        await loadChatRooms()
+      } else {
+        const errorData = await response.json()
+        console.error('Erro ao criar conversa:', errorData)
       }
     } catch (error) {
       console.error('Erro ao criar conversa:', error)
@@ -399,8 +408,23 @@ export default function MessagesPage() {
               <div className="flex-1 flex items-center justify-center text-gray-500">
                 <div className="text-center">
                   <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                  <h3 className="text-lg font-medium mb-2">Selecione uma conversa</h3>
-                  <p>Escolha uma conversa da lista para começar a conversar</p>
+                  <h3 className="text-lg font-medium mb-2">
+                    {targetProfessional && targetName ? 'Iniciando conversa...' : 'Selecione uma conversa'}
+                  </h3>
+                  <p className="mb-4">
+                    {targetProfessional && targetName 
+                      ? `Criando conversa com ${targetName}...`
+                      : 'Escolha uma conversa da lista para começar a conversar'
+                    }
+                  </p>
+                  {targetProfessional && targetName && (
+                    <Button 
+                      onClick={createNewConversation}
+                      className="bg-primary-600 hover:bg-primary-700"
+                    >
+                      Iniciar Conversa com {targetName}
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
