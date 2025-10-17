@@ -15,7 +15,7 @@ export const SERVICE_CATEGORIES = [
   {
     id: 'limpeza',
     name: 'Serviços de Limpeza',
-    description: 'Limpeza residencial, Limpeza pós-obra, Limpeza comercial/empresarial, Limpeza de vidros, Limpeza de estofos e carpetes',
+    description: 'Limpeza residencial, Comercial/Empresarial, Limpeza pós obras, Vidros, Estofos e carpetes',
     icon: '🧹'
   },
   {
