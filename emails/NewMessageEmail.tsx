@@ -51,7 +51,7 @@ export const NewMessageEmail = ({
         </Text>
         
         <Section style={messageContainer}>
-          <Text style={messagePreview}>
+          <Text style={messagePreviewText}>
             "{messagePreview.length > 100 ? messagePreview.substring(0, 100) + '...' : messagePreview}"
           </Text>
         </Section>
@@ -123,7 +123,7 @@ const messageContainer = {
   margin: '24px 0',
 }
 
-const messagePreview = {
+const messagePreviewText = {
   color: '#6b7280',
   fontSize: '14px',
   fontStyle: 'italic',
