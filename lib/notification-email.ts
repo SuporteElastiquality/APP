@@ -113,6 +113,6 @@ export async function sendSystemNotification({
     return { success: true, data }
   } catch (error) {
     console.error('Erro ao enviar notificação do sistema:', error)
-    return { success: false, error: error.message }
+    return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
