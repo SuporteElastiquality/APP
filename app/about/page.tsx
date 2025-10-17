@@ -46,7 +46,7 @@ const values = [
   {
     icon: Shield,
     title: 'Valores',
-    description: 'Transparência, qualidade, confiança e inovação são os pilares que guiam todas as nossas ações e decisões.',
+    description: 'Confiança, transparência, credibilidade e inovação.',
     color: 'bg-green-100 text-green-600'
   }
 ]
