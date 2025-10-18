@@ -172,18 +172,6 @@ export default function Hero() {
 
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-3 mt-8">
                 <div className="flex items-center space-x-3">
-                  <div className="bg-success-500 p-2 rounded-lg">
-                    <Award className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">98%</p>
-                    <p className="text-primary-100 text-sm">Satisfação</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-3 -mt-4">
-                <div className="flex items-center space-x-3">
                   <div className="bg-primary-400 p-2 rounded-lg">
                     <Star className="w-6 h-6" />
                   </div>
@@ -194,7 +182,7 @@ export default function Hero() {
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-3 mt-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-3 -mt-4">
                 <div className="flex items-center space-x-3">
                   <div className="bg-secondary-400 p-2 rounded-lg">
                     <MapPin className="w-6 h-6" />
@@ -202,6 +190,18 @@ export default function Hero() {
                   <div>
                     <p className="text-2xl font-bold">308</p>
                     <p className="text-primary-100 text-sm">Concelhos</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-3 mt-4">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-success-500 p-2 rounded-lg">
+                    <Award className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">98%</p>
+                    <p className="text-primary-100 text-sm">Satisfação</p>
                   </div>
                 </div>
               </div>
