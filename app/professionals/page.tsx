@@ -161,11 +161,7 @@ export default function ProfessionalsPage() {
         {/* Stats */}
         <section className="py-12 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-3xl font-bold text-secondary-600 mb-2">50,000+</div>
-                <p className="text-gray-600">Profissionais Cadastrados</p>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               <div>
                 <div className="text-3xl font-bold text-secondary-600 mb-2">98%</div>
                 <p className="text-gray-600">Taxa de Verificação</p>
@@ -198,7 +194,7 @@ export default function ProfessionalsPage() {
                       
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="text-lg font-semibold text-gray-900">{professional.name}</h3>
+                          <h3 className="text-lg font-semibold text-gray-900">{professional.name.split(' ')[0]}</h3>
                           {professional.verified && (
                             <CheckCircle className="w-5 h-5 text-green-500" />
                           )}
@@ -222,22 +218,16 @@ export default function ProfessionalsPage() {
                       ))}
                     </div>
                     
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="text-sm font-medium">{professional.rating}</span>
-                          <span className="text-sm text-gray-500">({professional.reviews})</span>
-                        </div>
-                        
-                        <div className="flex items-center space-x-1 text-sm text-gray-500">
-                          <Clock className="w-4 h-4" />
-                          <span>{professional.experience}</span>
-                        </div>
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="flex items-center space-x-1">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-medium">{professional.rating}</span>
+                        <span className="text-sm text-gray-500">({professional.reviews})</span>
                       </div>
                       
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-green-600">{professional.price}</div>
+                      <div className="flex items-center space-x-1 text-sm text-gray-500">
+                        <Clock className="w-4 h-4" />
+                        <span>{professional.experience}</span>
                       </div>
                     </div>
                     
@@ -248,9 +238,12 @@ export default function ProfessionalsPage() {
                       >
                         Ver Perfil
                       </Link>
-                      <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors">
+                      <Link
+                        href={`/messages?professional=${professional.id}`}
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors"
+                      >
                         Contactar
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>

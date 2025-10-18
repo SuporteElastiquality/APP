@@ -192,7 +192,7 @@ model ServiceRequest {
   deadline    DateTime? // Prazo desejado
   
   // Status
-  status      String @default("OPEN")
+  status      String @default("PENDING")
   
   // Relacionamentos
   proposals   ServiceProposal[]

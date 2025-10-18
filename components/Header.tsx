@@ -77,6 +77,13 @@ export default function Header() {
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
                     <Link
+                      href="/dashboard"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <User className="w-4 h-4 mr-3" />
+                      Dashboard
+                    </Link>
+                    <Link
                       href={session.user.userType === 'CLIENT' ? '/profile/client' : '/profile/professional'}
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
@@ -210,6 +217,15 @@ export default function Header() {
                       </div>
                     </div>
                   </div>
+                  
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px]"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <User className="w-4 h-4 mr-3" />
+                    Dashboard
+                  </Link>
                   
                   <Link
                     href={session.user.userType === 'CLIENT' ? '/profile/client' : '/profile/professional'}

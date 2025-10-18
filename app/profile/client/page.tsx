@@ -503,6 +503,23 @@ export default function ClientProfilePage() {
             <p className="text-sm text-gray-600">Média das avaliações</p>
           </div>
         </div>
+
+        {/* Botões de Ação */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            onClick={() => window.location.href = '/request-service'}
+            className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 text-lg"
+          >
+            Solicitar Novo Serviço
+          </Button>
+          <Button
+            onClick={() => window.location.href = '/profile/client/requests'}
+            variant="outline"
+            className="px-8 py-3 text-lg"
+          >
+            Ver Minhas Solicitações
+          </Button>
+        </div>
         </div>
       </div>
       <Footer />

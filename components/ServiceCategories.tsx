@@ -77,7 +77,7 @@ const categories = [
   {
     name: 'Educação',
     icon: GraduationCap,
-    services: ['Aulas Particulares', 'Reforço Escolar', 'Cursos Online', 'Tradução'],
+    services: ['Aulas Particulares', 'Reforço Escolar', 'Tradução'],
     color: 'bg-indigo-100 text-indigo-600',
     searchQuery: 'educacao'
   },

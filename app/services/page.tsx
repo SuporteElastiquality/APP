@@ -6,6 +6,8 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Search, MapPin, Filter, Star } from 'lucide-react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const allServices = [
   {
@@ -138,10 +140,24 @@ const getCategoryId = (category: string) => {
 }
 
 export default function ServicesPage() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const [visibleServices, setVisibleServices] = useState(6)
 
   const loadMoreServices = () => {
     setVisibleServices(prev => prev + 6)
+  }
+
+  const handleRequestService = () => {
+    if (status === 'loading') return
+    
+    if (session) {
+      // Usuário logado - redirecionar para solicitação de serviço
+      router.push('/request-service')
+    } else {
+      // Usuário não logado - redirecionar para cadastro
+      router.push('/auth/signup')
+    }
   }
 
   const services = allServices.slice(0, visibleServices)
@@ -330,12 +346,12 @@ export default function ServicesPage() {
             <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
               Publique uma solicitação de serviço e receba propostas de profissionais qualificados.
             </p>
-            <Link
-              href="/auth/signup"
+            <button
+              onClick={handleRequestService}
               className="bg-white text-primary-600 hover:bg-gray-50 px-8 py-3 rounded-lg font-medium transition-colors inline-block"
             >
               Solicitar Serviço
-            </Link>
+            </button>
           </div>
         </section>
       </main>

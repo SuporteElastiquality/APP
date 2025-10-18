@@ -1,5 +1,6 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ComecarAgoraButton from '@/components/ComecarAgoraButton'
 import { Award, MapPin, Heart, Target, Lightbulb, Shield, Clock } from 'lucide-react'
 import Link from 'next/link'
 
@@ -45,32 +46,6 @@ const values = [
   }
 ]
 
-const team = [
-  {
-    name: 'João Silva',
-    role: 'CEO & Fundador',
-    description: 'Mais de 15 anos de experiência em tecnologia e mercado de serviços.',
-    image: null
-  },
-  {
-    name: 'Maria Santos',
-    role: 'CTO',
-    description: 'Especialista em desenvolvimento de plataformas digitais e experiência do usuário.',
-    image: null
-  },
-  {
-    name: 'Pedro Costa',
-    role: 'Diretor de Operações',
-    description: 'Responsável pela qualidade dos serviços e satisfação dos clientes.',
-    image: null
-  },
-  {
-    name: 'Ana Rodrigues',
-    role: 'Diretora de Marketing',
-    description: 'Especialista em comunicação e crescimento de comunidades online.',
-    image: null
-  }
-]
 
 export default function AboutPage() {
   return (
@@ -193,38 +168,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Team */}
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                Nossa Equipe
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Conheça as pessoas por trás da Elastiquality
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {team.map((member, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-gray-500 text-sm">Foto</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                    {member.name}
-                  </h3>
-                  <p className="text-primary-600 font-medium mb-2">
-                    {member.role}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {member.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Why Choose Us */}
         <section className="py-20 bg-white">
@@ -285,12 +228,7 @@ export default function AboutPage() {
               Seja cliente ou profissional, faça parte da maior plataforma de serviços de Portugal.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/auth/signup"
-                className="bg-white text-primary-600 hover:bg-gray-50 px-8 py-3 rounded-lg font-medium transition-colors"
-              >
-                Começar Agora
-              </Link>
+              <ComecarAgoraButton />
               <Link
                 href="/contact"
                 className="border border-white/30 text-white hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition-colors"

@@ -51,7 +51,7 @@ export const SERVICE_CATEGORIES = [
   {
     id: 'educacao',
     name: 'Educação',
-    description: 'Aulas particulares (matemática, inglês, etc.), Reforço escolar, Cursos online, Tradução e revisão de textos, Treino corporativo',
+    description: 'Aulas particulares (matemática, inglês, etc.), Reforço escolar, Tradução e revisão de textos',
     icon: '📚'
   },
   {

@@ -51,10 +51,10 @@ export default function Dashboard() {
           </div>
 
           {/* Cards de Informações */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className={`grid grid-cols-1 md:grid-cols-2 ${user.userType === 'CLIENT' ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-6 mb-8`}>
             <div 
               className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-white rounded-lg shadow-md border"
-              onClick={() => router.push('/profile')}
+              onClick={() => router.push(user.userType === 'CLIENT' ? '/profile/client' : '/profile/professional')}
             >
               <div className="flex items-center space-x-4">
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -67,19 +67,24 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <Card className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="p-3 bg-green-100 rounded-full">
-                  <CreditCard className="w-6 h-6 text-green-600" />
+            {user.userType === 'PROFESSIONAL' && (
+              <Card className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-green-100 rounded-full">
+                    <CreditCard className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Pagamentos</h3>
+                    <p className="text-sm text-gray-600">Histórico e métodos</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Pagamentos</h3>
-                  <p className="text-sm text-gray-600">Histórico e métodos</p>
-                </div>
-              </div>
-            </Card>
+              </Card>
+            )}
 
-            <Card className="p-6">
+            <div 
+              className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-white rounded-lg shadow-md border"
+              onClick={() => router.push('/messages')}
+            >
               <div className="flex items-center space-x-4">
                 <div className="p-3 bg-purple-100 rounded-full">
                   <MessageCircle className="w-6 h-6 text-purple-600" />
@@ -89,7 +94,7 @@ export default function Dashboard() {
                   <p className="text-sm text-gray-600">Conversas ativas</p>
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
 
           {/* Informações do Usuário */}
@@ -128,28 +133,57 @@ export default function Dashboard() {
             <Card className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Ações Rápidas</h2>
               <div className="space-y-3">
-                <Button 
-                  className="w-full justify-start"
-                  onClick={() => router.push('/services')}
-                >
-                  Explorar Serviços
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => router.push('/professionals')}
-                >
-                  Encontrar Profissionais
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => router.push('/pricing')}
-                >
-                  Ver Planos
-                </Button>
+                {user.userType === 'CLIENT' ? (
+                  <>
+                    <Button 
+                      className="w-full justify-start"
+                      onClick={() => router.push('/request-service')}
+                    >
+                      Solicitar Serviço
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => router.push('/profile/client/requests')}
+                    >
+                      Minhas Solicitações
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => router.push('/professionals')}
+                    >
+                      Encontrar Profissionais
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      className="w-full justify-start"
+                      onClick={() => router.push('/search')}
+                    >
+                      Buscar Serviços
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => router.push('/quality')}
+                    >
+                      Sistema Quality
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => router.push('/pricing')}
+                    >
+                      Ver Planos
+                    </Button>
+                  </>
+                )}
               </div>
             </Card>
           </div>

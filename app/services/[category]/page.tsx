@@ -77,9 +77,7 @@ const servicesByCategory = {
   'educacao': [
     { id: 1, name: 'Aulas Particulares', description: 'Matemática, inglês, etc.', rating: 4.8, reviews: 234, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' },
     { id: 2, name: 'Reforço Escolar', description: 'Apoio ao estudo', rating: 4.7, reviews: 156, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' },
-    { id: 3, name: 'Cursos Online', description: 'Formação à distância', rating: 4.6, reviews: 89, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' },
-    { id: 4, name: 'Tradução', description: 'Serviços de tradução', rating: 4.9, reviews: 78, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' },
-    { id: 5, name: 'Treino Corporativo', description: 'Formação empresarial', rating: 4.8, reviews: 123, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' }
+    { id: 3, name: 'Tradução', description: 'Serviços de tradução', rating: 4.9, reviews: 78, image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center' }
   ],
   'eventos-festas': [
     { id: 1, name: 'Buffet', description: 'Serviços de catering', rating: 4.8, reviews: 189, image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop&crop=center' },
