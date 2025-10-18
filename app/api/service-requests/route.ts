@@ -155,8 +155,12 @@ export async function GET(request: NextRequest) {
               select: {
                 id: true,
                 name: true,
-                rating: true,
-                totalReviews: true
+                professionalProfile: {
+                  select: {
+                    rating: true,
+                    totalReviews: true
+                  }
+                }
               }
             }
           }
