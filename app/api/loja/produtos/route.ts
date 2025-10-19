@@ -35,7 +35,6 @@ function translateToPortuguese(text: string): string {
     // Descrições comuns
     'con tecnología': 'com tecnologia',
     'eficiencia energética': 'eficiência energética',
-    'pulgadas': 'polegadas',
     'pantalla': 'ecrã',
     'pantalla táctil': 'ecrã tátil',
     'resolución': 'resolução',
