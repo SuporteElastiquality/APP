@@ -178,7 +178,7 @@ export default function LojaPage() {
         case 'price-high':
           return b.price - a.price
         case 'newest':
-          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+          return 0 // Ordenação por nome como fallback
         case 'rating':
           const ratingA = Math.min(5, Math.max(1, Math.floor(a.price / 20)))
           const ratingB = Math.min(5, Math.max(1, Math.floor(b.price / 20)))
