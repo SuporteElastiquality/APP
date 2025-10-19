@@ -119,7 +119,7 @@ export default function Dashboard() {
 
                 <div 
                   className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-white rounded-lg shadow-md border"
-                  onClick={() => router.push('/quality')}
+                  onClick={() => router.push('/profile/professional/payments')}
                 >
                   <div className="flex items-center space-x-4">
                     <div className="p-3 bg-green-100 rounded-full">
