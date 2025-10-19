@@ -23,12 +23,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (session.user.userType !== 'PROFESSIONAL') {
-      return NextResponse.json(
-        { error: 'Apenas profissionais podem comprar moedas' },
-        { status: 403 }
-      )
-    }
+    // Qualquer usuário pode comprar quality (moedas)
+    // Removida restrição de apenas profissionais
 
     const { packageId, amount, coins } = await request.json()
 
