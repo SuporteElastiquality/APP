@@ -8,14 +8,23 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
+    const status = searchParams.get('status')
     const search = searchParams.get('search')
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '12')
     const skip = (page - 1) * limit
 
     // Construir filtros base
-    const whereClause: any = {
-      status: {
+    const whereClause: any = {}
+
+    // Aplicar filtro de status
+    if (status && status !== 'ALL') {
+      whereClause.status = status
+    } else if (status === 'ALL') {
+      // Para "ALL", não aplicar filtro de status
+    } else {
+      // Filtro padrão para profissionais
+      whereClause.status = {
         in: ['PENDING', 'IN_PROGRESS']
       }
     }

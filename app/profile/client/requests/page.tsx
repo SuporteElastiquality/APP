@@ -59,8 +59,12 @@ export default function ClientRequestsPage() {
   }, [session, status])
 
   useEffect(() => {
+    console.log('🔄 useEffect executado - session:', !!session, 'filter:', filter)
     if (session?.user?.id) {
+      console.log('👤 Usuário logado:', session.user.email, 'Tipo:', session.user.userType)
       loadRequests()
+    } else {
+      console.log('❌ Usuário não logado ou sem ID')
     }
   }, [session, filter])
 
@@ -203,6 +207,7 @@ export default function ClientRequestsPage() {
           </div>
 
           {/* Lista de Solicitações */}
+          {console.log('🎨 Renderizando lista - requests.length:', requests.length, 'loading:', loading)}
           {requests.length === 0 ? (
             <div className="text-center py-12">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
