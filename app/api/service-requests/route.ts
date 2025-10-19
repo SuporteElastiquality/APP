@@ -8,11 +8,11 @@ const createServiceRequestSchema = z.object({
   title: z.string().min(5, 'Título deve ter pelo menos 5 caracteres'),
   description: z.string().min(20, 'Descrição deve ter pelo menos 20 caracteres'),
   serviceId: z.string().min(1, 'Serviço é obrigatório'),
-  budgetMin: z.number().positive().nullable().optional().transform(val => val === null ? undefined : val),
-  budgetMax: z.number().positive().nullable().optional().transform(val => val === null ? undefined : val),
-  district: z.string().min(1, 'Distrito é obrigatório'),
-  council: z.string().min(1, 'Concelho é obrigatório'),
-  parish: z.string().min(1, 'Freguesia é obrigatória'),
+  budgetMin: z.union([z.number(), z.null(), z.undefined()]).optional().transform(val => val === null || val === 0 ? undefined : val),
+  budgetMax: z.union([z.number(), z.null(), z.undefined()]).optional().transform(val => val === null || val === 0 ? undefined : val),
+  district: z.string().optional().default(''),
+  council: z.string().optional().default(''),
+  parish: z.string().optional().default(''),
   address: z.string().optional()
 })
 
@@ -29,8 +29,12 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     
+    // Debug: log dos dados recebidos
+    console.log('Dados recebidos na API:', JSON.stringify(body, null, 2))
+    
     // Validar dados
     const validatedData = createServiceRequestSchema.parse(body)
+    console.log('Dados validados:', JSON.stringify(validatedData, null, 2))
     
     // Verificar se o serviço existe
     const service = await prisma.service.findUnique({
