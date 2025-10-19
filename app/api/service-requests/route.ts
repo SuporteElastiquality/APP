@@ -20,8 +20,12 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Se for um cliente, filtrar apenas suas próprias solicitações
+    if (session?.user?.userType === 'CLIENT') {
+      whereClause.clientId = session.user.id
+    }
     // Se for um profissional, filtrar por suas categorias e distritos
-    if (session?.user?.userType === 'PROFESSIONAL') {
+    else if (session?.user?.userType === 'PROFESSIONAL') {
       const professionalProfile = await prisma.professionalProfile.findUnique({
         where: {
           userId: session.user.id
@@ -64,6 +68,9 @@ export async function GET(request: NextRequest) {
         { description: { contains: search, mode: 'insensitive' } }
       ]
     }
+
+    console.log('🔍 Buscando solicitações com filtros:', whereClause)
+    console.log('👤 Usuário:', session.user.email, 'Tipo:', session.user.userType)
 
     // Buscar solicitações
     const [requests, totalCount] = await Promise.all([
@@ -118,6 +125,9 @@ export async function GET(request: NextRequest) {
         where: whereClause
       })
     ])
+
+    console.log('📊 Solicitações encontradas:', requests.length)
+    console.log('📋 Total count:', totalCount)
 
     // Buscar categorias disponíveis
     const categories = await prisma.serviceCategory.findMany({
