@@ -180,7 +180,6 @@ function translateToPortuguese(text: string): string {
     'mm': 'mm',
     'pulgadas': 'polegadas',
     'pulg': 'pol',
-    'pulgadas': 'pol',
     'ancho': 'largura',
     'alto': 'altura',
     'profundo': 'profundidade',
