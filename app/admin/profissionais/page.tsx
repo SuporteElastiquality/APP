@@ -27,7 +27,9 @@ interface Professional {
   createdAt: string
   professionalProfile: {
     id: string
-    specialties: string[]
+    categories: string[]
+    services: string[]
+    workDistricts: string[]
     description: string | null
     rating: number | null
     district: string
@@ -84,8 +86,14 @@ export default function ProfissionaisPage() {
       filtered = filtered.filter(professional =>
         professional.name.toLowerCase().includes(term.toLowerCase()) ||
         professional.email.toLowerCase().includes(term.toLowerCase()) ||
-        professional.professionalProfile?.specialties.some(specialty =>
-          specialty.toLowerCase().includes(term.toLowerCase())
+        professional.professionalProfile?.categories.some(category =>
+          category.toLowerCase().includes(term.toLowerCase())
+        ) ||
+        professional.professionalProfile?.services.some(service =>
+          service.toLowerCase().includes(term.toLowerCase())
+        ) ||
+        professional.professionalProfile?.workDistricts.some(district =>
+          district.toLowerCase().includes(term.toLowerCase())
         ) ||
         professional.professionalProfile?.district.toLowerCase().includes(term.toLowerCase()) ||
         professional.professionalProfile?.council.toLowerCase().includes(term.toLowerCase())
@@ -323,13 +331,39 @@ export default function ProfissionaisPage() {
                         </div>
                       )}
 
-                      {professional.professionalProfile?.specialties && professional.professionalProfile.specialties.length > 0 && (
+                      {professional.professionalProfile?.categories && professional.professionalProfile.categories.length > 0 && (
                         <div className="mb-3">
-                          <p className="text-sm font-medium text-gray-700 mb-1">Especialidades:</p>
+                          <p className="text-sm font-medium text-gray-700 mb-1">Categorias:</p>
                           <div className="flex flex-wrap gap-1">
-                            {professional.professionalProfile.specialties.map((specialty, index) => (
+                            {professional.professionalProfile.categories.map((category, index) => (
                               <span key={index} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                {specialty}
+                                {category}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {professional.professionalProfile?.services && professional.professionalProfile.services.length > 0 && (
+                        <div className="mb-3">
+                          <p className="text-sm font-medium text-gray-700 mb-1">Serviços:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {professional.professionalProfile.services.map((service, index) => (
+                              <span key={index} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                {service}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {professional.professionalProfile?.workDistricts && professional.professionalProfile.workDistricts.length > 0 && (
+                        <div className="mb-3">
+                          <p className="text-sm font-medium text-gray-700 mb-1">Distritos de Trabalho:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {professional.professionalProfile.workDistricts.map((district, index) => (
+                              <span key={index} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                {district}
                               </span>
                             ))}
                           </div>
