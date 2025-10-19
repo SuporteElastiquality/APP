@@ -56,6 +56,13 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Construir URLs corretamente
+    const baseUrl = 'https://elastiquality.pt'
+    const successUrl = `${baseUrl}/quality?success=true`
+    const cancelUrl = `${baseUrl}/quality?canceled=true`
+    
+    console.log('🔗 URLs construídas:', { successUrl, cancelUrl })
+
     // Criar Checkout Session no Stripe
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -73,8 +80,8 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXTAUTH_URL}/quality?success=true`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/quality?canceled=true`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
         userId: session.user.id,
         transactionId: transaction.id,
