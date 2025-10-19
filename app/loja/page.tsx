@@ -204,12 +204,17 @@ export default function LojaPage() {
         )
       } else {
         // Garantir que o produto tem todas as propriedades necessárias
-        const cartProduct = {
+        const cartProduct: Product = {
           id: product.id,
           name: product.name,
+          description: product.description || '',
           price: product.price,
+          category: product.category || '',
+          stock: product.stock || 0,
           images: product.images || [],
-          brand: product.brand || ''
+          sku: product.sku || '',
+          brand: product.brand || '',
+          isActive: product.isActive ?? true
         }
         return [...prev, { product: cartProduct, quantity: 1 }]
       }
