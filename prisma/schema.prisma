@@ -58,6 +58,7 @@ model User {
   professionalProfile ProfessionalProfile?
   serviceRequests ServiceRequest[]
   serviceProposals ServiceProposal[]
+  orders        Order[]
   clientReviews Review[] @relation("ClientReviews")
   professionalReviews Review[] @relation("ProfessionalReviews")
   chatRooms     ChatRoom[] @relation("ChatRoomParticipants")
@@ -311,4 +312,82 @@ model Transaction {
   updatedAt   DateTime @updatedAt
 
   @@map("transactions")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  category    String
+  stock       Int      @default(0)
+  images      String[] // Array de URLs das imagens
+  weight      String?  // Peso em kg
+  dimensions  String?  // Dimensões (LxAxP)
+  sku         String   @unique
+  brand       String?
+  isActive    Boolean  @default(true)
+  
+  // Relacionamentos
+  orderItems  OrderItem[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("products")
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  // Detalhes do pedido
+  total       Float
+  status      String   @default("PENDING") // PENDING, PAID, SHIPPED, DELIVERED, CANCELLED
+  
+  // Dados de entrega
+  deliveryFirstName String
+  deliveryLastName  String
+  deliveryAddress   String
+  deliveryCity      String
+  deliveryPostalCode String
+  deliveryPhone     String
+  deliveryEmail     String
+  
+  // Dados de faturação (Portugal)
+  billingFirstName  String
+  billingLastName   String
+  billingAddress    String
+  billingCity       String
+  billingPostalCode String
+  billingNIF        String // Número de Identificação Fiscal (obrigatório em Portugal)
+  billingPhone      String
+  billingEmail      String
+  
+  // Pagamento
+  stripePaymentIntentId String?
+  
+  // Relacionamentos
+  items       OrderItem[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  
+  quantity  Int
+  price     Float // Preço no momento da compra
+  
+  createdAt DateTime @default(now())
+
+  @@map("order_items")
 }

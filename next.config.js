@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost', 'images.unsplash.com', 'via.placeholder.com'],
+    domains: ['localhost', 'images.unsplash.com', 'via.placeholder.com', 'cdn2.depau.es'],
   },
   webpack: (config) => {
     config.resolve.alias = {
