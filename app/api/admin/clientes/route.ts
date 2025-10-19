@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
             district: true,
             council: true,
             parish: true,
-            address: true
+            morada: true
           }
         }
       },
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
             district: true,
             council: true,
             parish: true,
-            address: true
+            morada: true
           }
         }
       },

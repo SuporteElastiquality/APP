@@ -18,7 +18,7 @@ interface Cliente {
     district: string
     council: string
     parish: string
-    address: string
+    morada: string
   } | null
 }
 
