@@ -1,63 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, User, LogOut, Settings, MessageCircle, Coins, ChevronDown } from 'lucide-react'
+import { Menu, X, User, LogOut, Settings, MessageCircle, Coins } from 'lucide-react'
 import Image from 'next/image'
-
-interface RelevantService {
-  id: string
-  name: string
-  description: string
-  slug: string
-}
-
-interface RelevantCategory {
-  id: string
-  name: string
-  slug: string
-  services: RelevantService[]
-}
-
-interface ProfessionalData {
-  categories: RelevantCategory[]
-  workDistricts: string[]
-}
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false)
-  const [professionalData, setProfessionalData] = useState<ProfessionalData | null>(null)
-  const [loadingServices, setLoadingServices] = useState(false)
   const { data: session, status } = useSession()
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen)
-  const toggleServicesDropdown = () => setIsServicesDropdownOpen(!isServicesDropdownOpen)
-
-  // Carregar serviços relevantes para profissionais
-  useEffect(() => {
-    if (session?.user?.userType === 'PROFESSIONAL') {
-      loadRelevantServices()
-    }
-  }, [session])
-
-  const loadRelevantServices = async () => {
-    setLoadingServices(true)
-    try {
-      const response = await fetch('/api/professional/relevant-services')
-      if (response.ok) {
-        const data = await response.json()
-        setProfessionalData(data)
-      }
-    } catch (error) {
-      console.error('Erro ao carregar serviços relevantes:', error)
-    } finally {
-      setLoadingServices(false)
-    }
-  }
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -80,49 +35,9 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             {session?.user?.userType === 'PROFESSIONAL' ? (
               <>
-                {/* Dropdown de Serviços para Profissionais */}
-                <div className="relative">
-                  <button
-                    onClick={toggleServicesDropdown}
-                    className="flex items-center space-x-1 text-gray-600 hover:text-primary-600 transition-colors"
-                  >
-                    <span>Serviços</span>
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                  
-                  {isServicesDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                      {loadingServices ? (
-                        <div className="px-4 py-2 text-sm text-gray-500">Carregando...</div>
-                      ) : professionalData?.categories && professionalData.categories.length > 0 ? (
-                        <div className="max-h-96 overflow-y-auto">
-                          {professionalData.categories.map((category) => (
-                            <div key={category.id} className="px-4 py-2">
-                              <div className="font-medium text-gray-900 mb-2">{category.name}</div>
-                              <div className="space-y-1">
-                                {category.services.map((service) => (
-                                  <Link
-                                    key={service.id}
-                                    href={`/services/${category.slug}`}
-                                    className="block px-2 py-1 text-sm text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded"
-                                    onClick={() => setIsServicesDropdownOpen(false)}
-                                  >
-                                    {service.name}
-                                  </Link>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="px-4 py-2 text-sm text-gray-500">
-                          Nenhum serviço configurado
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                
+                <Link href="/services" className="text-gray-600 hover:text-primary-600 transition-colors">
+                  Serviços
+                </Link>
                 <Link href="/how-it-works" className="text-gray-600 hover:text-primary-600 transition-colors">
                   Como Funciona
                 </Link>
@@ -266,36 +181,13 @@ export default function Header() {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {session?.user?.userType === 'PROFESSIONAL' ? (
                 <>
-                  {/* Serviços para Profissionais */}
-                  <div className="px-3 py-3">
-                    <div className="font-medium text-gray-900 mb-2">Meus Serviços</div>
-                    {loadingServices ? (
-                      <div className="text-sm text-gray-500">Carregando...</div>
-                    ) : professionalData?.categories && professionalData.categories.length > 0 ? (
-                      <div className="space-y-2">
-                        {professionalData.categories.map((category) => (
-                          <div key={category.id}>
-                            <div className="text-sm font-medium text-gray-700 mb-1">{category.name}</div>
-                            <div className="ml-2 space-y-1">
-                              {category.services.map((service) => (
-                                <Link
-                                  key={service.id}
-                                  href={`/services/${category.slug}`}
-                                  className="block text-sm text-gray-600 hover:text-primary-600 hover:bg-gray-50 px-2 py-1 rounded"
-                                  onClick={() => setIsMenuOpen(false)}
-                                >
-                                  {service.name}
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-sm text-gray-500">Nenhum serviço configurado</div>
-                    )}
-                  </div>
-                  
+                  <Link
+                    href="/services"
+                    className="block px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px] flex items-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Serviços
+                  </Link>
                   <Link
                     href="/how-it-works"
                     className="block px-3 py-3 text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors rounded-lg min-h-[44px] flex items-center"
@@ -458,13 +350,12 @@ export default function Header() {
       </div>
 
       {/* Overlay para fechar dropdowns */}
-      {(isUserMenuOpen || isMenuOpen || isServicesDropdownOpen) && (
+      {(isUserMenuOpen || isMenuOpen) && (
         <div
           className="fixed inset-0 z-40"
           onClick={() => {
             setIsUserMenuOpen(false)
             setIsMenuOpen(false)
-            setIsServicesDropdownOpen(false)
           }}
         />
       )}

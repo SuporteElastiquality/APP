@@ -211,8 +211,24 @@ export default function ServicesPage() {
               Nenhuma solicitação encontrada
             </h3>
             <p className="text-gray-600">
-              Não há solicitações de serviços disponíveis no momento.
+              {session?.user?.userType === 'PROFESSIONAL' 
+                ? 'Não há solicitações de serviços disponíveis nas suas categorias e distritos de trabalho no momento.'
+                : 'Não há solicitações de serviços disponíveis no momento.'
+              }
             </p>
+            {session?.user?.userType === 'PROFESSIONAL' && (
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg max-w-md mx-auto">
+                <p className="text-sm text-blue-800">
+                  💡 <strong>Dica:</strong> Atualize seu perfil profissional para incluir mais categorias e distritos de trabalho e veja mais oportunidades!
+                </p>
+                <Link 
+                  href="/profile/professional"
+                  className="inline-block mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Atualizar Perfil →
+                </Link>
+              </div>
+            )}
           </div>
         ) : (
           <>

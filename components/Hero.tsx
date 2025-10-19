@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Search, MapPin, ChevronRight, Star, Users, Award } from 'lucide-react'
 import Button from './Button'
@@ -20,7 +21,10 @@ export default function Hero() {
   const [location, setLocation] = useState('')
   const [category, setCategory] = useState('')
   const [categories, setCategories] = useState<Category[]>([])
+  const { data: session } = useSession()
   const router = useRouter()
+
+  const isProfessional = session?.user?.userType === 'PROFESSIONAL'
 
   // Carregar categorias
   useEffect(() => {
@@ -50,17 +54,22 @@ export default function Hero() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!searchQuery.trim() && !location.trim() && !category.trim()) {
-      return
-    }
+    if (isProfessional) {
+      // Para profissionais, redirecionar para página de serviços
+      router.push('/services')
+    } else {
+      // Para clientes, redirecionar para página de busca
+      if (!searchQuery.trim() && !location.trim() && !category.trim()) {
+        return
+      }
 
-    // Redirecionar para página de busca
-    const params = new URLSearchParams()
-    if (searchQuery.trim()) params.set('service', searchQuery.trim())
-    if (location.trim()) params.set('location', location.trim())
-    if (category.trim()) params.set('category', category.trim())
-    
-    router.push(`/search?${params.toString()}`)
+      const params = new URLSearchParams()
+      if (searchQuery.trim()) params.set('service', searchQuery.trim())
+      if (location.trim()) params.set('location', location.trim())
+      if (category.trim()) params.set('category', category.trim())
+      
+      router.push(`/search?${params.toString()}`)
+    }
   }
 
   return (
@@ -76,14 +85,28 @@ export default function Hero() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                Encontre o profissional
-                <span className="text-secondary-400 block">
-                  perfeito para você
-                </span>
+                {isProfessional ? (
+                  <>
+                    Encontre oportunidades
+                    <span className="text-secondary-400 block">
+                      de trabalho
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    Encontre o profissional
+                    <span className="text-secondary-400 block">
+                      perfeito para você
+                    </span>
+                  </>
+                )}
               </h1>
               <p className="text-xl text-primary-100 max-w-lg">
-                Mais de 500 tipos de serviços em um só lugar. 
-                Conectamos clientes com os melhores profissionais de Portugal.
+                {isProfessional ? (
+                  'Clientes estão procurando profissionais certificados como você. Encontre trabalhos que correspondem às suas especialidades.'
+                ) : (
+                  'Mais de 500 tipos de serviços em um só lugar. Conectamos clientes com os melhores profissionais de Portugal.'
+                )}
               </p>
             </div>
 
@@ -126,7 +149,7 @@ export default function Hero() {
                   />
                   
                   <Button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white">
-                    Buscar Profissionais
+                    {isProfessional ? 'Buscar Serviços' : 'Buscar Profissionais'}
                   </Button>
                 </div>
               </div>

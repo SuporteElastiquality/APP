@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const search = searchParams.get('search')
@@ -10,15 +13,49 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '12')
     const skip = (page - 1) * limit
 
-    // Construir filtros
+    // Construir filtros base
     const whereClause: any = {
       status: {
         in: ['PENDING', 'IN_PROGRESS']
       }
     }
 
+    // Se for um profissional, filtrar por suas categorias e distritos
+    if (session?.user?.userType === 'PROFESSIONAL') {
+      const professionalProfile = await prisma.professionalProfile.findUnique({
+        where: {
+          userId: session.user.id
+        },
+        select: {
+          categories: true,
+          workDistricts: true
+        }
+      })
+
+      if (professionalProfile) {
+        // Filtrar por categorias do profissional
+        if (professionalProfile.categories && professionalProfile.categories.length > 0) {
+          whereClause.service = {
+            categoryId: {
+              in: professionalProfile.categories
+            }
+          }
+        }
+
+        // Filtrar por distritos de trabalho do profissional
+        if (professionalProfile.workDistricts && professionalProfile.workDistricts.length > 0) {
+          whereClause.district = {
+            in: professionalProfile.workDistricts
+          }
+        }
+      }
+    }
+
+    // Filtros adicionais
     if (category && category !== 'all') {
-      whereClause.category = category
+      whereClause.service = {
+        categoryId: category
+      }
     }
 
     if (search) {
