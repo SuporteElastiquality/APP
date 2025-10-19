@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     }
 
     console.log('🔍 Buscando solicitações com filtros:', whereClause)
-    console.log('👤 Usuário:', session.user.email, 'Tipo:', session.user.userType)
+    console.log('👤 Usuário:', session?.user?.email, 'Tipo:', session?.user?.userType)
 
     // Buscar solicitações
     const [requests, totalCount] = await Promise.all([
