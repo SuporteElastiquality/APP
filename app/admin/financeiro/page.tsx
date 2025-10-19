@@ -18,6 +18,8 @@ import Footer from '@/components/Footer'
 
 interface FinancialData {
   totalRevenue: number
+  netRevenue: number
+  totalStripeFees: number
   totalOrders: number
   averageOrderValue: number
   monthlyRevenue: Array<{
@@ -192,8 +194,9 @@ export default function FinanceiroPage() {
                     <DollarSign className="h-6 w-6 text-green-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Receita Total</p>
-                    <p className="text-2xl font-bold text-gray-900">€{financialData.totalRevenue.toFixed(2)}</p>
+                    <p className="text-sm font-medium text-gray-600">Receita Líquida</p>
+                    <p className="text-2xl font-bold text-gray-900">€{financialData.netRevenue.toFixed(2)}</p>
+                    <p className="text-xs text-gray-500">Após taxas Stripe</p>
                   </div>
                 </div>
               </div>
@@ -224,20 +227,33 @@ export default function FinanceiroPage() {
 
               <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-center">
-                  <div className="p-2 bg-yellow-100 rounded-lg">
-                    <Calendar className="h-6 w-6 text-yellow-600" />
+                  <div className="p-2 bg-red-100 rounded-lg">
+                    <TrendingDown className="h-6 w-6 text-red-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Crescimento</p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {financialData.monthlyRevenue.length > 1 ? 
-                        `${(((financialData.monthlyRevenue[financialData.monthlyRevenue.length - 1].revenue - 
-                             financialData.monthlyRevenue[financialData.monthlyRevenue.length - 2].revenue) / 
-                            financialData.monthlyRevenue[financialData.monthlyRevenue.length - 2].revenue) * 100).toFixed(1)}%` 
-                        : '0%'
-                      }
-                    </p>
+                    <p className="text-sm font-medium text-gray-600">Taxas Stripe</p>
+                    <p className="text-2xl font-bold text-gray-900">€{financialData.totalStripeFees.toFixed(2)}</p>
+                    <p className="text-xs text-gray-500">2.9% + €0.25</p>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Detalhamento da Receita */}
+            <div className="bg-white rounded-lg shadow p-6 mb-8">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Detalhamento da Receita</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm font-medium text-gray-600">Receita Bruta</p>
+                  <p className="text-2xl font-bold text-gray-900">€{financialData.totalRevenue.toFixed(2)}</p>
+                </div>
+                <div className="text-center p-4 bg-red-50 rounded-lg">
+                  <p className="text-sm font-medium text-gray-600">Taxas Stripe</p>
+                  <p className="text-2xl font-bold text-red-600">-€{financialData.totalStripeFees.toFixed(2)}</p>
+                </div>
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <p className="text-sm font-medium text-gray-600">Receita Líquida</p>
+                  <p className="text-2xl font-bold text-green-600">€{financialData.netRevenue.toFixed(2)}</p>
                 </div>
               </div>
             </div>
