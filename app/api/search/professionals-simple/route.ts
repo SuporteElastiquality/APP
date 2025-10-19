@@ -32,7 +32,6 @@ export async function GET(request: NextRequest) {
             district: true,
             council: true,
             parish: true,
-            category: true,
             rating: true,
             completedJobs: true,
             isVerified: true,
