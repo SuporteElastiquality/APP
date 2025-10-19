@@ -129,7 +129,7 @@ export default function ProfessionalProfilePage({ params }: { params: { id: stri
               
               <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
                 <Link
-                  href={`/messages?professional=${professional.id}`}
+                  href={`/request-service?professional=${professional.id}&name=${encodeURIComponent(professional.name)}&profession=${encodeURIComponent(professional.profession)}`}
                   className="bg-white text-secondary-600 hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
                 >
                   <MessageCircle className="w-5 h-5" />

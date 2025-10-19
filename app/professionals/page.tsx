@@ -342,7 +342,7 @@ export default function ProfessionalsPage() {
                         Ver Perfil
                       </Link>
                       <Link
-                        href={`/messages?professional=${professional.id}`}
+                        href={`/request-service?professional=${professional.id}&name=${encodeURIComponent(professional.name)}&profession=${encodeURIComponent(professional.profession)}`}
                         className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors"
                       >
                         Contactar

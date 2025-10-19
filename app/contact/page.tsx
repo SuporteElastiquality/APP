@@ -267,7 +267,7 @@ export default function ContactPage() {
                   Como funciona a Elastiquality?
                 </h3>
                 <p className="text-gray-600">
-                  Você descreve o serviço que precisa, recebe propostas de profissionais qualificados, 
+                  Você descreve o serviço que precisa, recebe propostas de profissionais certificados, 
                   escolhe o melhor e o trabalho é realizado. Simples assim!
                 </p>
               </div>

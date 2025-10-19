@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
             </div>
             
             <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-              Enquanto aguarda, convidamo-lo a explorar os nossos serviços e a conhecer os profissionais qualificados disponíveis na nossa plataforma.
+              Enquanto aguarda, convidamo-lo a explorar os nossos serviços e a conhecer os profissionais certificados disponíveis na nossa plataforma.
             </p>
             
             <div style="text-align: center; margin: 30px 0;">

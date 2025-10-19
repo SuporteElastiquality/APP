@@ -22,7 +22,7 @@ async function sendWelcomeEmailWithLogo(email, name) {
             <h2 style="color: #1E293B; margin-bottom: 15px;">Olá, ${name}! 👋</h2>
             <p style="color: #64748B; line-height: 1.6; margin-bottom: 20px;">
               Sua conta foi criada com sucesso! Agora você pode acessar todos os nossos serviços 
-              e conectar-se com profissionais qualificados em Portugal.
+              e conectar-se com profissionais certificados em Portugal.
             </p>
             
             <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">

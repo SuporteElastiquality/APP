@@ -344,7 +344,7 @@ export default function ServicesPage() {
               Não encontrou o que procura?
             </h2>
             <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
-              Publique uma solicitação de serviço e receba propostas de profissionais qualificados.
+              Publique uma solicitação de serviço e receba propostas de profissionais certificados.
             </p>
             <button
               onClick={handleRequestService}

@@ -226,7 +226,7 @@ export default function PricingPage() {
                 </h2>
               </div>
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                Clientes não pagam nada na plataforma. Publicam seus serviços gratuitamente e recebem propostas de profissionais qualificados.
+                Clientes não pagam nada na plataforma. Publicam seus serviços gratuitamente e recebem propostas de profissionais certificados.
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-left">
@@ -304,7 +304,7 @@ export default function PricingPage() {
                   Posso obter reembolso?
                 </h3>
                 <p className="text-gray-600">
-                  Sim! Oferecemos reembolso em 30 dias para quality não utilizadas. Processo automático via Stripe.
+                  Sim! Oferecemos reembolso em 30 dias para quality não utilizadas. Processo automático fazendo sua solicitação no seu perfil.
                 </p>
               </div>
 
@@ -313,7 +313,7 @@ export default function PricingPage() {
                   Como funciona o pagamento?
                 </h3>
                 <p className="text-gray-600">
-                  Aceitamos cartões de crédito e débito através do Stripe. Pagamento único por pacote de quality, sem assinaturas mensais.
+                  Aceitamos cartões de crédito e débito, referência multibanco e MBWay. Pagamento único por pacote de quality, sem assinaturas mensais.
                 </p>
               </div>
 

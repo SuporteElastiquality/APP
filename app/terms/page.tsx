@@ -36,7 +36,7 @@ export default function TermsPage() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Descrição do Serviço</h2>
                 <p className="text-gray-600 mb-6">
                   A Elastiquality é uma plataforma que conecta clientes que precisam de serviços 
-                  com profissionais qualificados. Facilitamos a comunicação e transações entre 
+                  com profissionais certificados. Facilitamos a comunicação e transações entre 
                   essas partes, mas não somos responsáveis pela execução dos serviços.
                 </p>
 

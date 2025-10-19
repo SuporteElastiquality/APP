@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -28,6 +28,7 @@ interface Service {
 export default function RequestServicePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   
   const [categories, setCategories] = useState<Category[]>([])
   const [services, setServices] = useState<Service[]>([])
@@ -40,6 +41,11 @@ export default function RequestServicePage() {
   const [location, setLocation] = useState<LocationData | null>(null)
   const [locationInput, setLocationInput] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Parâmetros da URL para profissional específico
+  const professionalId = searchParams.get('professional')
+  const professionalName = searchParams.get('name')
+  const professionalProfession = searchParams.get('profession')
 
   // Redirecionar se não estiver logado
   useEffect(() => {
@@ -48,6 +54,14 @@ export default function RequestServicePage() {
       router.push('/auth/signin?callbackUrl=/request-service')
     }
   }, [session, status, router])
+
+  // Preencher campos automaticamente quando há um profissional específico
+  useEffect(() => {
+    if (professionalName && professionalProfession) {
+      setTitle(`Solicitação de serviço para ${professionalName}`)
+      setDescription(`Olá ${professionalName}, gostaria de solicitar seus serviços de ${professionalProfession}. Por favor, entre em contato para discutirmos os detalhes.`)
+    }
+  }, [professionalName, professionalProfession])
 
   // Carregar categorias
   useEffect(() => {
@@ -125,8 +139,37 @@ export default function RequestServicePage() {
 
       if (response.ok) {
         const data = await response.json()
-        alert('Solicitação criada com sucesso! Você receberá propostas em breve.')
-        router.push('/profile/client')
+        
+        // Se há um profissional específico, redirecionar para o chat
+        if (professionalId) {
+          // Criar conversa com o profissional específico
+          try {
+            const chatResponse = await fetch('/api/chat/rooms', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                participantId: professionalId,
+                type: 'DIRECT'
+              }),
+            })
+            
+            if (chatResponse.ok) {
+              const chatData = await chatResponse.json()
+              router.push(`/messages?room=${chatData.id}`)
+            } else {
+              // Se falhar ao criar chat, redirecionar para mensagens
+              router.push('/messages')
+            }
+          } catch (error) {
+            console.error('Error creating chat:', error)
+            router.push('/messages')
+          }
+        } else {
+          alert('Solicitação criada com sucesso! Você receberá propostas em breve.')
+          router.push('/profile/client')
+        }
       } else {
         const error = await response.json()
         alert(`Erro ao criar solicitação: ${error.message}`)
@@ -166,9 +209,30 @@ export default function RequestServicePage() {
               Solicitar Serviço
             </h1>
             <p className="text-lg text-gray-600">
-              Descreva o seu projeto e receba propostas de profissionais qualificados
+              Descreva o seu projeto e receba propostas de profissionais certificados
             </p>
           </div>
+
+          {/* Professional Selected Info */}
+          {professionalId && professionalName && (
+            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 text-lg font-medium">
+                    {professionalName.split(' ').map(n => n[0]).join('')}
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-900">
+                    Solicitando serviço para {professionalName}
+                  </h3>
+                  <p className="text-blue-700">
+                    {professionalProfession} • Esta solicitação será enviada diretamente para este profissional
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Form */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
@@ -363,7 +427,7 @@ export default function RequestServicePage() {
                   O que acontece depois?
                 </h4>
                 <ul className="text-sm text-blue-700 space-y-1">
-                  <li>• Profissionais qualificados receberão sua solicitação</li>
+                  <li>• Profissionais certificados receberão sua solicitação</li>
                   <li>• Você receberá até 5 propostas em 24 horas</li>
                   <li>• Compare preços, avaliações e especialidades</li>
                   <li>• Escolha o profissional que melhor se adequa ao seu projeto</li>
