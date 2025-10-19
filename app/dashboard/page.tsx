@@ -100,8 +100,8 @@ export default function Dashboard() {
 
             {user.userType === 'PROFESSIONAL' && (
               <>
-                <Card 
-                  className="p-6 cursor-pointer hover:shadow-lg transition-shadow"
+                <div 
+                  className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-white rounded-lg shadow-md border"
                   onClick={() => router.push('/quality')}
                 >
                   <div className="flex items-center space-x-4">
@@ -115,7 +115,7 @@ export default function Dashboard() {
                       </p>
                     </div>
                   </div>
-                </Card>
+                </div>
 
                 <Card className="p-6">
                   <div className="flex items-center space-x-4">
