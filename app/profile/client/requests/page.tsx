@@ -28,7 +28,7 @@ interface ServiceRequest {
       name: string
     }
   }
-  proposals: Array<{
+  proposals?: Array<{
     id: string
     price: number
     description: string
@@ -253,7 +253,7 @@ export default function ClientRequestsPage() {
                           </span>
                         )}
                         <span className="text-primary-600 font-medium">
-                          {request.proposals.length} proposta{request.proposals.length !== 1 ? 's' : ''}
+                          {request.proposals?.length || 0} proposta{(request.proposals?.length || 0) !== 1 ? 's' : ''}
                         </span>
                       </div>
                     </div>
@@ -265,7 +265,7 @@ export default function ClientRequestsPage() {
                             Ver Detalhes
                           </Button>
                         </Link>
-                        {request.proposals.length > 0 && (
+                        {(request.proposals?.length || 0) > 0 && (
                           <Link href={`/messages?request=${request.id}`}>
                             <Button className="bg-primary-600 hover:bg-primary-700 text-white text-sm">
                               Ver Propostas

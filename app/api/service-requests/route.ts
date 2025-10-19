@@ -85,6 +85,23 @@ export async function GET(request: NextRequest) {
                 }
               }
             }
+          },
+          proposals: {
+            select: {
+              id: true,
+              price: true,
+              description: true,
+              estimatedTime: true,
+              status: true,
+              professional: {
+                select: {
+                  id: true,
+                  name: true,
+                  rating: true,
+                  totalReviews: true
+                }
+              }
+            }
           }
         },
         orderBy: {
