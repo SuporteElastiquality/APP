@@ -160,3 +160,61 @@ export async function sendPasswordResetEmail(email: string, name: string, resetT
     return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' }
   }
 }
+
+export async function sendEmailVerification(email: string, token: string, name: string) {
+  try {
+    const verificationUrl = `https://elastiquality.pt/api/auth/verify-email?token=${token}`
+    
+    await resend.emails.send({
+      from: 'Elastiquality <noreply@elastiquality.pt>',
+      to: [email],
+      subject: '📧 Verifique seu email - Elastiquality',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://appelastiquality-rpimnnckw-suporte-elastiquality.vercel.app/logo.png" 
+                 alt="Elastiquality" 
+                 style="height: 60px;">
+          </div>
+          
+          <div style="background: #F8FAFC; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+            <h2 style="color: #1E293B; margin-bottom: 15px;">Verifique seu email, ${name}! 📧</h2>
+            <p style="color: #64748B; line-height: 1.6; margin-bottom: 20px;">
+              Para completar seu cadastro e garantir a segurança da sua conta, 
+              precisamos verificar seu endereço de email.
+            </p>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+              <p style="color: #64748B; margin-bottom: 20px;">Clique no botão abaixo para verificar seu email:</p>
+              <a href="${verificationUrl}" 
+                 style="background: #10B981; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                Verificar Email
+              </a>
+            </div>
+            
+            <div style="background: #FEF3C7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <p style="color: #92400E; margin: 0; font-size: 14px;">
+                <strong>⚠️ Importante:</strong> Este link expira em 24 horas. 
+                Se não conseguir clicar no botão, copie e cole este link no seu navegador:
+              </p>
+              <p style="color: #92400E; margin: 10px 0 0 0; font-size: 12px; word-break: break-all;">
+                ${verificationUrl}
+              </p>
+            </div>
+          </div>
+          
+          <div style="text-align: center; color: #94A3B8; font-size: 14px; margin-top: 30px;">
+            <p>Este email foi enviado automaticamente. Não responda a este email.</p>
+            <p>© 2024 Elastiquality. Todos os direitos reservados.</p>
+          </div>
+        </div>
+      `
+    })
+    
+    console.log(`Email de verificação enviado para ${email}`)
+    return { success: true }
+  } catch (error) {
+    console.error('Erro ao enviar email de verificação:', error)
+    return { success: false, error }
+  }
+}

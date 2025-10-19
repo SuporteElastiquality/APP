@@ -58,6 +58,9 @@ export const registerSchema = z.object({
     .optional(),
   specialties: z.string().optional(),
   experience: z.string().optional(),
+  workDistricts: z.array(z.string()).optional(),
+  categories: z.array(z.string()).optional(),
+  services: z.array(z.string()).optional(),
 }).refine((data) => {
   // Senhas devem coincidir
   return data.password === data.confirmPassword
@@ -65,14 +68,17 @@ export const registerSchema = z.object({
   message: 'As senhas não coincidem',
   path: ['confirmPassword']
 }).refine((data) => {
-  // Para profissionais, especialidades e experiência são obrigatórias
+  // Para profissionais, campos específicos são obrigatórios
   if (data.userType === 'PROFESSIONAL') {
-    return data.specialties && data.experience
+    return data.workDistricts && data.workDistricts.length > 0 &&
+           data.categories && data.categories.length > 0 &&
+           data.services && data.services.length > 0 &&
+           data.experience
   }
   return true
 }, {
-  message: 'Profissionais devem informar especialidades e experiência',
-  path: ['specialties']
+  message: 'Profissionais devem informar distritos de trabalho, categorias, serviços e experiência',
+  path: ['workDistricts']
 })
 
 // Schema de validação para login

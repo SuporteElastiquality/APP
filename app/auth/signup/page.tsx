@@ -10,6 +10,8 @@ import Button from '@/components/Button'
 import Input from '@/components/Input'
 import Select from '@/components/Select'
 import LocationInput from '@/components/LocationInput'
+import CategoryServiceSelector from '@/components/CategoryServiceSelector'
+import WorkDistrictsSelector from '@/components/WorkDistrictsSelector'
 import { LocationData } from '@/lib/geolocation'
 
 const portugueseDistricts = [
@@ -48,7 +50,10 @@ export default function SignUp() {
     council: '',
     parish: '',
     specialties: '',
-    experience: ''
+    experience: '',
+    workDistricts: [] as string[],
+    categories: [] as string[],
+    services: [] as string[]
   })
   const [locationString, setLocationString] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -106,6 +111,10 @@ export default function SignUp() {
   const nextStep = () => {
     if (step === 1 && formData.firstName && formData.lastName && formData.email && formData.password && formData.confirmPassword) {
       setStep(2)
+    } else if (step === 2 && formData.userType === 'CLIENT' && formData.phone && formData.district && formData.council && formData.parish) {
+      setStep(3)
+    } else if (step === 2 && formData.userType === 'PROFESSIONAL' && formData.phone && formData.district && formData.council && formData.parish && formData.workDistricts.length > 0 && formData.categories.length > 0 && formData.services.length > 0) {
+      setStep(3)
     }
   }
 
@@ -335,14 +344,16 @@ export default function SignUp() {
 
                 {formData.userType === 'PROFESSIONAL' && (
                   <>
-                    <Input
-                      label="Especialidades"
-                      type="text"
-                      value={formData.specialties}
-                      onChange={(e) => setFormData({ ...formData, specialties: e.target.value })}
-                      placeholder="Ex: Eletricista, Canalizador, Pintor"
-                      required
-                      helperText="Separe múltiplas especialidades com vírgula"
+                    <WorkDistrictsSelector
+                      selectedDistricts={formData.workDistricts}
+                      onDistrictsChange={(districts) => setFormData({ ...formData, workDistricts: districts })}
+                    />
+
+                    <CategoryServiceSelector
+                      selectedCategories={formData.categories}
+                      selectedServices={formData.services}
+                      onCategoriesChange={(categories) => setFormData({ ...formData, categories })}
+                      onServicesChange={(services) => setFormData({ ...formData, services })}
                     />
 
                     <div>
@@ -371,12 +382,99 @@ export default function SignUp() {
                     Voltar
                   </Button>
                   <Button
-                    type="submit"
-                    loading={loading}
+                    type="button"
+                    onClick={nextStep}
                     className="flex-1"
+                    disabled={
+                      formData.userType === 'CLIENT' 
+                        ? !formData.phone || !formData.district || !formData.council || !formData.parish
+                        : !formData.phone || !formData.district || !formData.council || !formData.parish || 
+                          formData.workDistricts.length === 0 || formData.categories.length === 0 || formData.services.length === 0
+                    }
                   >
-                    Criar Conta
+                    Continuar
                   </Button>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Verificação de Conta
+                  </h3>
+                  <p className="text-gray-600">
+                    Para garantir a segurança da sua conta, precisamos verificar seu email e telefone.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <Mail className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-medium text-blue-900">
+                          Verificação de Email
+                        </h4>
+                        <p className="text-sm text-blue-700 mt-1">
+                          Enviamos um link de verificação para <strong>{formData.email}</strong>
+                        </p>
+                        <p className="text-xs text-blue-600 mt-1">
+                          Verifique sua caixa de entrada e spam. O link expira em 24 horas.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <Phone className="h-6 w-6 text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-medium text-green-900">
+                          Verificação de Telefone
+                        </h4>
+                        <p className="text-sm text-green-700 mt-1">
+                          Enviamos um código SMS para <strong>{formData.phone}</strong>
+                        </p>
+                        <p className="text-xs text-green-600 mt-1">
+                          Digite o código de 6 dígitos que recebeu por SMS.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center space-y-4">
+                  <p className="text-sm text-gray-600">
+                    Após verificar seu email e telefone, sua conta estará ativa e você poderá começar a usar a plataforma.
+                  </p>
+                  
+                  <div className="flex space-x-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={prevStep}
+                      className="flex-1"
+                    >
+                      Voltar
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        // Aqui seria implementada a lógica de verificação
+                        // Por enquanto, vamos redirecionar para o dashboard
+                        router.push('/dashboard')
+                      }}
+                      className="flex-1"
+                    >
+                      Continuar
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}

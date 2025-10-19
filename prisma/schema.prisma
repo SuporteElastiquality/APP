@@ -44,9 +44,12 @@ model User {
   emailVerified DateTime?
   image         String?
   phone         String?   // Telefone português (9 dígitos)
+  phoneVerified DateTime? // Data de verificação do telefone
   password      String?   // Senha hasheada (apenas para usuários com credenciais)
   resetToken    String?   // Token para recuperação de senha
   resetTokenExpiry DateTime? // Expiração do token de recuperação
+  emailVerificationToken String? // Token para verificação de email
+  phoneVerificationToken String? // Token para verificação de telefone
   userType      String    @default("CLIENT") // CLIENT ou PROFESSIONAL
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -65,6 +68,8 @@ model User {
   messages      Message[]
   coins         Coin[]
   transactions  Transaction[]
+  emailVerification EmailVerification?
+  phoneVerification PhoneVerification?
 }
 
 model VerificationToken {
@@ -73,6 +78,34 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model EmailVerification {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expires   DateTime
+  verified  Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_verifications")
+}
+
+model PhoneVerification {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expires   DateTime
+  verified  Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("phone_verifications")
 }
 
 model ClientProfile {
@@ -101,23 +134,22 @@ model ProfessionalProfile {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Dados específicos do profissional
-  district    String   // Distrito
-  council     String   // Conselho/Concelho
-  parish      String   // Freguesia
+  district    String   // Distrito da morada
+  council     String   // Conselho/Concelho da morada
+  parish      String   // Freguesia da morada
   address     String?  // Endereço completo (morada)
   houseNumber String?  // Número da casa/prédio (opcional)
   apartment   String?  // Apartamento/sala (opcional)
   postalCode  String?  // Código postal português
   
-        // Coordenadas geográficas (removidas - não mais necessárias)
-        // latitude    Float?   // Latitude
-        // longitude   Float?   // Longitude
+  // Distritos onde trabalha (JSON array)
+  workDistricts String[] // Array de distritos onde está disposto a trabalhar
   
-  // Categoria principal do profissional
-  category    String   @default("construcao-reforma") // Categoria principal (ex: "Construção e Reforma", "Serviços Domésticos", "Limpeza")
+  // Categorias e serviços (JSON arrays)
+  categories  String[] // Array de IDs das categorias que trabalha
+  services    String[] // Array de IDs dos serviços que oferece
   
   // Informações profissionais
-  specialties String // Especialidades separadas por vírgula
   experience  String   // Descrição da experiência
   bio         String?  // Biografia
   rating      Float    @default(0) // Rating médio

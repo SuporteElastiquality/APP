@@ -52,7 +52,10 @@ export async function POST(request: NextRequest) {
       address,
       postalCode,
       specialties,
-      experience
+      experience,
+      workDistricts,
+      categories,
+      services
     } = validation.data!
 
     // Combinar firstName e lastName em name
@@ -108,7 +111,11 @@ export async function POST(request: NextRequest) {
           district,
           council,
           parish,
-          specialties: specialties?.split(',').map(s => s.trim()).join(',') || '',
+          address: address || '',
+          postalCode: postalCode || '',
+          workDistricts: workDistricts || [],
+          categories: categories || [],
+          services: services || [],
           experience: experience || ''
         }
       })
