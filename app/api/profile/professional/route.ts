@@ -152,7 +152,9 @@ export async function PUT(request: NextRequest) {
           houseNumber,
           apartment,
           postalCode,
-          specialties: specialties.join(','),
+          categories: categories || [],
+          services: services || [],
+          workDistricts: workDistricts || [],
           experience,
           bio
         }
@@ -168,7 +170,9 @@ export async function PUT(request: NextRequest) {
           houseNumber,
           apartment,
           postalCode,
-          specialties: specialties.join(','),
+          categories: categories || [],
+          services: services || [],
+          workDistricts: workDistricts || [],
           experience,
           bio
         }
