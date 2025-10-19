@@ -298,9 +298,9 @@ export async function GET(request: NextRequest) {
       ...(category && { category }),
       ...(search && {
         OR: [
-          { name: { contains: search, mode: 'insensitive' } },
-          { description: { contains: search, mode: 'insensitive' } },
-          { brand: { contains: search, mode: 'insensitive' } }
+          { name: { contains: search, mode: 'insensitive' as const } },
+          { description: { contains: search, mode: 'insensitive' as const } },
+          { brand: { contains: search, mode: 'insensitive' as const } }
         ]
       })
     }
