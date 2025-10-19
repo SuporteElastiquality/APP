@@ -150,7 +150,7 @@ export default function ServicesPage() {
             Solicitações de Serviços
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Encontre oportunidades de trabalho. Clientes estão procurando profissionais certificados como você.
+            Encontre oportunidades de trabalho. Aqui as ofertas de serviço nos distritos selecionados.
           </p>
         </div>
 
@@ -318,21 +318,23 @@ export default function ServicesPage() {
           </>
         )}
 
-        {/* CTA Section */}
-        <div className="bg-primary-600 rounded-lg p-8 text-center text-white mt-12">
-          <h2 className="text-2xl font-bold mb-4">
-            Não encontrou o que procura?
-          </h2>
-          <p className="text-primary-100 mb-6">
-            Publique uma solicitação de serviço e receba propostas de profissionais certificados.
-          </p>
-          <Link
-            href="/request-service"
-            className="bg-white text-primary-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-          >
-            Solicitar Serviço
-          </Link>
-        </div>
+        {/* CTA Section - Only for clients */}
+        {session?.user?.userType !== 'PROFESSIONAL' && (
+          <div className="bg-primary-600 rounded-lg p-8 text-center text-white mt-12">
+            <h2 className="text-2xl font-bold mb-4">
+              Não encontrou o que procura?
+            </h2>
+            <p className="text-primary-100 mb-6">
+              Publique uma solicitação de serviço e receba propostas de profissionais certificados.
+            </p>
+            <Link
+              href="/request-service"
+              className="bg-white text-primary-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+            >
+              Solicitar Serviço
+            </Link>
+          </div>
+        )}
       </main>
 
       <Footer />
