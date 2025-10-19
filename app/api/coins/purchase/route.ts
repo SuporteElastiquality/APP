@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
         packageId: packageId,
         coins: coins.toString()
       },
-      customer_email: session.user.email
+      customer_email: session.user.email || undefined
     })
 
     // Atualizar transaction com Checkout Session ID
