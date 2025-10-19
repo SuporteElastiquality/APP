@@ -395,7 +395,7 @@ export async function POST(request: NextRequest) {
         
         headers.forEach((header, index) => {
           const translatedHeader = headerMapping[header] || header
-          let value = values[index]
+          let value: any = values[index]
 
           // Traduzir texto se necessário
           if (typeof value === 'string' && (translatedHeader === 'name' || translatedHeader === 'description' || translatedHeader === 'category' || translatedHeader === 'brand')) {
