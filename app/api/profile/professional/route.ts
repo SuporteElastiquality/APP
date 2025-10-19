@@ -15,7 +15,9 @@ const updateProfessionalProfileSchema = z.object({
   houseNumber: z.string().optional(),
   apartment: z.string().optional(),
   postalCode: z.string().regex(/^\d{4}-\d{3}$/, 'Código postal deve estar no formato 0000-000'),
-  specialties: z.array(z.string()).min(1, 'Pelo menos uma especialidade é obrigatória'),
+  categories: z.array(z.string()).min(1, 'Pelo menos uma categoria é obrigatória'),
+  services: z.array(z.string()).min(1, 'Pelo menos um serviço é obrigatório'),
+  workDistricts: z.array(z.string()).min(1, 'Pelo menos um distrito de trabalho é obrigatório'),
   experience: z.string().min(10, 'Experiência deve ter pelo menos 10 caracteres'),
   bio: z.string().optional()
 })
@@ -122,7 +124,9 @@ export async function PUT(request: NextRequest) {
       houseNumber,
       apartment,
       postalCode,
-      specialties,
+      categories,
+      services,
+      workDistricts,
       experience,
       bio
     } = validation.data
