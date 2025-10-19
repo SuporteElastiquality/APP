@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
       transactions: transactions.map(t => ({
         id: t.id,
         amount: t.amount,
-        coins: t.coins,
+        description: t.description,
         status: t.status,
         stripePaymentIntentId: t.stripePaymentIntentId,
         stripeChargeId: t.stripeChargeId,

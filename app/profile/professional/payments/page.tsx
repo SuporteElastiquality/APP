@@ -11,7 +11,7 @@ import Link from 'next/link'
 interface Transaction {
   id: string
   amount: number
-  coins: number
+  description: string
   status: string
   stripePaymentIntentId: string | null
   stripeChargeId: string | null
@@ -241,7 +241,7 @@ export default function PaymentHistory() {
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">
-                              Compra de {transaction.coins} Quality
+                              {transaction.description}
                             </p>
                             <p className="text-sm text-gray-600">
                               {formatDate(transaction.createdAt)}
