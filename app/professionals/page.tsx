@@ -1,7 +1,10 @@
+'use client'
+
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Search, MapPin, Star, Clock, Award, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 const professionals = [
   {
@@ -87,10 +90,110 @@ const professionals = [
     specialties: ['Manutenção', 'Diagnóstico', 'Elétrica automóvel'],
     image: null,
     description: 'Mecânica especializada em manutenção preventiva e reparações de veículos modernos.'
+  },
+  {
+    id: 7,
+    name: 'Miguel Pereira',
+    profession: 'Carpinteiro',
+    location: 'Setúbal',
+    rating: 4.7,
+    reviews: 142,
+    experience: '11 anos',
+    price: '€30/hora',
+    verified: true,
+    specialties: ['Móveis sob medida', 'Restauração', 'Construção'],
+    image: null,
+    description: 'Carpinteiro especializado em móveis personalizados e restauração de peças antigas.'
+  },
+  {
+    id: 8,
+    name: 'Carla Mendes',
+    profession: 'Designer de Interiores',
+    location: 'Leiria',
+    rating: 4.8,
+    reviews: 95,
+    experience: '9 anos',
+    price: '€50/hora',
+    verified: true,
+    specialties: ['Design residencial', 'Consultoria', 'Decoração'],
+    image: null,
+    description: 'Designer criativa com foco em espaços funcionais e esteticamente agradáveis.'
+  },
+  {
+    id: 9,
+    name: 'Rui Fernandes',
+    profession: 'Técnico de Aquecimento',
+    location: 'Viseu',
+    rating: 4.9,
+    reviews: 167,
+    experience: '13 anos',
+    price: '€40/hora',
+    verified: true,
+    specialties: ['Aquecimento central', 'Caldeiras', 'Energia solar'],
+    image: null,
+    description: 'Especialista em sistemas de aquecimento e soluções energéticas eficientes.'
+  },
+  {
+    id: 10,
+    name: 'Teresa Oliveira',
+    profession: 'Fisioterapeuta',
+    location: 'Évora',
+    rating: 4.8,
+    reviews: 203,
+    experience: '8 anos',
+    price: '€35/hora',
+    verified: true,
+    specialties: ['Reabilitação', 'Massagem terapêutica', 'Pilates'],
+    image: null,
+    description: 'Fisioterapeuta dedicada à recuperação e bem-estar dos pacientes.'
+  },
+  {
+    id: 11,
+    name: 'André Costa',
+    profession: 'Técnico de Informática',
+    location: 'Funchal',
+    rating: 4.7,
+    reviews: 89,
+    experience: '6 anos',
+    price: '€25/hora',
+    verified: true,
+    specialties: ['Reparação de computadores', 'Redes', 'Software'],
+    image: null,
+    description: 'Técnico especializado em soluções informáticas para empresas e particulares.'
+  },
+  {
+    id: 12,
+    name: 'Isabel Santos',
+    profession: 'Organizadora de Eventos',
+    location: 'Bragança',
+    rating: 4.9,
+    reviews: 134,
+    experience: '10 anos',
+    price: '€60/hora',
+    verified: true,
+    specialties: ['Casamentos', 'Aniversários', 'Eventos corporativos'],
+    image: null,
+    description: 'Organizadora experiente que transforma sonhos em eventos memoráveis.'
   }
 ]
 
 export default function ProfessionalsPage() {
+  const [visibleCount, setVisibleCount] = useState(6) // Mostrar 6 profissionais inicialmente
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleLoadMore = () => {
+    setIsLoading(true)
+    
+    // Simular carregamento
+    setTimeout(() => {
+      setVisibleCount(prev => Math.min(prev + 6, professionals.length))
+      setIsLoading(false)
+    }, 1000)
+  }
+
+  const visibleProfessionals = professionals.slice(0, visibleCount)
+  const hasMore = visibleCount < professionals.length
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -182,7 +285,7 @@ export default function ProfessionalsPage() {
         <section className="py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {professionals.map((professional) => (
+              {visibleProfessionals.map((professional) => (
                 <div key={professional.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
                   <div className="p-6">
                     <div className="flex items-start space-x-4 mb-4">
@@ -251,11 +354,33 @@ export default function ProfessionalsPage() {
             </div>
             
             {/* Load More */}
-            <div className="text-center mt-12">
-              <button className="bg-white border border-secondary-600 text-secondary-600 hover:bg-secondary-50 px-6 py-3 rounded-lg font-medium transition-colors">
-                Ver Mais Profissionais
-              </button>
-            </div>
+            {hasMore && (
+              <div className="text-center mt-12">
+                <button 
+                  onClick={handleLoadMore}
+                  disabled={isLoading}
+                  className="bg-white border border-secondary-600 text-secondary-600 hover:bg-secondary-50 px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-secondary-600 border-t-transparent rounded-full animate-spin"></div>
+                      <span>Carregando...</span>
+                    </div>
+                  ) : (
+                    `Ver Mais Profissionais (${professionals.length - visibleCount} restantes)`
+                  )}
+                </button>
+              </div>
+            )}
+            
+            {/* Mostrar mensagem quando todos os profissionais foram carregados */}
+            {!hasMore && professionals.length > 6 && (
+              <div className="text-center mt-12">
+                <p className="text-gray-500 text-sm">
+                  Todos os {professionals.length} profissionais foram carregados
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
