@@ -17,8 +17,7 @@ export async function GET() {
         professionalProfile: true,
         _count: {
           select: {
-            serviceRequests: true,
-            proposals: true
+            serviceRequests: true
           }
         }
       },

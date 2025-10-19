@@ -37,7 +37,6 @@ interface Professional {
   } | null
   _count: {
     serviceRequests: number
-    proposals: number
   }
 }
 
@@ -345,7 +344,6 @@ export default function ProfissionaisPage() {
 
                       <div className="flex space-x-4 text-sm text-gray-500">
                         <span>{professional._count.serviceRequests} solicitações</span>
-                        <span>{professional._count.proposals} propostas</span>
                       </div>
                     </div>
 
