@@ -103,7 +103,7 @@ export default function ContactPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   Telefone
                 </h3>
-                <p className="text-gray-600 mb-2">+351 900 000 000</p>
+                <p className="text-gray-600 mb-2">+351 21 253 4021</p>
                 <p className="text-gray-600">Segunda a Sexta: 9h às 18h</p>
               </div>
 

@@ -176,7 +176,7 @@ export default function CookiesPage() {
                   <br />
                   Email: cookies@elastiquality.pt
                   <br />
-                  Telefone: +351 900 000 000
+                  Telefone: +351 21 253 4021
                   <br />
                   Endereço: Lisboa, Portugal
                 </p>

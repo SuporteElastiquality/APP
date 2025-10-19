@@ -118,7 +118,7 @@ export default function TermsPage() {
                   <br />
                   Email: legal@elastiquality.pt
                   <br />
-                  Telefone: +351 900 000 000
+                  Telefone: +351 21 253 4021
                 </p>
               </div>
             </div>
