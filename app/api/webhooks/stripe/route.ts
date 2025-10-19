@@ -82,7 +82,10 @@ export async function POST(request: NextRequest) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
         
-        // Atualizar transação no banco
+        console.log(`🔔 Webhook checkout.session.completed recebido: ${session.id}`)
+        console.log(`📊 Metadata:`, session.metadata)
+        
+        // Atualizar transação no banco usando o Checkout Session ID
         await prisma.transaction.update({
           where: {
             stripePaymentIntentId: session.id,
@@ -115,6 +118,11 @@ export async function POST(request: NextRequest) {
           })
 
           console.log(`✅ Moedas creditadas: ${coinsAmount} para usuário ${transaction.userId}`)
+        } else {
+          console.log(`❌ Transação não encontrada ou metadata inválido:`, {
+            transactionFound: !!transaction,
+            metadata: session.metadata
+          })
         }
 
         break
