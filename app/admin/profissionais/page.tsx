@@ -30,11 +30,9 @@ interface Professional {
     specialties: string[]
     description: string | null
     rating: number | null
-    location: {
-      district: string
-      council: string
-      parish: string
-    } | null
+    district: string
+    council: string
+    parish: string
     isVerified: boolean
   } | null
   _count: {
@@ -90,8 +88,8 @@ export default function ProfissionaisPage() {
         professional.professionalProfile?.specialties.some(specialty =>
           specialty.toLowerCase().includes(term.toLowerCase())
         ) ||
-        professional.professionalProfile?.location?.district.toLowerCase().includes(term.toLowerCase()) ||
-        professional.professionalProfile?.location?.council.toLowerCase().includes(term.toLowerCase())
+        professional.professionalProfile?.district.toLowerCase().includes(term.toLowerCase()) ||
+        professional.professionalProfile?.council.toLowerCase().includes(term.toLowerCase())
       )
     }
 
@@ -317,11 +315,11 @@ export default function ProfissionaisPage() {
                         )}
                       </div>
 
-                      {professional.professionalProfile?.location && (
+                      {professional.professionalProfile && (
                         <div className="flex items-center text-sm text-gray-600 mb-3">
                           <MapPin className="h-4 w-4 mr-2" />
                           <span>
-                            {professional.professionalProfile.location.parish}, {professional.professionalProfile.location.council}, {professional.professionalProfile.location.district}
+                            {professional.professionalProfile.parish}, {professional.professionalProfile.council}, {professional.professionalProfile.district}
                           </span>
                         </div>
                       )}

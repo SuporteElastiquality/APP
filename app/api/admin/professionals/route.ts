@@ -14,11 +14,7 @@ export async function GET() {
     const professionals = await prisma.user.findMany({
       where: { userType: 'PROFESSIONAL' },
       include: {
-        professionalProfile: {
-          include: {
-            location: true
-          }
-        },
+        professionalProfile: true,
         _count: {
           select: {
             serviceRequests: true,
