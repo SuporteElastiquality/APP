@@ -16,6 +16,7 @@ interface RelevantService {
 interface RelevantCategory {
   id: string
   name: string
+  slug: string
   services: RelevantService[]
 }
 
