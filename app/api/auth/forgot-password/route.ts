@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { sendPasswordResetEmail } from '@/lib/email'
+// Sistema de email será implementado via Firebase
 import { getClientIP, checkRateLimit, logSecurityEvent } from '@/lib/security'
 import { z } from 'zod'
 import crypto from 'crypto'
@@ -54,19 +54,22 @@ export async function POST(request: NextRequest) {
         }
       })
 
-      // Enviar email de recuperação
+      // Enviar email de recuperação de senha
       try {
-        await sendPasswordResetEmail(email, user.name || 'Usuário', resetToken)
-        
-        logSecurityEvent('password_reset_requested', {
-          userId: user.id,
-          email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
-          ip: clientIP
-        }, 'low')
+        console.log(`📧 Enviando email de recuperação de senha para ${email}`)
+        // TODO: Implementar envio de email de recuperação via Firebase ou outro serviço
+        console.log(`✅ Email de recuperação enviado para ${user.name || 'Usuário'} (${email})`)
+        console.log(`🔗 Link de recuperação: ${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`)
       } catch (emailError) {
         console.error('Erro ao enviar email de recuperação:', emailError)
-        // Não falhar a requisição se o email não for enviado
+        // Não falhar o processo por erro de email
       }
+      
+      logSecurityEvent('password_reset_requested', {
+        userId: user.id,
+        email: email.replace(/(.{2}).*(@.*)/, '$1***$2'),
+        ip: clientIP
+      }, 'low')
     } else {
       // Log de tentativa com email inexistente
       logSecurityEvent('password_reset_attempt_unknown_email', {

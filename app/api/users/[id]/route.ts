@@ -49,7 +49,9 @@ export async function GET(
         parish: user.clientProfile.parish
       } : null,
       professionalProfile: user.professionalProfile ? {
-        specialties: user.professionalProfile.specialties,
+        categories: user.professionalProfile.categories,
+        services: user.professionalProfile.services,
+        workDistricts: user.professionalProfile.workDistricts,
         experience: user.professionalProfile.experience,
         rating: user.professionalProfile.rating,
         completedJobs: user.professionalProfile.completedJobs,

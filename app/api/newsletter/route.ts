@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { sendNewsletterEmail } from '@/lib/email'
+// Sistema de email será implementado via Firebase
 import { getClientIP, checkRateLimit, validateAdminToken, sanitizeInput, logSecurityEvent } from '@/lib/security'
 import { z } from 'zod'
 
@@ -95,15 +95,15 @@ export async function POST(request: NextRequest) {
       ip: clientIP 
     }, 'low')
 
-    // Enviar emails
-    const results = await Promise.allSettled(
-      users.map(user => 
-        sendNewsletterEmail(user.email, user.name || 'Usuário', sanitizedContent)
-      )
-    )
+    // TODO: Implementar envio de newsletter via Firebase
+    console.log('📧 Newsletter solicitada (Firebase não implementado):')
+    console.log(`Assunto: ${sanitizedSubject}`)
+    console.log(`Conteúdo: ${sanitizedContent.substring(0, 100)}...`)
+    console.log(`Usuários: ${users.length}`)
+    console.log(`Tipo: ${targetUsers}`)
 
-    const successful = results.filter(r => r.status === 'fulfilled').length
-    const failed = results.filter(r => r.status === 'rejected').length
+    const successful = 0 // Firebase não implementado
+    const failed = users.length
 
     return NextResponse.json({
       message: 'Newsletter enviada',

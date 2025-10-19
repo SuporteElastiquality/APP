@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { signIn, getSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, CheckCircle } from 'lucide-react'
 import Button from '@/components/Button'
 import Input from '@/components/Input'
 
@@ -17,8 +17,17 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const message = searchParams.get('message')
+    if (message === 'account_created') {
+      setSuccessMessage('Conta criada com sucesso! Faça login para continuar.')
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -80,6 +89,15 @@ export default function SignIn() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {successMessage && (
+            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+                <p className="text-sm text-green-600">{successMessage}</p>
+              </div>
+            </div>
+          )}
+
           {error && (
             <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-sm text-red-600">{error}</p>

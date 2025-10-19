@@ -55,12 +55,13 @@ export async function GET(request: NextRequest) {
       include: {
         professionalProfile: {
           select: {
-            specialties: true,
+            categories: true,
+            services: true,
+            workDistricts: true,
             experience: true,
             district: true,
             council: true,
             parish: true,
-            category: true,
             rating: true,
             completedJobs: true,
             isVerified: true,
@@ -81,14 +82,18 @@ export async function GET(request: NextRequest) {
     let filteredOtherProfessionals = otherProfessionals
     if (category.trim()) {
       filteredOtherProfessionals = otherProfessionals.filter(prof => 
-        prof.professionalProfile?.category?.toLowerCase().includes(category.toLowerCase())
+        prof.professionalProfile?.categories?.some(cat => 
+          cat.toLowerCase().includes(category.toLowerCase())
+        )
       )
     }
 
-    // Filtrar outros profissionais por especialidade se especificada
+    // Filtrar outros profissionais por serviço se especificado
     if (service.trim()) {
       filteredOtherProfessionals = filteredOtherProfessionals.filter(prof => 
-        prof.professionalProfile?.specialties?.toLowerCase().includes(service.toLowerCase())
+        prof.professionalProfile?.services?.some(serv => 
+          serv.toLowerCase().includes(service.toLowerCase())
+        )
       )
     }
 
@@ -182,9 +187,9 @@ export async function GET(request: NextRequest) {
       name: prof.name,
       email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'),
       image: prof.image,
-      specialties: prof.professionalProfile?.specialties?.split(',').map(s => s.trim()) || [],
+      specialties: prof.professionalProfile?.services || [],
       experience: prof.professionalProfile?.experience || '',
-      category: prof.professionalProfile?.category || '',
+      categories: prof.professionalProfile?.categories || [],
       location: {
         district: prof.professionalProfile?.district || '',
         council: prof.professionalProfile?.council || '',

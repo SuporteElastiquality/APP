@@ -157,7 +157,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {/* Orçamentos */}
           <div className="bg-white rounded-lg shadow">
             <div className="p-6 border-b border-gray-200">
@@ -206,6 +206,32 @@ export default function AdminDashboard() {
                 className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
               >
                 Ver Todos os Profissionais
+              </button>
+            </div>
+          </div>
+
+          {/* Clientes */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Gestão de Clientes</h2>
+              <p className="text-sm text-gray-600">Gerir clientes cadastrados</p>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-600">{stats?.totalClients || 0}</div>
+                  <div className="text-sm text-gray-600">Total</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-indigo-600">{stats?.totalUsers || 0}</div>
+                  <div className="text-sm text-gray-600">Usuários</div>
+                </div>
+              </div>
+              <button
+                onClick={() => router.push('/admin/clientes')}
+                className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                Ver Todos os Clientes
               </button>
             </div>
           </div>

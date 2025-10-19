@@ -23,12 +23,13 @@ export async function GET(request: NextRequest) {
       include: {
         professionalProfile: {
           select: {
-            specialties: true,
+            categories: true,
+            services: true,
+            workDistricts: true,
             experience: true,
             district: true,
             council: true,
             parish: true,
-            category: true,
             rating: true,
             completedJobs: true,
             isVerified: true,
@@ -45,9 +46,9 @@ export async function GET(request: NextRequest) {
       id: prof.id,
       name: prof.name,
       email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'),
-      specialties: prof.professionalProfile?.specialties?.split(',').map(s => s.trim()) || [],
+      specialties: prof.professionalProfile?.services || [],
       experience: prof.professionalProfile?.experience || '',
-      category: prof.professionalProfile?.category || '',
+      categories: prof.professionalProfile?.categories || [],
       location: {
         district: prof.professionalProfile?.district || '',
         council: prof.professionalProfile?.council || '',

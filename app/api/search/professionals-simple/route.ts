@@ -48,14 +48,18 @@ export async function GET(request: NextRequest) {
     let filteredProfessionals = professionals
     if (category.trim()) {
       filteredProfessionals = professionals.filter(prof => 
-        prof.professionalProfile?.category?.toLowerCase().includes(category.toLowerCase())
+        prof.professionalProfile?.categories?.some(cat => 
+          cat.toLowerCase().includes(category.toLowerCase())
+        )
       )
     }
 
-    // Filtrar por especialidade se especificada
+    // Filtrar por serviço se especificado
     if (service.trim()) {
       filteredProfessionals = filteredProfessionals.filter(prof => 
-        prof.professionalProfile?.specialties?.toLowerCase().includes(service.toLowerCase())
+        prof.professionalProfile?.services?.some(serv => 
+          serv.toLowerCase().includes(service.toLowerCase())
+        )
       )
     }
 
@@ -115,9 +119,9 @@ export async function GET(request: NextRequest) {
       id: prof.id,
       name: prof.name,
       email: prof.email?.replace(/(.{2}).*(@.*)/, '$1***$2'),
-      specialties: prof.professionalProfile?.specialties?.split(',').map(s => s.trim()) || [],
+      specialties: prof.professionalProfile?.services || [],
       experience: prof.professionalProfile?.experience || '',
-      category: prof.professionalProfile?.category || '',
+      categories: prof.professionalProfile?.categories || [],
       location: {
         district: prof.professionalProfile?.district || '',
         council: prof.professionalProfile?.council || '',

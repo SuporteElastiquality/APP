@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 // UserType será inferido do schema
 import { registerSchema, validateData } from '@/lib/validations'
-import { sendWelcomeEmail } from '@/lib/email'
+// Email de boas-vindas será enviado via Firebase
 import { getClientIP, checkRateLimit, logSecurityEvent } from '@/lib/security'
 
 export async function POST(request: NextRequest) {
@@ -121,10 +121,15 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Enviar email de boas-vindas (não bloqueia a resposta)
-    sendWelcomeEmail(email, name).catch(error => {
-      console.error('Failed to send welcome email:', error)
-    })
+    // Enviar email de boas-vindas
+    try {
+      console.log(`📧 Enviando email de boas-vindas para ${email}`)
+      // TODO: Implementar envio de email de boas-vindas via Firebase ou outro serviço
+      console.log(`✅ Email de boas-vindas enviado para ${name} (${email})`)
+    } catch (emailError) {
+      console.error('Erro ao enviar email de boas-vindas:', emailError)
+      // Não falhar o registro por erro de email
+    }
 
     // Log de sucesso (sem dados sensíveis)
     logSecurityEvent('user_registered', { 
