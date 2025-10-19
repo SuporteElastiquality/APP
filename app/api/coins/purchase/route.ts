@@ -56,27 +56,45 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Criar Payment Intent no Stripe
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Stripe usa centavos
-      currency: 'eur',
+    // Criar Checkout Session no Stripe
+    const checkoutSession = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: `Pacote ${packageId} - ${coins} Quality`,
+              description: `Compra de ${coins} moedas Elastiquality`
+            },
+            unit_amount: Math.round(amount * 100), // Stripe usa centavos
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${process.env.NEXTAUTH_URL}/quality?success=true`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/quality?canceled=true`,
       metadata: {
         userId: session.user.id,
         transactionId: transaction.id,
         packageId: packageId,
         coins: coins.toString()
       },
-      description: `Compra de ${coins} moedas Elastiquality`
+      customer_email: session.user.email
     })
 
-    // Atualizar transaction com Payment Intent ID
+    // Atualizar transaction com Checkout Session ID
     await prisma.transaction.update({
       where: { id: transaction.id },
-      data: { stripePaymentIntentId: paymentIntent.id }
+      data: { 
+        stripePaymentIntentId: checkoutSession.id,
+        status: 'PENDING'
+      }
     })
 
     return NextResponse.json({
-      clientSecret: paymentIntent.client_secret
+      clientSecret: checkoutSession.id
     })
 
   } catch (error) {

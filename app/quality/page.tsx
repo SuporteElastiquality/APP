@@ -143,22 +143,14 @@ export default function QualityPage() {
         throw new Error('Stripe não inicializado')
       }
 
-      // Redirecionar para página de pagamento do Stripe
-      const { error } = await stripe.confirmPayment({
-        clientSecret,
-        confirmParams: {
-          return_url: `${window.location.origin}/quality?success=true`,
-        },
-        redirect: 'if_required'
+      // Redirecionar para página de checkout do Stripe
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: clientSecret
       })
 
       if (error) {
         throw new Error(error.message)
       }
-
-      // Sucesso - atualizar quality
-      await loadUserQuality()
-      alert(`Compra realizada com sucesso! Você recebeu ${qualityPackage.quality} quality.`)
       
     } catch (error) {
       console.error('Erro no pagamento:', error)

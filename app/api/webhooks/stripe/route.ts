@@ -79,6 +79,47 @@ export async function POST(request: NextRequest) {
         break
       }
 
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session
+        
+        // Atualizar transação no banco
+        await prisma.transaction.update({
+          where: {
+            stripePaymentIntentId: session.id,
+          },
+          data: {
+            status: 'COMPLETED',
+            stripeChargeId: session.payment_intent as string,
+          },
+        })
+
+        // Adicionar moedas ao usuário
+        const transaction = await prisma.transaction.findUnique({
+          where: {
+            stripePaymentIntentId: session.id,
+          },
+        })
+
+        if (transaction && session.metadata?.coins) {
+          // Usar quantidade de moedas do metadata
+          const coinsAmount = parseInt(session.metadata.coins)
+          
+          await prisma.coin.create({
+            data: {
+              userId: transaction.userId,
+              amount: coinsAmount,
+              type: 'CREDIT',
+              description: `Compra de ${coinsAmount} moedas - Pacote ${session.metadata.packageId}`,
+              source: 'stripe_payment',
+            },
+          })
+
+          console.log(`✅ Moedas creditadas: ${coinsAmount} para usuário ${transaction.userId}`)
+        }
+
+        break
+      }
+
       default:
         console.log(`Unhandled event type: ${event.type}`)
     }
