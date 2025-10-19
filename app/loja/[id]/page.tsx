@@ -43,8 +43,8 @@ export default function ProductDetailPage() {
   const [categories, setCategories] = useState<string[]>([])
   const [filters, setFilters] = useState({
     priceRange: [0, 1000],
-    brands: [],
-    categories: [],
+    brands: [] as string[],
+    categories: [] as string[],
     inStock: false,
     rating: 0
   })
