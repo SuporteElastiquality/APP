@@ -25,7 +25,9 @@ export async function GET(request: NextRequest) {
       include: {
         professionalProfile: {
           select: {
-            specialties: true,
+            categories: true,
+            services: true,
+            workDistricts: true,
             experience: true,
             district: true,
             council: true,
