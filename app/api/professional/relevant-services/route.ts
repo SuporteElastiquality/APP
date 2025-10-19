@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Buscar categorias e serviços relevantes
-    const relevantCategories = await prisma.category.findMany({
+    const relevantCategories = await prisma.serviceCategory.findMany({
       where: {
         id: {
           in: professionalProfile.categories || []
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
             id: true,
             name: true,
             description: true,
-            icon: true
+            slug: true
           }
         }
       }

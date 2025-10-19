@@ -10,7 +10,7 @@ interface RelevantService {
   id: string
   name: string
   description: string
-  icon: string
+  slug: string
 }
 
 interface RelevantCategory {
@@ -102,7 +102,7 @@ export default function Header() {
                                 {category.services.map((service) => (
                                   <Link
                                     key={service.id}
-                                    href={`/services/${category.id.toLowerCase()}`}
+                                    href={`/services/${category.slug}`}
                                     className="block px-2 py-1 text-sm text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded"
                                     onClick={() => setIsServicesDropdownOpen(false)}
                                   >
@@ -279,7 +279,7 @@ export default function Header() {
                               {category.services.map((service) => (
                                 <Link
                                   key={service.id}
-                                  href={`/services/${category.id.toLowerCase()}`}
+                                  href={`/services/${category.slug}`}
                                   className="block text-sm text-gray-600 hover:text-primary-600 hover:bg-gray-50 px-2 py-1 rounded"
                                   onClick={() => setIsMenuOpen(false)}
                                 >
