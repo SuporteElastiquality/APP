@@ -2,23 +2,54 @@
 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Card from '@/components/Card'
 import Button from '@/components/Button'
-import { User, MapPin, Phone, Mail, Settings, CreditCard, MessageCircle } from 'lucide-react'
+import { User, MapPin, Phone, Mail, Settings, CreditCard, MessageCircle, Coins, TrendingUp } from 'lucide-react'
+
+interface QualityBalance {
+  balance: number
+  recentTransactions: Array<{
+    id: string
+    amount: number
+    type: string
+    description: string
+    source: string
+    createdAt: string
+  }>
+}
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [qualityBalance, setQualityBalance] = useState<QualityBalance | null>(null)
+  const [loadingBalance, setLoadingBalance] = useState(false)
 
   useEffect(() => {
     if (status === 'loading') return // Ainda carregando
     if (!session) {
       router.push('/auth/signin')
+    } else if (session.user?.userType === 'PROFESSIONAL') {
+      loadQualityBalance()
     }
   }, [session, status, router])
+
+  const loadQualityBalance = async () => {
+    setLoadingBalance(true)
+    try {
+      const response = await fetch('/api/user/quality-balance')
+      if (response.ok) {
+        const data = await response.json()
+        setQualityBalance(data)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar saldo de quality:', error)
+    } finally {
+      setLoadingBalance(false)
+    }
+  }
 
   if (status === 'loading') {
     return (
@@ -51,7 +82,7 @@ export default function Dashboard() {
           </div>
 
           {/* Cards de Informações */}
-          <div className={`grid grid-cols-1 md:grid-cols-2 ${user.userType === 'CLIENT' ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-6 mb-8`}>
+          <div className={`grid grid-cols-1 md:grid-cols-2 ${user.userType === 'CLIENT' ? 'lg:grid-cols-2' : 'lg:grid-cols-4'} gap-6 mb-8`}>
             <div 
               className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-white rounded-lg shadow-md border"
               onClick={() => router.push(user.userType === 'CLIENT' ? '/profile/client' : '/profile/professional')}
@@ -68,17 +99,36 @@ export default function Dashboard() {
             </div>
 
             {user.userType === 'PROFESSIONAL' && (
-              <Card className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-green-100 rounded-full">
-                    <CreditCard className="w-6 h-6 text-green-600" />
+              <>
+                <Card 
+                  className="p-6 cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => router.push('/quality')}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="p-3 bg-yellow-100 rounded-full">
+                      <Coins className="w-6 h-6 text-yellow-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Quality</h3>
+                      <p className="text-sm text-gray-600">
+                        {loadingBalance ? 'Carregando...' : `${qualityBalance?.balance || 0} moedas`}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Pagamentos</h3>
-                    <p className="text-sm text-gray-600">Histórico e métodos</p>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-3 bg-green-100 rounded-full">
+                      <CreditCard className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Pagamentos</h3>
+                      <p className="text-sm text-gray-600">Histórico e métodos</p>
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </>
             )}
 
             <div 
@@ -98,7 +148,7 @@ export default function Dashboard() {
           </div>
 
           {/* Informações do Usuário */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className={`grid grid-cols-1 ${user.userType === 'PROFESSIONAL' ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} gap-8`}>
             <Card className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Informações Pessoais</h2>
               <div className="space-y-4">
@@ -129,6 +179,39 @@ export default function Dashboard() {
                 </div>
               </div>
             </Card>
+
+            {user.userType === 'PROFESSIONAL' && qualityBalance && (
+              <Card className="p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Histórico Quality</h2>
+                <div className="space-y-3">
+                  {qualityBalance.recentTransactions.length > 0 ? (
+                    qualityBalance.recentTransactions.map((transaction) => (
+                      <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {transaction.description}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(transaction.createdAt).toLocaleDateString('pt-PT')}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-sm font-medium ${
+                            transaction.type === 'CREDIT' ? 'text-green-600' : 'text-red-600'
+                          }`}>
+                            {transaction.type === 'CREDIT' ? '+' : '-'}{transaction.amount}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500 text-center py-4">
+                      Nenhuma transação encontrada
+                    </p>
+                  )}
+                </div>
+              </Card>
+            )}
 
             <Card className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Ações Rápidas</h2>
