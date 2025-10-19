@@ -369,7 +369,7 @@ export default function ProductDetailPage() {
 
                   <div className="flex space-x-4">
                     <Button
-                      onClick={addToCart}
+                      onClick={() => addToCart(product)}
                       disabled={product.stock === 0 || addingToCart}
                       className="flex-1 flex items-center justify-center space-x-2"
                     >
