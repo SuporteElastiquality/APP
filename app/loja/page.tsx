@@ -105,8 +105,8 @@ export default function LojaPage() {
         setFilteredProducts(mappedProducts)
         
         // Extrair categorias e marcas únicas
-        const uniqueCategories = [...new Set(mappedProducts.map((p: Product) => p.category))]
-        const uniqueBrands = [...new Set(mappedProducts.map((p: Product) => p.brand).filter(Boolean))]
+        const uniqueCategories = Array.from(new Set(mappedProducts.map((p: Product) => p.category)))
+        const uniqueBrands = Array.from(new Set(mappedProducts.map((p: Product) => p.brand).filter(Boolean)))
         
         setCategories(uniqueCategories)
         setBrands(uniqueBrands)
