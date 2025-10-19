@@ -239,6 +239,7 @@ export default function ProfessionalsPage() {
                         <option value="eventos-festas">🎉 Eventos e Festas</option>
                         <option value="administrativos-financeiros">💼 Administrativos e Financeiros</option>
                         <option value="criativos-design">🎨 Criativos e Design</option>
+                        <option value="costura-alfaiataria">✂️ Serviços de Costura/Alfaiataria/Modista</option>
                       </select>
                     </div>
                     

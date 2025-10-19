@@ -101,6 +101,13 @@ const categories = [
     services: ['Design Gráfico', 'Criação de Conteúdo', 'Edição de Vídeo', 'Fotografia Profissional'],
     color: 'bg-rose-100 text-rose-600',
     searchQuery: 'criativos-design'
+  },
+  {
+    name: 'Serviços de Costura/Alfaiataria/Modista',
+    icon: Scissors,
+    services: ['Fazer Bainhas', 'Apertar/Alargar Peças', 'Encurtar/Alongar Mangas', 'Reparação de Fechos'],
+    color: 'bg-purple-100 text-purple-600',
+    searchQuery: 'costura-alfaiataria'
   }
 ]
 

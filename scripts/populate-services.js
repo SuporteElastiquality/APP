@@ -91,6 +91,16 @@ const servicesData = {
     { name: 'Edição de Vídeo', slug: 'edicao-video', description: 'Produção e edição' },
     { name: 'Fotografia Profissional', slug: 'fotografia-profissional', description: 'Sessões fotográficas' },
     { name: 'Redação Publicitária', slug: 'redacao-publicitaria', description: 'Textos publicitários' }
+  ],
+  'costura-alfaiataria': [
+    { name: 'Fazer Bainhas', slug: 'fazer-bainhas', description: 'Bainhas em calças, saias e vestidos' },
+    { name: 'Apertar/Alargar Peças', slug: 'apertar-alargar-pecas', description: 'Ajustes em cinturas, laterais e ombros' },
+    { name: 'Encurtar/Alongar Mangas', slug: 'encurtar-alongar-mangas', description: 'Ajuste de comprimento de mangas' },
+    { name: 'Reparação de Fechos', slug: 'reparacao-fechos', description: 'Troca e reparação de zíperes' },
+    { name: 'Remendar Rasgos', slug: 'remendar-rasgos', description: 'Coser e remendar rasgos e buracos' },
+    { name: 'Troca de Forros', slug: 'troca-forros', description: 'Substituição de forros em casacos e saias' },
+    { name: 'Substituição de Botões', slug: 'substituicao-botoes', description: 'Troca de botões, colchetes e molas' },
+    { name: 'Cerzidos', slug: 'cerzidos', description: 'Reparação de pequenos danos em malhas e tecidos' }
   ]
 }
 
@@ -118,7 +128,8 @@ async function populateServices() {
         { id: 'educacao', name: 'Educação', slug: 'educacao', description: 'Aulas particulares (matemática, inglês, etc.), Reforço escolar, Tradução e revisão de textos', icon: '📚' },
         { id: 'eventos-festas', name: 'Eventos e Festas', slug: 'eventos-festas', description: 'Buffet, Empregado de mesa/copeiro, Técnico de som (DJ), Fotógrafo e videomaker, Decoração de festas, Aluguer de mobiliário e equipamentos, Organização de eventos', icon: '🎉' },
         { id: 'administrativos-financeiros', name: 'Serviços Administrativos e Financeiros', slug: 'administrativos-financeiros', description: 'Consultoria contabilidade, Declaração de IRS, Consultoria jurídica, Planejamento financeiro, Consultoria empresarial, Serviços de RH (recrutamento e seleção)', icon: '💼' },
-        { id: 'criativos-design', name: 'Serviços Criativos e Design', slug: 'criativos-design', description: 'Design gráfico (logotipos, identidade visual), Criação de conteúdo para redes sociais, Edição de vídeo, Fotografia profissional, Redação publicitária, Ilustração', icon: '🎨' }
+        { id: 'criativos-design', name: 'Serviços Criativos e Design', slug: 'criativos-design', description: 'Design gráfico (logotipos, identidade visual), Criação de conteúdo para redes sociais, Edição de vídeo, Fotografia profissional, Redação publicitária, Ilustração', icon: '🎨' },
+        { id: 'costura-alfaiataria', name: 'Serviços de Costura/Alfaiataria/Modista', slug: 'costura-alfaiataria', description: 'Fazer bainhas (calças, saias, vestidos), Apertar ou alargar peças (cinturas, laterais, ombros), Encurtar ou alongar mangas, Troca e reparação de fechos (zíperes), Coser ou remendar rasgos e buracos, Troca de forros (em casacos, saias, etc.), Substituição de botões, colchetes e molas, Cerzidos (reparação de pequenos danos em malhas e tecidos)', icon: '✂️' }
       ]
 
       for (const category of categoryData) {

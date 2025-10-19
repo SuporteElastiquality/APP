@@ -71,6 +71,12 @@ export const SERVICE_CATEGORIES = [
     name: 'Serviços Criativos e Design',
     description: 'Design gráfico (logotipos, identidade visual), Criação de conteúdo para redes sociais, Edição de vídeo, Fotografia profissional, Redação publicitária, Ilustração',
     icon: '🎨'
+  },
+  {
+    id: 'costura-alfaiataria',
+    name: 'Serviços de Costura/Alfaiataria/Modista',
+    description: 'Fazer bainhas (calças, saias, vestidos), Apertar ou alargar peças (cinturas, laterais, ombros), Encurtar ou alongar mangas, Troca e reparação de fechos (zíperes), Coser ou remendar rasgos e buracos, Troca de forros (em casacos, saias, etc.), Substituição de botões, colchetes e molas, Cerzidos (reparação de pequenos danos em malhas e tecidos)',
+    icon: '✂️'
   }
 ] as const
 

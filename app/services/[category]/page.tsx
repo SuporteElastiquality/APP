@@ -99,6 +99,16 @@ const servicesByCategory = {
     { id: 3, name: 'Edição de Vídeo', description: 'Produção e edição', rating: 4.9, reviews: 89, image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center' },
     { id: 4, name: 'Fotografia Profissional', description: 'Sessões fotográficas', rating: 4.8, reviews: 145, image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center' },
     { id: 5, name: 'Redação Publicitária', description: 'Textos publicitários', rating: 4.6, reviews: 67, image: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop&crop=center' }
+  ],
+  'costura-alfaiataria': [
+    { id: 1, name: 'Fazer Bainhas', description: 'Bainhas em calças, saias e vestidos', rating: 4.9, reviews: 89, image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop&crop=center' },
+    { id: 2, name: 'Apertar/Alargar Peças', description: 'Ajustes em cinturas, laterais e ombros', rating: 4.8, reviews: 76, image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop&crop=center' },
+    { id: 3, name: 'Encurtar/Alongar Mangas', description: 'Ajuste de comprimento de mangas', rating: 4.7, reviews: 54, image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop&crop=center' },
+    { id: 4, name: 'Reparação de Fechos', description: 'Troca e reparação de zíperes', rating: 4.9, reviews: 98, image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop&crop=center' },
+    { id: 5, name: 'Remendar Rasgos', description: 'Coser e remendar rasgos e buracos', rating: 4.8, reviews: 67, image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop&crop=center' },
+    { id: 6, name: 'Troca de Forros', description: 'Substituição de forros em casacos e saias', rating: 4.6, reviews: 43, image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop&crop=center' },
+    { id: 7, name: 'Substituição de Botões', description: 'Troca de botões, colchetes e molas', rating: 4.7, reviews: 56, image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop&crop=center' },
+    { id: 8, name: 'Cerzidos', description: 'Reparação de pequenos danos em malhas e tecidos', rating: 4.8, reviews: 72, image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop&crop=center' }
   ]
 }
 

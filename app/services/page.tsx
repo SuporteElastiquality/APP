@@ -134,7 +134,8 @@ const getCategoryId = (category: string) => {
     'Educação': 'educacao',
     'Eventos e Festas': 'eventos-festas',
     'Serviços Administrativos e Financeiros': 'administrativos-financeiros',
-    'Serviços Criativos e Design': 'criativos-design'
+    'Serviços Criativos e Design': 'criativos-design',
+    'Serviços de Costura/Alfaiataria/Modista': 'costura-alfaiataria'
   }
   return categoryMap[category] || 'construcao-reforma'
 }
@@ -210,6 +211,7 @@ export default function ServicesPage() {
                         <option value="eventos-festas">🎉 Eventos e Festas</option>
                         <option value="administrativos-financeiros">💼 Administrativos e Financeiros</option>
                         <option value="criativos-design">🎨 Criativos e Design</option>
+                        <option value="costura-alfaiataria">✂️ Serviços de Costura/Alfaiataria/Modista</option>
                       </select>
                     </div>
                     
