@@ -65,8 +65,8 @@ export default function ProductDetailPage() {
         const data = await response.json()
         const products = data.products || []
         
-        const uniqueBrands = Array.from(new Set(products.map((p: any) => p.brand).filter(Boolean)))
-        const uniqueCategories = Array.from(new Set(products.map((p: any) => p.category).filter(Boolean)))
+        const uniqueBrands = Array.from(new Set(products.map((p: any) => p.brand).filter(Boolean))) as string[]
+        const uniqueCategories = Array.from(new Set(products.map((p: any) => p.category).filter(Boolean))) as string[]
         
         setBrands(uniqueBrands)
         setCategories(uniqueCategories)
