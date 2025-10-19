@@ -2,7 +2,6 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Check, Euro, Users, Star, CreditCard, Shield, TrendingUp, Zap } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 
 const qualityPackages = [
   {
@@ -63,14 +62,7 @@ export default function PricingPage() {
         <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <div className="flex items-center justify-center mb-6">
-                <Image
-                  src="/favicon-32x32.png"
-                  alt="Quality"
-                  width={48}
-                  height={48}
-                  className="mr-3"
-                />
+              <div className="text-center mb-6">
                 <h1 className="text-4xl lg:text-5xl font-bold">
                   Sistema de Quality
                 </h1>
@@ -189,14 +181,7 @@ export default function PricingPage() {
                   <div className="p-6 flex flex-col flex-grow">
                     <div className="text-center mb-6">
                       <h3 className="text-xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-                      <div className="flex items-center justify-center mb-2">
-                        <Image
-                          src="/favicon-32x32.png"
-                          alt="Quality"
-                          width={24}
-                          height={24}
-                          className="mr-2"
-                        />
+                      <div className="text-center mb-2">
                         <span className="text-3xl font-bold text-primary-600">{pkg.quality}</span>
                         <span className="text-gray-600 ml-1">quality</span>
                       </div>
