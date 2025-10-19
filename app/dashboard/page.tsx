@@ -117,7 +117,10 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <Card className="p-6">
+                <div 
+                  className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-white rounded-lg shadow-md border"
+                  onClick={() => router.push('/quality')}
+                >
                   <div className="flex items-center space-x-4">
                     <div className="p-3 bg-green-100 rounded-full">
                       <CreditCard className="w-6 h-6 text-green-600" />
@@ -127,7 +130,7 @@ export default function Dashboard() {
                       <p className="text-sm text-gray-600">Histórico e métodos</p>
                     </div>
                   </div>
-                </Card>
+                </div>
               </>
             )}
 
@@ -245,7 +248,7 @@ export default function Dashboard() {
                   <>
                     <Button 
                       className="w-full justify-start"
-                      onClick={() => router.push('/search')}
+                      onClick={() => router.push('/services')}
                     >
                       Buscar Serviços
                     </Button>
