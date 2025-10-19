@@ -404,11 +404,11 @@ export async function POST(request: NextRequest) {
 
           // Converter tipos
           if (translatedHeader === 'price') {
-            value = parseFloat(value.replace(',', '.'))
+            value = parseFloat(String(value).replace(',', '.'))
           } else if (translatedHeader === 'stock') {
-            value = parseInt(value)
+            value = parseInt(String(value))
           } else if (translatedHeader === 'images') {
-            value = value ? [value] : []
+            value = value ? [String(value)] : []
           }
 
           productData[translatedHeader] = value
