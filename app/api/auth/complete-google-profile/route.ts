@@ -108,7 +108,9 @@ export async function POST(request: NextRequest) {
           parish: data.parish,
           address: data.morada || '',
           postalCode: data.postalCode,
-          specialties: data.specialties!.split(',').map(s => s.trim()).join(','),
+          categories: data.specialties ? data.specialties.split(',').map(s => s.trim()) : [],
+          services: [],
+          workDistricts: [data.district],
           experience: data.experience!,
           bio: data.bio,
         }
