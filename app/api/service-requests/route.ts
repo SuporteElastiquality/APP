@@ -33,17 +33,20 @@ export async function GET(request: NextRequest) {
       prisma.serviceRequest.findMany({
         where: whereClause,
         include: {
-          user: {
+          client: {
             select: {
               name: true,
               email: true
             }
           },
-          clientProfile: {
+          service: {
             select: {
-              district: true,
-              council: true,
-              parish: true
+              name: true,
+              category: {
+                select: {
+                  name: true
+                }
+              }
             }
           }
         },

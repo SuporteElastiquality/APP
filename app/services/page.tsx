@@ -13,20 +13,23 @@ interface ServiceRequest {
   id: string
   title: string
   description: string
-  category: string
+  district: string
+  council: string
+  parish: string
   budgetMin: number | null
   budgetMax: number | null
   status: string
   createdAt: string
-  user: {
+  client: {
     name: string
     email: string
   }
-  clientProfile: {
-    district: string
-    council: string
-    parish: string
-  } | null
+  service: {
+    name: string
+    category: {
+      name: string
+    }
+  }
 }
 
 interface Category {
@@ -225,7 +228,7 @@ export default function ServicesPage() {
                           {request.title}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          {request.category}
+                          {request.service.category.name}
                         </p>
                       </div>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(request.status)}`}>
@@ -245,19 +248,17 @@ export default function ServicesPage() {
                     </div>
 
                     {/* Location */}
-                    {request.clientProfile && (
-                      <div className="flex items-center text-sm text-gray-600 mb-4">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        <span>
-                          {request.clientProfile.district}, {request.clientProfile.council}
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex items-center text-sm text-gray-600 mb-4">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      <span>
+                        {request.district}, {request.council}
+                      </span>
+                    </div>
 
                     {/* Client Info */}
                     <div className="flex items-center text-sm text-gray-600 mb-4">
                       <User className="w-4 h-4 mr-1" />
-                      <span>{request.user.name}</span>
+                      <span>{request.client.name}</span>
                     </div>
 
                     {/* Date */}
