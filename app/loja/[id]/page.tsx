@@ -99,7 +99,7 @@ export default function ProductDetailPage() {
   }, [params.id, router])
 
   // Adicionar ao carrinho
-  const addToCart = async (productToAdd?: Product) => {
+  const addToCart = async (productToAdd?: any) => {
     if (!session) {
       router.push('/auth/signin?callbackUrl=/loja')
       return
