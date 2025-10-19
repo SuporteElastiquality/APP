@@ -37,8 +37,10 @@ interface ServiceRequest {
     professional: {
       id: string
       name: string
-      rating: number
-      totalReviews: number
+      professionalProfile: {
+        rating: number
+        totalReviews: number
+      }
     }
   }>
 }
