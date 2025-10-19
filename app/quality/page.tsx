@@ -86,13 +86,19 @@ export default function QualityPage() {
       return
     }
 
-    if (session.user?.userType !== 'PROFESSIONAL') {
-      router.push('/')
-      return
-    }
+    // Qualquer usuário pode comprar quality
+    // Removida restrição de apenas profissionais
 
     // Carregar quality do usuário
     loadUserQuality()
+
+    // Verificar se o pagamento foi bem-sucedido
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('success') === 'true') {
+      alert('Pagamento realizado com sucesso! Suas quality foram adicionadas à sua conta.')
+      // Limpar a URL
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
   }, [session, status, router])
 
   const loadUserQuality = async () => {
@@ -137,8 +143,14 @@ export default function QualityPage() {
         throw new Error('Stripe não inicializado')
       }
 
-      // Confirmar pagamento
-      const { error } = await stripe.confirmCardPayment(clientSecret)
+      // Redirecionar para página de pagamento do Stripe
+      const { error } = await stripe.confirmPayment({
+        clientSecret,
+        confirmParams: {
+          return_url: `${window.location.origin}/quality?success=true`,
+        },
+        redirect: 'if_required'
+      })
 
       if (error) {
         throw new Error(error.message)
