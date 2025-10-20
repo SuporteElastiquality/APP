@@ -2,6 +2,8 @@
 
 Uma plataforma completa que conecta clientes com profissionais de serviços em Portugal, com aplicativo web e mobile.
 
+> **Test Update**: This is a small test commit to verify repository access and deployment pipeline.
+
 ## 🚀 Funcionalidades
 
 ### Para Clientes
