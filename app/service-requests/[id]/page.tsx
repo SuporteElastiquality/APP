@@ -41,6 +41,7 @@ export default function ServiceRequestDetails() {
   const [request, setRequest] = useState<ServiceRequest | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (params.id) {
@@ -66,6 +67,27 @@ export default function ServiceRequestDetails() {
       setError('Erro ao carregar solicitação de serviço')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!request) return
+    const confirmed = window.confirm('Tem certeza que deseja eliminar esta solicitação? Esta ação não pode ser desfeita.')
+    if (!confirmed) return
+
+    try {
+      setDeleting(true)
+      const response = await fetch(`/api/service-requests/${request.id}`, { method: 'DELETE' })
+      if (response.ok) {
+        router.push('/profile/client/requests')
+      } else {
+        const data = await response.json().catch(() => ({}))
+        alert(data.error || 'Não foi possível eliminar a solicitação.')
+      }
+    } catch (e) {
+      alert('Erro ao eliminar a solicitação.')
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -170,6 +192,15 @@ export default function ServiceRequestDetails() {
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}>
                 {statusInfo.text}
               </span>
+              {session?.user?.id === request.client.id && (
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="ml-3 inline-flex items-center px-3 py-1.5 border border-red-300 rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  {deleting ? 'Eliminando...' : 'Eliminar Solicitação'}
+                </button>
+              )}
             </div>
           </div>
         </div>
