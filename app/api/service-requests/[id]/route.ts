@@ -111,7 +111,7 @@ export async function DELETE(
     }
 
     // Remover propostas relacionadas (por segurança, caso não haja cascade)
-    await prisma.serviceProposal.deleteMany({ where: { serviceRequestId: requestId } })
+    await prisma.serviceProposal.deleteMany({ where: { requestId: requestId } })
 
     // Remover a solicitação
     await prisma.serviceRequest.delete({ where: { id: requestId } })
