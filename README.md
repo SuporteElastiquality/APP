@@ -69,8 +69,8 @@ NEXTAUTH_SECRET="your-secret"
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_live_..."
 STRIPE_SECRET_KEY="sk_live_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
-GOOGLE_CLIENT_ID="..."
-GOOGLE_CLIENT_SECRET="..."
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
 ```
 
 ## 🏗️ Instalação Local
