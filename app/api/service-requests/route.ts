@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { createServiceRequestSchema } from '@/lib/validations'
 
 export async function GET(request: NextRequest) {
   try {
@@ -162,6 +163,88 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Erro ao buscar solicitações de serviços:', error)
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
+    if (session.user.userType !== 'CLIENT') {
+      return NextResponse.json({ error: 'Apenas clientes podem criar solicitações' }, { status: 403 })
+    }
+
+    const body = await request.json()
+    
+    // Validar dados
+    const validationResult = createServiceRequestSchema.safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Dados inválidos', details: validationResult.error.issues },
+        { status: 400 }
+      )
+    }
+
+    const data = validationResult.data
+
+    // Verificar se o serviço existe
+    const service = await prisma.service.findUnique({
+      where: { id: data.serviceId },
+      include: { category: true }
+    })
+
+    if (!service) {
+      return NextResponse.json({ error: 'Serviço não encontrado' }, { status: 404 })
+    }
+
+    // Criar solicitação
+    const serviceRequest = await prisma.serviceRequest.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        clientId: session.user.id,
+        serviceId: data.serviceId,
+        district: data.district,
+        council: data.council,
+        parish: data.parish,
+        address: data.address || null,
+        budgetMin: data.budgetMin || null,
+        budgetMax: data.budgetMax || null,
+        deadline: data.deadline ? new Date(data.deadline) : null,
+        status: 'PENDING'
+      },
+      include: {
+        client: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        service: {
+          select: {
+            name: true,
+            category: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    return NextResponse.json(serviceRequest, { status: 201 })
+
+  } catch (error) {
+    console.error('Erro ao criar solicitação de serviço:', error)
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

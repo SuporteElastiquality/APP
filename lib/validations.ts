@@ -263,3 +263,29 @@ export function validatePortugueseEmail(email: string): boolean {
   const portugueseDomainRegex = /\.pt$/i
   return emailRegex.test(email) && portugueseDomainRegex.test(email)
 }
+
+// Schema de validação para criação de solicitação de serviço
+export const createServiceRequestSchema = z.object({
+  title: z.string()
+    .min(5, 'Título deve ter pelo menos 5 caracteres')
+    .max(100, 'Título muito longo'),
+  description: z.string()
+    .min(20, 'Descrição deve ter pelo menos 20 caracteres')
+    .max(1000, 'Descrição muito longa'),
+  serviceId: z.string().min(1, 'Serviço é obrigatório'),
+  district: z.string().min(1, 'Distrito é obrigatório'),
+  council: z.string().min(1, 'Conselho é obrigatório'),
+  parish: z.string().min(1, 'Freguesia é obrigatória'),
+  address: z.string().optional(),
+  budgetMin: z.number().min(0, 'Orçamento mínimo deve ser positivo').optional(),
+  budgetMax: z.number().min(0, 'Orçamento máximo deve ser positivo').optional(),
+  deadline: z.string().optional()
+}).refine((data) => {
+  if (data.budgetMin && data.budgetMax && data.budgetMin > data.budgetMax) {
+    return false
+  }
+  return true
+}, {
+  message: 'Orçamento mínimo não pode ser maior que o máximo',
+  path: ['budgetMin']
+})
