@@ -293,7 +293,7 @@ export default function ServicesPage() {
                     {/* Client Info */}
                     <div className="flex items-center text-sm text-gray-600 mb-4">
                       <User className="w-4 h-4 mr-1" />
-                      <span>{request.client.name}</span>
+                      <span>{request.client.name?.split(' ')[0] || 'Cliente'}</span>
                     </div>
 
                     {/* Date */}
@@ -305,7 +305,7 @@ export default function ServicesPage() {
                     {/* Actions */}
                     <div className="flex space-x-2">
                       <Link
-                        href={`/messages?request=${request.id}`}
+                        href={`/proposals/create?requestId=${request.id}&clientId=${request.client.id}&clientName=${request.client.name?.split(' ')[0] || 'Cliente'}&profession=${request.service.name}`}
                         className="flex-1 bg-primary-600 text-white text-center py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors"
                       >
                         Enviar Proposta

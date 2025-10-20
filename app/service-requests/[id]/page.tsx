@@ -222,11 +222,7 @@ export default function ServiceRequestDetails() {
               <div className="space-y-3">
                 <div className="flex items-center">
                   <User className="w-5 h-5 text-gray-400 mr-3" />
-                  <span className="text-gray-700">{request.client.name}</span>
-                </div>
-                <div className="flex items-center">
-                  <MessageCircle className="w-5 h-5 text-gray-400 mr-3" />
-                  <span className="text-gray-700">{request.client.email}</span>
+                  <span className="text-gray-700">{request.client.name?.split(' ')[0] || 'Cliente'}</span>
                 </div>
               </div>
             </div>
@@ -275,17 +271,37 @@ export default function ServiceRequestDetails() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações</h3>
                 <div className="space-y-3">
                   <Link
-                    href={`/request-service?requestId=${request.id}&clientId=${request.client.id}&clientName=${request.client.name}&profession=${request.service.name}`}
+                    href={`/proposals/create?requestId=${request.id}&clientId=${request.client.id}&clientName=${request.client.name?.split(' ')[0] || 'Cliente'}&profession=${request.service.name}`}
                     className="w-full bg-primary-600 text-white text-center py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors block"
                   >
                     Enviar Proposta
                   </Link>
-                  <Link
-                    href={`/messages?room=new&clientId=${request.client.id}`}
+                  <button
+                    onClick={async () => {
+                      try {
+                        const response = await fetch('/api/chat/rooms', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            participantId: request.client.id,
+                            type: 'DIRECT'
+                          })
+                        })
+                        if (response.ok) {
+                          const data = await response.json()
+                          router.push(`/messages?room=${data.id}`)
+                        } else {
+                          router.push('/messages')
+                        }
+                      } catch (error) {
+                        console.error('Error creating chat:', error)
+                        router.push('/messages')
+                      }
+                    }}
                     className="w-full border border-gray-300 text-gray-700 text-center py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors block"
                   >
                     Contactar Cliente
-                  </Link>
+                  </button>
                 </div>
               </div>
             )}
