@@ -268,7 +268,7 @@ export default function ClientRequestsPage() {
 
                     <div className="mt-4 lg:mt-0 lg:ml-6">
                       <div className="flex space-x-2">
-                        <Link href={`/profile/client/requests/${request.id}`}>
+                        <Link href={`/service-requests/${request.id}`}>
                           <Button variant="outline" className="text-sm">
                             Ver Detalhes
                           </Button>
