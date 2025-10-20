@@ -5,7 +5,13 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('🔍 API service-requests chamada')
     const session = await getServerSession(authOptions)
+    console.log('👤 Sessão encontrada:', !!session)
+    console.log('👤 User ID:', session?.user?.id)
+    console.log('👤 User Type:', session?.user?.userType)
+    console.log('👤 User Email:', session?.user?.email)
+    
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const status = searchParams.get('status')
@@ -32,6 +38,7 @@ export async function GET(request: NextRequest) {
     // Se for um cliente, filtrar apenas suas próprias solicitações
     if (session?.user?.userType === 'CLIENT') {
       whereClause.clientId = session.user.id
+      console.log('👤 Cliente detectado - filtrando por clientId:', session.user.id)
     }
     // Se for um profissional, filtrar por suas categorias e distritos
     else if (session?.user?.userType === 'PROFESSIONAL') {
@@ -80,6 +87,7 @@ export async function GET(request: NextRequest) {
 
     console.log('🔍 Buscando solicitações com filtros:', whereClause)
     console.log('👤 Usuário:', session?.user?.email, 'Tipo:', session?.user?.userType)
+    console.log('📋 Parâmetros da URL:', { category, status, search, page, limit })
 
     // Buscar solicitações
     const [requests, totalCount] = await Promise.all([
@@ -137,6 +145,15 @@ export async function GET(request: NextRequest) {
 
     console.log('📊 Solicitações encontradas:', requests.length)
     console.log('📋 Total count:', totalCount)
+    
+    if (requests.length > 0) {
+      console.log('📋 Detalhes das solicitações:')
+      requests.forEach((req, index) => {
+        console.log(`   ${index + 1}. ${req.title} (${req.status}) - Cliente: ${req.client.email}`)
+      })
+    } else {
+      console.log('❌ Nenhuma solicitação encontrada com os filtros aplicados')
+    }
 
     // Buscar categorias disponíveis
     const categories = await prisma.serviceCategory.findMany({
