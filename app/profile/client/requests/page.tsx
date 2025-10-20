@@ -207,7 +207,10 @@ export default function ClientRequestsPage() {
           </div>
 
           {/* Lista de Solicitações */}
-          {console.log('🎨 Renderizando lista - requests.length:', requests.length, 'loading:', loading)}
+          {(() => {
+            console.log('🎨 Renderizando lista - requests.length:', requests.length, 'loading:', loading)
+            return null
+          })()}
           {requests.length === 0 ? (
             <div className="text-center py-12">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
