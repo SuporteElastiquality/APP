@@ -56,6 +56,7 @@ export default function ServicesPage() {
 
   const loadRequests = async () => {
     try {
+      setLoading(true)
       const params = new URLSearchParams({
         category: selectedCategory,
         search: searchTerm,
@@ -67,17 +68,33 @@ export default function ServicesPage() {
       if (response.ok) {
         const data = await response.json()
         
-        if (page === 1) {
-          setRequests(data.requests)
+        // Verificar se data existe e tem as propriedades esperadas
+        if (data && typeof data === 'object') {
+          if (page === 1) {
+            setRequests(Array.isArray(data.serviceRequests) ? data.serviceRequests : [])
+          } else {
+            setRequests(prev => [...prev, ...(Array.isArray(data.serviceRequests) ? data.serviceRequests : [])])
+          }
+          
+          setCategories(Array.isArray(data.categories) ? data.categories : [])
+          setHasMore(data.pagination && typeof data.pagination === 'object' ? data.pagination.page < data.pagination.pages : false)
         } else {
-          setRequests(prev => [...prev, ...data.requests])
+          // Se data não é válido, resetar arrays
+          setRequests([])
+          setCategories([])
+          setHasMore(false)
         }
-        
-        setCategories(data.categories)
-        setHasMore(data.pagination.page < data.pagination.pages)
+      } else {
+        console.error('Erro na resposta da API:', response.status)
+        setRequests([])
+        setCategories([])
+        setHasMore(false)
       }
     } catch (error) {
       console.error('Erro ao carregar solicitações:', error)
+      setRequests([])
+      setCategories([])
+      setHasMore(false)
     } finally {
       setLoading(false)
     }
@@ -189,7 +206,7 @@ export default function ServicesPage() {
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="all">Todas as Categorias</option>
-                {categories.map((category) => (
+                {categories && categories.length > 0 && categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
@@ -236,7 +253,7 @@ export default function ServicesPage() {
           <>
             {/* Requests Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {requests.map((request) => (
+              {requests && requests.length > 0 && requests.map((request) => (
                 <div key={request.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                   <div className="p-6">
                     {/* Header */}
