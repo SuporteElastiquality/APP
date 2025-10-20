@@ -172,7 +172,8 @@ export default function RequestServicePage() {
         }
       } else {
         const error = await response.json()
-        alert(`Erro ao criar solicitação: ${error.message}`)
+        console.error('API Error:', error)
+        alert(`Erro ao criar solicitação: ${error.error || error.message || 'Erro desconhecido'}`)
       }
     } catch (error) {
       console.error('Error creating service request:', error)

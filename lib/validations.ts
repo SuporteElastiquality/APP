@@ -277,8 +277,8 @@ export const createServiceRequestSchema = z.object({
   council: z.string().min(1, 'Conselho é obrigatório'),
   parish: z.string().min(1, 'Freguesia é obrigatória'),
   address: z.string().optional(),
-  budgetMin: z.number().min(0, 'Orçamento mínimo deve ser positivo').optional(),
-  budgetMax: z.number().min(0, 'Orçamento máximo deve ser positivo').optional(),
+  budgetMin: z.union([z.number().min(0, 'Orçamento mínimo deve ser positivo'), z.null(), z.undefined()]).optional(),
+  budgetMax: z.union([z.number().min(0, 'Orçamento máximo deve ser positivo'), z.null(), z.undefined()]).optional(),
   deadline: z.string().optional()
 }).refine((data) => {
   if (data.budgetMin && data.budgetMax && data.budgetMin > data.budgetMax) {

@@ -183,10 +183,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
+    console.log('Received data:', body)
     
     // Validar dados
     const validationResult = createServiceRequestSchema.safeParse(body)
     if (!validationResult.success) {
+      console.error('Validation errors:', validationResult.error.issues)
       return NextResponse.json(
         { error: 'Dados inválidos', details: validationResult.error.issues },
         { status: 400 }
