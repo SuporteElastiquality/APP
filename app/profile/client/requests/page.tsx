@@ -59,40 +59,26 @@ export default function ClientRequestsPage() {
   }, [session, status])
 
   useEffect(() => {
-    console.log('🔄 useEffect executado - session:', !!session, 'filter:', filter)
     if (session?.user?.id) {
-      console.log('👤 Usuário logado:', session.user.email, 'Tipo:', session.user.userType)
       loadRequests()
-    } else {
-      console.log('❌ Usuário não logado ou sem ID')
     }
   }, [session, filter])
 
   const loadRequests = async () => {
     try {
-      console.log('Carregando solicitações com filtro:', filter)
       const response = await fetch(`/api/service-requests?status=${filter}`)
-      console.log('Response status:', response.status)
       
       if (response.ok) {
         const data = await response.json()
-        console.log('Dados recebidos:', data)
-        console.log('ServiceRequests:', data.serviceRequests)
         
-        // Verificar se serviceRequests existe e é um array
         if (data.serviceRequests && Array.isArray(data.serviceRequests)) {
           setRequests(data.serviceRequests)
         } else {
-          console.error('serviceRequests não é um array:', data.serviceRequests)
           setRequests([])
         }
-      } else {
-        console.error('Erro na resposta:', response.status, response.statusText)
-        const errorData = await response.json()
-        console.error('Dados do erro:', errorData)
       }
     } catch (error) {
-      console.error('Error loading requests:', error)
+      console.error('Erro ao carregar solicitações:', error)
     } finally {
       setLoading(false)
     }
@@ -207,10 +193,6 @@ export default function ClientRequestsPage() {
           </div>
 
           {/* Lista de Solicitações */}
-          {(() => {
-            console.log('🎨 Renderizando lista - requests.length:', requests.length, 'loading:', loading)
-            return null
-          })()}
           {requests.length === 0 ? (
             <div className="text-center py-12">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
